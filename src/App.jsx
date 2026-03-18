@@ -22,10 +22,10 @@ import { isSupabaseConfigured } from './lib/supabase.js';
 
 const CATEGORY_LABELS = {
   all: 'Todos',
-  frozen: 'Frozen',
-  grocery: 'Grocery',
-  dairy: 'Dairy',
-  vitamins: 'Vitamins',
+  frozen: 'Congelados',
+  grocery: 'Abarrotes',
+  dairy: 'Lacteos',
+  vitamins: 'Vitaminas',
 };
 
 function classNames(...values) {
@@ -68,24 +68,26 @@ function buildImageCandidates(image) {
   }
 
   const extensionMatch = normalized.match(/\.[^./]+$/);
-  const basePath = extensionMatch ? normalized.slice(0, -extensionMatch[0].length) : normalized;
+  const extension = extensionMatch?.[0]?.toLowerCase() ?? '';
+  const basePath = extension ? normalized.slice(0, -extension.length) : normalized;
+  const browserSafeExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
+  const isHeicSource = extension === '.heic' || extension === '.heif';
+  const safeFallbacks =
+    !extension || isHeicSource
+      ? browserSafeExtensions.map((value) => `${basePath}${value}`)
+      : [];
 
   return [
     ...new Set([
       manifestImage,
+      ...safeFallbacks,
       normalized,
-      `${basePath}.jpg`,
-      `${basePath}.jpeg`,
-      `${basePath}.png`,
-      `${basePath}.webp`,
-      `${basePath}.HEIC`,
-      `${basePath}.heic`,
       '/logos/dile logo cow.jpg',
     ].filter(Boolean)),
   ];
 }
 
-function ProductImage({ alt, image, className }) {
+function ProductImage({ alt, image, className, fetchPriority = 'auto', loading = 'lazy' }) {
   const candidates = useMemo(() => buildImageCandidates(image), [image]);
   const [candidateIndex, setCandidateIndex] = useState(0);
 
@@ -99,6 +101,9 @@ function ProductImage({ alt, image, className }) {
     <img
       alt={alt}
       className={className}
+      decoding="async"
+      fetchPriority={fetchPriority}
+      loading={loading}
       onError={() => {
         setCandidateIndex((current) => {
           if (current >= candidates.length - 1) {
@@ -199,7 +204,7 @@ function ProductModal({ product, onClose }) {
         </button>
         <div className="modal-layout">
           <div className="modal-visual">
-            <ProductImage alt={product.name} image={product.image} />
+            <ProductImage alt={product.name} fetchPriority="high" image={product.image} loading="eager" />
           </div>
           <div className="modal-copy">
             <span className="eyebrow">{formatCategory(product.category)}</span>
@@ -274,21 +279,18 @@ function CatalogPage({ products, subcategoryDefinitions }) {
 
   return (
     <>
-      <section className="hero-panel">
-        <div className="hero-copy">
-          <span className="eyebrow">DILE Distributors</span>
-          <h1>Encuentra los productos que distribuimos.</h1>
-          <p>
-            Explora por categoria, filtra productos destacados y encuentra rapidamente lo que tu
-            negocio necesita.
-          </p>
-          <div className="hero-actions">
+      <section className="filter-panel filter-panel-compact">
+        <div className="catalog-toolbar">
+          <div className="catalog-toolbar-heading">
+            <span className="eyebrow">DILE Distribuidora León</span>
+            <p>Busca por producto, marca o descripción.</p>
+          </div>
+          <div className="catalog-toolbar-actions">
             <label className="search-shell" htmlFor="catalog-search">
-              <span>Buscar</span>
               <input
                 id="catalog-search"
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Marca, producto o descripción"
+                placeholder="Buscar por producto, marca o descripción"
                 type="search"
                 value={search}
               />
@@ -298,13 +300,10 @@ function CatalogPage({ products, subcategoryDefinitions }) {
               onClick={() => setFeaturedOnly((value) => !value)}
               type="button"
             >
-              {featuredOnly ? 'Mostrando solo destacados' : 'Filtrar destacados'}
+              {featuredOnly ? 'Solo destacados' : 'Destacados'}
             </button>
           </div>
         </div>
-      </section>
-
-      <section className="filter-panel">
         <div className="chip-row">
           {categorySummary.map((entry) => (
             <button
@@ -1299,8 +1298,15 @@ function AdminPage({
   if (!isSupabaseConfigured) {
     return (
       <section className="admin-shell narrow-shell">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">Acceso</span>
+            <h2>El panel necesita Supabase para iniciar sesión</h2>
+          </div>
+          <p>Por seguridad no existe acceso local sin autenticación real.</p>
+        </div>
         <div className="notice notice-warning">
-          El acceso administrativo no está disponible en este entorno.
+          Configura VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY, luego reinicia npm run dev o vuelve a compilar el proyecto.
         </div>
       </section>
     );
@@ -1400,8 +1406,8 @@ export default function App() {
         <div className="brand-lockup">
           <img alt="DILE logo" src="/logos/dile logo cow.jpg" />
           <div>
-            <span className="eyebrow">Distribuidora Leon</span>
-            <strong>DILE Distributors</strong>
+            <span className="eyebrow">Distribuidora León</span>
+            <strong>DILE Distribuidora León</strong>
           </div>
         </div>
         <nav className="main-nav">
@@ -1409,7 +1415,7 @@ export default function App() {
             Catálogo
           </NavLink>
           <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/admin">
-            Admin
+            Acceso
           </NavLink>
         </nav>
       </header>
@@ -1443,7 +1449,7 @@ export default function App() {
       )}
 
       <footer className="site-footer">
-        <p>DILE Distributors</p>
+        <p>DILE Distribuidora León</p>
       </footer>
     </div>
   );
