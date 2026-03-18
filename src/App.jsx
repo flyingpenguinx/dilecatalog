@@ -32,6 +32,14 @@ function classNames(...values) {
   return values.filter(Boolean).join(' ');
 }
 
+function NoTranslate({ as: Component = 'span', children, className }) {
+  return (
+    <Component className={className} translate="no">
+      {children}
+    </Component>
+  );
+}
+
 function formatCategory(categoryId) {
   return CATEGORY_LABELS[categoryId] ?? categoryId;
 }
@@ -208,12 +216,14 @@ function ProductModal({ product, onClose }) {
           </div>
           <div className="modal-copy">
             <span className="eyebrow">{formatCategory(product.category)}</span>
-            <h2>{product.name}</h2>
-            <p className="modal-brand">{product.brand || 'Sin marca'}</p>
+            <NoTranslate as="h2">{product.name}</NoTranslate>
+            <NoTranslate as="p" className="modal-brand">
+              {product.brand || 'Sin marca'}
+            </NoTranslate>
             <div className="detail-grid">
               <div>
                 <span className="detail-label">Subcategoría</span>
-                <strong>{product.subcategory || 'No definida'}</strong>
+                <NoTranslate as="strong">{product.subcategory || 'No definida'}</NoTranslate>
               </div>
               <div>
                 <span className="detail-label">SKU</span>
@@ -369,8 +379,8 @@ function CatalogPage({ products, subcategoryDefinitions }) {
                   </div>
                   <div className="catalog-copy">
                     <span className="catalog-meta">{formatCategory(product.category)}</span>
-                    <h3>{product.name}</h3>
-                    <p>{product.brand || 'Sin marca'}</p>
+                    <NoTranslate as="h3">{product.name}</NoTranslate>
+                    <NoTranslate as="p">{product.brand || 'Sin marca'}</NoTranslate>
                   </div>
                 </button>
               </article>
@@ -449,12 +459,34 @@ function LoginPanel({ onSignedIn }) {
   );
 }
 
-function AccessDenied({ onSignOut }) {
+function AccessDenied({ onSignOut, profile, session }) {
+  const role = profile?.role ?? null;
+  const email = session?.user?.email ?? '';
+  const missingProfile = !profile;
+
   return (
     <section className="admin-shell narrow-shell">
-      <div className="notice notice-error">
-        Tu usuario no tiene permisos para administrar el catálogo.
+      <div className="section-heading">
+        <div>
+          <span className="eyebrow">Acceso</span>
+          <h2>La cuenta inició sesión, pero no puede administrar</h2>
+        </div>
+        <p>El panel solo permite los roles admin o editor.</p>
       </div>
+      <div className="notice notice-error">
+        {missingProfile
+          ? 'Esta cuenta no tiene un perfil en public.profiles.'
+          : `El rol actual de esta cuenta es ${role}.`}
+      </div>
+      {email ? (
+        <div className="notice notice-warning">
+          Usuario actual: {email}
+          <br />
+          {missingProfile
+            ? 'Crea un registro en public.profiles para este usuario y asígnale role = admin.'
+            : 'Actualiza public.profiles y cambia role a admin o editor para este usuario.'}
+        </div>
+      ) : null}
       <button className="ghost-button" onClick={onSignOut} type="button">
         Cerrar sesión
       </button>
@@ -536,8 +568,18 @@ function ProductPicker({ onClose, onSelect, products, query, setQuery, selectedI
               onClick={() => onSelect(product)}
               type="button"
             >
-              <strong>{product.name}</strong>
-              <span>{[product.brand || 'Sin marca', formatCategory(product.category), product.subcategory || null].filter(Boolean).join(' · ')}</span>
+              <NoTranslate as="strong">{product.name}</NoTranslate>
+              <span>
+                <NoTranslate>{product.brand || 'Sin marca'}</NoTranslate>
+                {' · '}
+                {formatCategory(product.category)}
+                {product.subcategory ? (
+                  <>
+                    {' · '}
+                    <NoTranslate>{product.subcategory}</NoTranslate>
+                  </>
+                ) : null}
+              </span>
             </button>
           ))}
           {products.length === 0 ? <p className="taxonomy-empty">No hay productos con esa búsqueda.</p> : null}
@@ -994,8 +1036,12 @@ function AdminDashboard({
                 </label>
                 <button className="admin-list-main" onClick={() => handleSelectProduct(product)} type="button">
                   <div>
-                    <strong>{product.name}</strong>
-                    <span>{[product.brand || 'Sin marca', product.sku || null, product.unit_size || null].filter(Boolean).join(' · ')}</span>
+                    <NoTranslate as="strong">{product.name}</NoTranslate>
+                    <span>
+                      <NoTranslate>{product.brand || 'Sin marca'}</NoTranslate>
+                      {product.sku ? ` · ${product.sku}` : ''}
+                      {product.unit_size ? ` · ${product.unit_size}` : ''}
+                    </span>
                   </div>
                 </button>
                 <div className="status-cluster">
@@ -1305,7 +1351,7 @@ function AdminPage({
   }
 
   if (!canManage) {
-    return <AccessDenied onSignOut={signOut} />;
+    return <AccessDenied onSignOut={signOut} profile={profile} session={session} />;
   }
 
   return (
@@ -1394,8 +1440,8 @@ export default function App() {
         <div className="brand-lockup">
           <img alt="DILE logo" src="/logos/dile logo cow.jpg" />
           <div>
-            <span className="eyebrow">Distribuidora León</span>
-            <strong>DILE Distribuidora León</strong>
+            <NoTranslate as="span" className="eyebrow">Distribuidora León</NoTranslate>
+            <NoTranslate as="strong">DILE Distribuidora León</NoTranslate>
           </div>
         </div>
         <nav className="main-nav">
@@ -1437,7 +1483,7 @@ export default function App() {
       )}
 
       <footer className="site-footer">
-        <p>DILE Distribuidora León</p>
+        <NoTranslate as="p">DILE Distribuidora León</NoTranslate>
       </footer>
     </div>
   );
