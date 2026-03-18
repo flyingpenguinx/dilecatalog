@@ -1,4 +1,5 @@
-import { CATEGORIES, PRODUCTS } from '../../products.js';
+import PRODUCTS from '../data/catalog-seed.json';
+import { CATEGORIES, CATEGORY_PREFIXES } from '../data/catalog-config.js';
 import { isSupabaseConfigured, supabase } from './supabase.js';
 
 const categoryById = new Map(CATEGORIES.map((category) => [category.id, category]));
@@ -12,6 +13,12 @@ const CATEGORY_ALIASES = new Map([
   ['vitaminas', 'vitamins'],
   ['vitamina', 'vitamins'],
 ]);
+
+Object.entries(CATEGORY_PREFIXES).forEach(([categoryId, prefixes]) => {
+  prefixes.forEach((prefix) => {
+    CATEGORY_ALIASES.set(prefix, categoryId);
+  });
+});
 
 export const PRODUCT_IMAGE_BUCKET = 'product-images';
 

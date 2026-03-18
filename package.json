@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "generate:catalog": "node scripts/generate-catalog-seed.mjs",
     "upload:images": "node scripts/upload-images-to-storage.mjs"
   },
   "dependencies": {

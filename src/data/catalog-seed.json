@@ -1,0 +1,6481 @@
+[
+  {
+    "id": 1000,
+    "name": "Atol De Elote",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Atol",
+    "description": "",
+    "image": "images/Frozen-Cuzcatlecos-Atol-Atol de elote.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 0,
+    "metadata": {
+      "source_file": "Frozen-Cuzcatlecos-Atol-Atol de elote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1001,
+    "name": "Tamales Con Jalapenos",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Tamales",
+    "description": "",
+    "image": "images/Frozen-Cuzcatlecos-Tamales-Tamales con Jalapenos.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 1,
+    "metadata": {
+      "source_file": "Frozen-Cuzcatlecos-Tamales-Tamales con Jalapenos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1002,
+    "name": "Hoja De Platano Cortada",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Hoja",
+    "description": "",
+    "image": "images/Frozen-Hoja-Hoja de platano cortada.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 2,
+    "metadata": {
+      "source_file": "Frozen-Hoja-Hoja de platano cortada.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1003,
+    "name": "De Mashan",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Hoja",
+    "description": "",
+    "image": "images/Frozen-La Ricura-Hoja de Mashan.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 3,
+    "metadata": {
+      "source_file": "Frozen-La Ricura-Hoja de Mashan.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1004,
+    "name": "Plantain Slices",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Platano",
+    "description": "",
+    "image": "images/Frozen-La Ricura-Platano-Plantain Slices.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 4,
+    "metadata": {
+      "source_file": "Frozen-La Ricura-Platano-Plantain Slices.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1005,
+    "name": "Platano Maduro Entero Horneado",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Platano",
+    "description": "",
+    "image": "images/Frozen-La Ricura-Platano-Platano Maduro Entero Horneado.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 5,
+    "metadata": {
+      "source_file": "Frozen-La Ricura-Platano-Platano Maduro Entero Horneado.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1006,
+    "name": "Maranon",
+    "brand": "Maya",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Fruit",
+    "description": "",
+    "image": "images/Frozen-Maya-Fruit-Maranon.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 6,
+    "metadata": {
+      "source_file": "Frozen-Maya-Fruit-Maranon.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1007,
+    "name": "Hoja De Platano",
+    "brand": "Maya",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Hoja",
+    "description": "",
+    "image": "images/Frozen-Maya-Hoja-Hoja de Platano.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 7,
+    "metadata": {
+      "source_file": "Frozen-Maya-Hoja-Hoja de Platano.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1008,
+    "name": "Empanada De Frijoles",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Empanada",
+    "description": "",
+    "image": "images/Frozen-Nokal-Empanada-Empanada de frijoles.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 8,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Empanada-Empanada de frijoles.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1009,
+    "name": "Empanada De Leche",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Empanada",
+    "description": "",
+    "image": "images/Frozen-Nokal-Empanada-Empanada de Leche.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 9,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Empanada-Empanada de Leche.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1010,
+    "name": "Arroz Frijol Con Queso",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Pupusa",
+    "description": "",
+    "image": "images/Frozen-Nokal-Pupusa-Arroz Frijol con Queso.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 10,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Pupusa-Arroz Frijol con Queso.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1011,
+    "name": "Arroz Pupusa De Frijol Con Queso",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Pupusa",
+    "description": "",
+    "image": "images/Frozen-Nokal-Pupusa-Arroz Pupusa de Frijol con Queso.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 11,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Pupusa-Arroz Pupusa de Frijol con Queso.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1012,
+    "name": "Arroz Queso Con Loroco",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Pupusa",
+    "description": "",
+    "image": "images/Frozen-Nokal-Pupusa-Arroz Queso con Loroco.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 12,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Pupusa-Arroz Queso con Loroco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1013,
+    "name": "Arroz Revuelta",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Pupusa",
+    "description": "",
+    "image": "images/Frozen-Nokal-Pupusa-Arroz Revuelta.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 13,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Pupusa-Arroz Revuelta.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1014,
+    "name": "Maiz Frijol Con Queso",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Pupusa",
+    "description": "",
+    "image": "images/Frozen-Nokal-Pupusa-Maiz Frijol con Queso.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 14,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Pupusa-Maiz Frijol con Queso.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1015,
+    "name": "Maiz Queso Loroco",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Pupusa",
+    "description": "",
+    "image": "images/Frozen-Nokal-Pupusa-Maiz Queso Loroco.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 15,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Pupusa-Maiz Queso Loroco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1016,
+    "name": "Maiz Queso",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Pupusa",
+    "description": "",
+    "image": "images/Frozen-Nokal-pupusa-Maiz Queso.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 16,
+    "metadata": {
+      "source_file": "Frozen-Nokal-pupusa-Maiz Queso.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1017,
+    "name": "Maiz Revuelta",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Pupusa",
+    "description": "",
+    "image": "images/Frozen-Nokal-Pupusa-Maiz Revuelta.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 17,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Pupusa-Maiz Revuelta.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1018,
+    "name": "Tamale Elote Centroamericano",
+    "brand": "Nokal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Tamal",
+    "description": "",
+    "image": "images/Frozen-Nokal-Tamal-Tamale Elote Centroamericano.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 18,
+    "metadata": {
+      "source_file": "Frozen-Nokal-Tamal-Tamale Elote Centroamericano.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1019,
+    "name": "Pupusa De Maiz Con Queso",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Pupusa",
+    "description": "",
+    "image": "images/Frozen-pupusa-pupusa de maiz con Queso.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 19,
+    "metadata": {
+      "source_file": "Frozen-pupusa-pupusa de maiz con Queso.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1020,
+    "name": "Arrayan",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Fruit",
+    "description": "",
+    "image": "images/Frozen-Racor-Fruit-Arrayan.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 20,
+    "metadata": {
+      "source_file": "Frozen-Racor-Fruit-Arrayan.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1021,
+    "name": "Jocote Corona",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Fruit",
+    "description": "",
+    "image": "images/Frozen-Racor-Fruit-Jocote Corona.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 21,
+    "metadata": {
+      "source_file": "Frozen-Racor-Fruit-Jocote Corona.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1022,
+    "name": "Jocote Rojo",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Fruit",
+    "description": "",
+    "image": "images/Frozen-Racor-Fruit-Jocote Rojo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 22,
+    "metadata": {
+      "source_file": "Frozen-Racor-Fruit-Jocote Rojo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1023,
+    "name": "Mango Maduro",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Fruit",
+    "description": "",
+    "image": "images/Frozen-Racor-Fruit-Mango Maduro.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 23,
+    "metadata": {
+      "source_file": "Frozen-Racor-Fruit-Mango Maduro.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1024,
+    "name": "Nance",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Fruit",
+    "description": "",
+    "image": "images/Frozen-Racor-Fruit-Nance.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 24,
+    "metadata": {
+      "source_file": "Frozen-Racor-Fruit-Nance.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1025,
+    "name": "Platano En Tajadas",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Platanos",
+    "description": "",
+    "image": "images/Frozen-Racor-Platanos-Platano en Tajadas.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 25,
+    "metadata": {
+      "source_file": "Frozen-Racor-Platanos-Platano en Tajadas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1026,
+    "name": "Hoja De Mashan",
+    "brand": "Tikal",
+    "sku": "",
+    "unit_size": "",
+    "category": "frozen",
+    "subcategory": "Hoja",
+    "description": "",
+    "image": "images/Frozen-Tikal-Hoja-Hoja de Mashan.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 26,
+    "metadata": {
+      "source_file": "Frozen-Tikal-Hoja-Hoja de Mashan.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1027,
+    "name": "Frijol Rojo 32oz",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocer-Racor-Granos-Frijol Rojo 32oz.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 27,
+    "metadata": {
+      "source_file": "Grocer-Racor-Granos-Frijol Rojo 32oz.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1028,
+    "name": "Quesadilla",
+    "brand": "Sinai",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery Sinai pan galleta Quesadilla.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 28,
+    "metadata": {
+      "source_file": "Grocery Sinai pan galleta Quesadilla.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1029,
+    "name": "Aloe Vera",
+    "brand": "Alo",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Alo-Misc-Aloe Vera.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 29,
+    "metadata": {
+      "source_file": "Grocery-Alo-Misc-Aloe Vera.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1030,
+    "name": "Arroz",
+    "brand": "Dona Lisa",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/Grocery-Arroz Dona Lisa.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 30,
+    "metadata": {
+      "source_file": "Grocery-Arroz Dona Lisa.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1031,
+    "name": "Arroz 4lb",
+    "brand": "Arroz San Francisco",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Arroz San Francisco-Granos-Arroz 4lb.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 31,
+    "metadata": {
+      "source_file": "Grocery-Arroz San Francisco-Granos-Arroz 4lb.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1032,
+    "name": "Frijoli Con Chile",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Frijoli con Chile.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 32,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Frijoli con Chile.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1033,
+    "name": "Frijoli",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Frijoli.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 33,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Frijoli.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1034,
+    "name": "Gustitos Salsa Y Queso",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Gustitos Salsa y Queso.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 34,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Gustitos Salsa y Queso.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1035,
+    "name": "Gustitos",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Gustitos.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 35,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Gustitos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1036,
+    "name": "Nachos Chile Y Limon Xtremo",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Nachos Chile y Limon Xtremo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 36,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Nachos Chile y Limon Xtremo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1037,
+    "name": "Papa Sitas",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Papa Sitas.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 37,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Papa Sitas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1038,
+    "name": "Piguis",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Piguis.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 38,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Piguis.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1039,
+    "name": "Quesi Trix Horneado",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Quesi Trix Horneado.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 39,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Quesi Trix Horneado.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1040,
+    "name": "Quesi Trix",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Quesi Trix.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 40,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Quesi Trix.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1041,
+    "name": "Trompetas Pizza",
+    "brand": "Bocadeli",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Bocadeli-Chips-Trompetas Pizza.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 41,
+    "metadata": {
+      "source_file": "Grocery-Bocadeli-Chips-Trompetas Pizza.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1042,
+    "name": "Cafe Quetzal Instantaneo",
+    "brand": "Cafe Quetzal",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Cafe",
+    "description": "",
+    "image": "images/Grocery-Cafe Quetzal-Cafe-Cafe Quetzal Instantaneo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 42,
+    "metadata": {
+      "source_file": "Grocery-Cafe Quetzal-Cafe-Cafe Quetzal Instantaneo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1043,
+    "name": "Ketchup Campero",
+    "brand": "Campero",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Campero-Salsa-Ketchup Campero.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 43,
+    "metadata": {
+      "source_file": "Grocery-Campero-Salsa-Ketchup Campero.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1044,
+    "name": "Chao Mein Cantonesa",
+    "brand": "Cantonesa",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Cantonesa-misc-Chao Mein cantonesa.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 44,
+    "metadata": {
+      "source_file": "Grocery-Cantonesa-misc-Chao Mein cantonesa.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1045,
+    "name": "Frijol Negro",
+    "brand": "Centroamericano",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Centroamericano-Granos-Frijol Negro.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 45,
+    "metadata": {
+      "source_file": "Grocery-Centroamericano-Granos-Frijol Negro.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1046,
+    "name": "Chiky Chocolate",
+    "brand": "Chiky",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Chiky-Pan Galleta-Chiky Chocolate.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 46,
+    "metadata": {
+      "source_file": "Grocery-Chiky-Pan Galleta-Chiky Chocolate.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1047,
+    "name": "Chiky Fresa",
+    "brand": "Chiky",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Chiky-Pan Galleta-Chiky Fresa.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 47,
+    "metadata": {
+      "source_file": "Grocery-Chiky-Pan Galleta-Chiky Fresa.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1048,
+    "name": "Coca Cola Vidro",
+    "brand": "CocaCola",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-CocaCola-bebida-Coca Cola Vidro.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 48,
+    "metadata": {
+      "source_file": "Grocery-CocaCola-bebida-Coca Cola Vidro.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1049,
+    "name": "Frijol Negro",
+    "brand": "Cosecha Nueva",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Cosecha Nueva-Granos-Frijol Negro.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 49,
+    "metadata": {
+      "source_file": "Grocery-Cosecha Nueva-Granos-Frijol Negro.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1050,
+    "name": "Kolashanpan 2lt",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Cuzcatlecos-bebida-Kolashanpan 2LT.PNG",
+    "visible": true,
+    "featured": false,
+    "sort_order": 50,
+    "metadata": {
+      "source_file": "Grocery-Cuzcatlecos-bebida-Kolashanpan 2LT.PNG",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1051,
+    "name": "Frijol Rojo 32oz",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Cuzcatlecos-Granos-Frijol Rojo 32oz.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 51,
+    "metadata": {
+      "source_file": "Grocery-Cuzcatlecos-Granos-Frijol Rojo 32oz.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1052,
+    "name": "Frijol Rojo 64oz",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Cuzcatlecos-Granos-Frijol Rojo 64oz.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 52,
+    "metadata": {
+      "source_file": "Grocery-Cuzcatlecos-Granos-Frijol Rojo 64oz.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1053,
+    "name": "Naranja Chiquita",
+    "brand": "De la Granja",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-De la Granja-Bebida-Naranja Chiquita.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 53,
+    "metadata": {
+      "source_file": "Grocery-De la Granja-Bebida-Naranja Chiquita.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1054,
+    "name": "Naranja",
+    "brand": "De la Granja",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-De la Granja-Bebida-Naranja.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 54,
+    "metadata": {
+      "source_file": "Grocery-De la Granja-Bebida-Naranja.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1055,
+    "name": "Maracuya",
+    "brand": "Del Fruto",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Del Fruto-Bebida-Maracuya.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 55,
+    "metadata": {
+      "source_file": "Grocery-Del Fruto-Bebida-Maracuya.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1056,
+    "name": "Soursop",
+    "brand": "Del Fruto",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Del Fruto-Bebida-Soursop.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 56,
+    "metadata": {
+      "source_file": "Grocery-Del Fruto-Bebida-Soursop.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1057,
+    "name": "Bacorns",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-Chips-Bacorns.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 57,
+    "metadata": {
+      "source_file": "Grocery-Diana-Chips-Bacorns.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1058,
+    "name": "Corn Brights",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-chips-corn brights.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 58,
+    "metadata": {
+      "source_file": "Grocery-Diana-chips-corn brights.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1059,
+    "name": "Corn Chips Hot",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-Chips-Corn Chips Hot.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 59,
+    "metadata": {
+      "source_file": "Grocery-Diana-Chips-Corn Chips Hot.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1060,
+    "name": "Corn Curls",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-Chips-Corn Curls.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 60,
+    "metadata": {
+      "source_file": "Grocery-Diana-Chips-Corn Curls.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1061,
+    "name": "Cornbits",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-Chips-Cornbits.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 61,
+    "metadata": {
+      "source_file": "Grocery-Diana-Chips-Cornbits.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1062,
+    "name": "Jalapenos",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-Chips-Jalapenos.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 62,
+    "metadata": {
+      "source_file": "Grocery-Diana-Chips-Jalapenos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1063,
+    "name": "Maiz Chino Picante",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-Chips-Maiz Chino Picante.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 63,
+    "metadata": {
+      "source_file": "Grocery-Diana-Chips-Maiz Chino Picante.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1064,
+    "name": "Mani Japones",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-chips-Mani Japones.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 64,
+    "metadata": {
+      "source_file": "Grocery-Diana-chips-Mani Japones.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1065,
+    "name": "Palitos",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-Chips-Palitos.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 65,
+    "metadata": {
+      "source_file": "Grocery-Diana-Chips-Palitos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1066,
+    "name": "Quesitos Cheesteens",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Diana-Chips-Quesitos Cheesteens.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 66,
+    "metadata": {
+      "source_file": "Grocery-Diana-Chips-Quesitos Cheesteens.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1067,
+    "name": "Picnic Fresa",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Diana-Pan Galleta-Picnic Fresa.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 67,
+    "metadata": {
+      "source_file": "Grocery-Diana-Pan Galleta-Picnic Fresa.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1068,
+    "name": "Picnic Vanilla",
+    "brand": "Diana",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Diana-Pan Galleta-Picnic Vanilla.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 68,
+    "metadata": {
+      "source_file": "Grocery-Diana-Pan Galleta-Picnic Vanilla.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1069,
+    "name": "Harnia De Arroz",
+    "brand": "Dona Blanca",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Harina",
+    "description": "",
+    "image": "images/Grocery-Dona Blanca-Harina-Harnia de Arroz.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 69,
+    "metadata": {
+      "source_file": "Grocery-Dona Blanca-Harina-Harnia de Arroz.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1070,
+    "name": "Horchata Con Leche",
+    "brand": "Dona Lisa",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Dona Lisa-Bebida-Horchata con Leche.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 70,
+    "metadata": {
+      "source_file": "Grocery-Dona Lisa-Bebida-Horchata con Leche.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1071,
+    "name": "Horchata Morro",
+    "brand": "Dona Lisa",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Dona Lisa-Bebida-Horchata Morro.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 71,
+    "metadata": {
+      "source_file": "Grocery-Dona Lisa-Bebida-Horchata Morro.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1072,
+    "name": "Arroz Jasmin",
+    "brand": "Dona Lisa",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Dona Lisa-Granos-Arroz Jasmin.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 72,
+    "metadata": {
+      "source_file": "Grocery-Dona Lisa-Granos-Arroz Jasmin.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1073,
+    "name": "Frijol Rojo Dl",
+    "brand": "Dona Lisa",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Dona Lisa-Granos-Frijol Rojo DL.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 73,
+    "metadata": {
+      "source_file": "Grocery-Dona Lisa-Granos-Frijol Rojo DL.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1074,
+    "name": "Achiote Molido",
+    "brand": "Dona Lisa",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Dona Lisa-misc-Achiote Molido.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 74,
+    "metadata": {
+      "source_file": "Grocery-Dona Lisa-misc-Achiote Molido.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1075,
+    "name": "Mango En Salmuera",
+    "brand": "Dona Lisa",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Vidro",
+    "description": "",
+    "image": "images/Grocery-Dona Lisa-Vidro-Mango en Salmuera.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 75,
+    "metadata": {
+      "source_file": "Grocery-Dona Lisa-Vidro-Mango en Salmuera.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1076,
+    "name": "Vegetales",
+    "brand": "Dona Lisa",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Vidro",
+    "description": "",
+    "image": "images/Grocery-Dona Lisa-Vidro-Vegetales.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 76,
+    "metadata": {
+      "source_file": "Grocery-Dona Lisa-Vidro-Vegetales.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1077,
+    "name": "Frijol Refrito",
+    "brand": "Ducal",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Ducal-Granos-Frijol Refrito.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 77,
+    "metadata": {
+      "source_file": "Grocery-Ducal-Granos-Frijol Refrito.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1078,
+    "name": "Frijol Blanco",
+    "brand": "El Migueleno",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-El Migueleno-Granos-Frijol Blanco.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 78,
+    "metadata": {
+      "source_file": "Grocery-El Migueleno-Granos-Frijol Blanco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1079,
+    "name": "Rica Fresa 2lt",
+    "brand": "El Salvadoreno",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-El Salvadoreno-bebida-Rica Fresa 2LT.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 79,
+    "metadata": {
+      "source_file": "Grocery-El Salvadoreno-bebida-Rica Fresa 2LT.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1080,
+    "name": "Rica Pina",
+    "brand": "El Salvadoreno",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-El Salvadoreno-bebida-Rica Pina.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 80,
+    "metadata": {
+      "source_file": "Grocery-El Salvadoreno-bebida-Rica Pina.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1081,
+    "name": "Chocolate En Tablas",
+    "brand": "El Salvadoreno",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chocolate",
+    "description": "",
+    "image": "images/Grocery-El Salvadoreno-Chocolate-Chocolate en tablas.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 81,
+    "metadata": {
+      "source_file": "Grocery-El Salvadoreno-Chocolate-Chocolate en tablas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1082,
+    "name": "Adrenaline",
+    "brand": "Energy",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Energy-Bebida-Adrenaline.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 82,
+    "metadata": {
+      "source_file": "Grocery-Energy-Bebida-Adrenaline.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1083,
+    "name": "Rapotor Botella",
+    "brand": "Energy",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Energy-Bebida-Rapotor Botella.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 83,
+    "metadata": {
+      "source_file": "Grocery-Energy-Bebida-Rapotor Botella.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1084,
+    "name": "Rapotor Lata",
+    "brand": "Energy",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Energy-Bebida-Rapotor Lata.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 84,
+    "metadata": {
+      "source_file": "Grocery-Energy-Bebida-Rapotor Lata.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1085,
+    "name": "Fanta Orange Vidro",
+    "brand": "Fanta",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Fanta-bebida-Fanta Orange Vidro.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 85,
+    "metadata": {
+      "source_file": "Grocery-Fanta-bebida-Fanta Orange Vidro.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1086,
+    "name": "Pina",
+    "brand": "Fanta",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Fanta-bebida-pina.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 86,
+    "metadata": {
+      "source_file": "Grocery-Fanta-bebida-pina.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1087,
+    "name": "Grujitos Queso Y Chile",
+    "brand": "Frito Lays",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Frito Lays-Chips-Grujitos Queso y Chile.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 87,
+    "metadata": {
+      "source_file": "Grocery-Frito Lays-Chips-Grujitos Queso y Chile.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1088,
+    "name": "Maranon",
+    "brand": "Frusecha",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Frusecha-Bebida-Maranon.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 88,
+    "metadata": {
+      "source_file": "Grocery-Frusecha-Bebida-Maranon.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1089,
+    "name": "Jugo De Limon",
+    "brand": "Goya",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Goya-Bebida-Jugo de Limon.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 89,
+    "metadata": {
+      "source_file": "Grocery-Goya-Bebida-Jugo de Limon.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1090,
+    "name": "Naranja Agria",
+    "brand": "Goya",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Goya-Bebida-Naranja Agria.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 90,
+    "metadata": {
+      "source_file": "Grocery-Goya-Bebida-Naranja Agria.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1091,
+    "name": "Incaparina",
+    "brand": "Incaparina",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Incaparina-misc-incaparina.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 91,
+    "metadata": {
+      "source_file": "Grocery-Incaparina-misc-incaparina.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1092,
+    "name": "Guanabana",
+    "brand": "Judith",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Judith-Bebida-Guanabana.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 92,
+    "metadata": {
+      "source_file": "Grocery-Judith-Bebida-Guanabana.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1093,
+    "name": "Guayaba",
+    "brand": "Judith",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Judith-Bebida-Guayaba.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 93,
+    "metadata": {
+      "source_file": "Grocery-Judith-Bebida-Guayaba.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1094,
+    "name": "Mango",
+    "brand": "Judith",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Judith-Bebida-Mango.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 94,
+    "metadata": {
+      "source_file": "Grocery-Judith-Bebida-Mango.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1095,
+    "name": "Papaya",
+    "brand": "Judith",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Judith-Bebida-Papaya.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 95,
+    "metadata": {
+      "source_file": "Grocery-Judith-Bebida-Papaya.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1096,
+    "name": "Passion Fruit",
+    "brand": "Judith",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Judith-Bebida-Passion Fruit.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 96,
+    "metadata": {
+      "source_file": "Grocery-Judith-Bebida-Passion Fruit.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1097,
+    "name": "Watermelon",
+    "brand": "Judith",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Judith-Bebida-Watermelon.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 97,
+    "metadata": {
+      "source_file": "Grocery-Judith-Bebida-Watermelon.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1098,
+    "name": "Instantaneo",
+    "brand": "La Jarrillita",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Cafe",
+    "description": "",
+    "image": "images/Grocery-La Jarrillita-cafe-instantaneo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 98,
+    "metadata": {
+      "source_file": "Grocery-La Jarrillita-cafe-instantaneo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1099,
+    "name": "Nectar Guanabana",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-La Ricura-Bebida-Nectar Guanabana.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 99,
+    "metadata": {
+      "source_file": "Grocery-La Ricura-Bebida-Nectar Guanabana.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1100,
+    "name": "Nectar Maracuya",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-La Ricura-Bebida-Nectar Maracuya.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 100,
+    "metadata": {
+      "source_file": "Grocery-La Ricura-Bebida-Nectar Maracuya.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1101,
+    "name": "Pulpa De Guanabana",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-La Ricura-Bebida-Pulpa de Guanabana.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 101,
+    "metadata": {
+      "source_file": "Grocery-La Ricura-Bebida-Pulpa de Guanabana.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1102,
+    "name": "Pulpa De Guanabana 1",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-La Ricura-Bebida-Pulpa de Guanabana(1).jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 102,
+    "metadata": {
+      "source_file": "Grocery-La Ricura-Bebida-Pulpa de Guanabana(1).jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1103,
+    "name": "Pulpa De Guayaba",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-La Ricura-Bebida-Pulpa de Guayaba.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 103,
+    "metadata": {
+      "source_file": "Grocery-La Ricura-Bebida-Pulpa de Guayaba.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1104,
+    "name": "Pulpa De Mora",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-La Ricura-Bebida-Pulpa de Mora.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 104,
+    "metadata": {
+      "source_file": "Grocery-La Ricura-Bebida-Pulpa de Mora.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1105,
+    "name": "Pulpa Maracuya Frozen",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-La Ricura-Bebida-Pulpa Maracuya frozen.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 105,
+    "metadata": {
+      "source_file": "Grocery-La Ricura-Bebida-Pulpa Maracuya frozen.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1106,
+    "name": "Tropical Banana Vidro",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-La Ricura-bebida-Tropical Banana Vidro.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 106,
+    "metadata": {
+      "source_file": "Grocery-La Ricura-bebida-Tropical Banana Vidro.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1107,
+    "name": "Nata De Coco",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-La Ricura-misc-Nata de Coco.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 107,
+    "metadata": {
+      "source_file": "Grocery-La Ricura-misc-Nata de Coco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1108,
+    "name": "Cafe Listo 3 5oz",
+    "brand": "La Salvadorena",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Cafe",
+    "description": "",
+    "image": "images/Grocery-La Salvadorena-Cafe-Cafe Listo 3.5oz.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 108,
+    "metadata": {
+      "source_file": "Grocery-La Salvadorena-Cafe-Cafe Listo 3.5oz.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1109,
+    "name": "Cafe Listo 7oz",
+    "brand": "La Salvadorena",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Cafe",
+    "description": "",
+    "image": "images/Grocery-La Salvadorena-Cafe-Cafe Listo 7oz.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 109,
+    "metadata": {
+      "source_file": "Grocery-La Salvadorena-Cafe-Cafe Listo 7oz.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1110,
+    "name": "Cafe Listo Rojo",
+    "brand": "La Salvadoreno",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Cafe",
+    "description": "",
+    "image": "images/Grocery-La Salvadoreno-Cafe-Cafe Listo rojo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 110,
+    "metadata": {
+      "source_file": "Grocery-La Salvadoreno-Cafe-Cafe Listo rojo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1111,
+    "name": "Pinol Maiz",
+    "brand": "Lempira",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Harina",
+    "description": "",
+    "image": "images/Grocery-Lempira-Harina-Pinol Maiz.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 111,
+    "metadata": {
+      "source_file": "Grocery-Lempira-Harina-Pinol Maiz.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1112,
+    "name": "Alemana",
+    "brand": "Lido",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Lido-Pan Galleta-Alemana.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 112,
+    "metadata": {
+      "source_file": "Grocery-Lido-Pan Galleta-Alemana.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1113,
+    "name": "Casino",
+    "brand": "Lido",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Lido-Pan Galleta-Casino.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 113,
+    "metadata": {
+      "source_file": "Grocery-Lido-Pan Galleta-Casino.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1114,
+    "name": "Coco Margarita",
+    "brand": "Lido",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Lido-Pan Galleta-Coco Margarita.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 114,
+    "metadata": {
+      "source_file": "Grocery-Lido-Pan Galleta-Coco Margarita.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1115,
+    "name": "Cremosa",
+    "brand": "Lido",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Lido-Pan Galleta-Cremosa.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 115,
+    "metadata": {
+      "source_file": "Grocery-Lido-Pan Galleta-Cremosa.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1116,
+    "name": "Margarita",
+    "brand": "Lido",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Lido-Pan Galleta-Margarita.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 116,
+    "metadata": {
+      "source_file": "Grocery-Lido-Pan Galleta-Margarita.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1117,
+    "name": "Salparina",
+    "brand": "Lido",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Lido-Pan Galleta-Salparina.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 117,
+    "metadata": {
+      "source_file": "Grocery-Lido-Pan Galleta-Salparina.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1118,
+    "name": "Suspiros",
+    "brand": "Lido",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Lido-Pan Galleta-Suspiros.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 118,
+    "metadata": {
+      "source_file": "Grocery-Lido-Pan Galleta-Suspiros.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1119,
+    "name": "Zemita",
+    "brand": "Lido",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Lido-Pan galleta-Zemita.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 119,
+    "metadata": {
+      "source_file": "Grocery-Lido-Pan galleta-Zemita.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1120,
+    "name": "Jalea",
+    "brand": "Lido",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galletas",
+    "description": "",
+    "image": "images/Grocery-Lido-Pan Galletas-Jalea.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 120,
+    "metadata": {
+      "source_file": "Grocery-Lido-Pan Galletas-Jalea.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1121,
+    "name": "Rostizador",
+    "brand": "Listto",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Empanizador",
+    "description": "",
+    "image": "images/Grocery-Listto-Empanizador-Rostizador.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 121,
+    "metadata": {
+      "source_file": "Grocery-Listto-Empanizador-Rostizador.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1122,
+    "name": "Curtido",
+    "brand": "Listto",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Vidro",
+    "description": "",
+    "image": "images/Grocery-Listto-Vidro-Curtido.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 122,
+    "metadata": {
+      "source_file": "Grocery-Listto-Vidro-Curtido.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1123,
+    "name": "Ensalada Bote",
+    "brand": "Listto",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Vidro",
+    "description": "",
+    "image": "images/Grocery-Listto-vidro-Ensalada bote.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 123,
+    "metadata": {
+      "source_file": "Grocery-Listto-vidro-Ensalada bote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1124,
+    "name": "Guayabas",
+    "brand": "Listto",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Vidro",
+    "description": "",
+    "image": "images/Grocery-Listto-Vidro-Guayabas.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 124,
+    "metadata": {
+      "source_file": "Grocery-Listto-Vidro-Guayabas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1125,
+    "name": "Nance",
+    "brand": "Listto",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Vidro",
+    "description": "",
+    "image": "images/Grocery-Listto-Vidro-Nance.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 125,
+    "metadata": {
+      "source_file": "Grocery-Listto-Vidro-Nance.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1126,
+    "name": "Salsa Lizano",
+    "brand": "Lizano",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Lizano-Salsa-Salsa Lizano.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 126,
+    "metadata": {
+      "source_file": "Grocery-Lizano-Salsa-Salsa Lizano.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1127,
+    "name": "Costilla",
+    "brand": "Maggi",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Maggi-misc-Costilla.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 127,
+    "metadata": {
+      "source_file": "Grocery-Maggi-misc-Costilla.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1128,
+    "name": "Cremas",
+    "brand": "Maggi",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Maggi-misc-Cremas.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 128,
+    "metadata": {
+      "source_file": "Grocery-Maggi-misc-Cremas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1129,
+    "name": "Pollo Con Fidellos",
+    "brand": "Maggi",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Sopa",
+    "description": "",
+    "image": "images/Grocery-Maggi-Sopa-Pollo con Fidellos.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 129,
+    "metadata": {
+      "source_file": "Grocery-Maggi-Sopa-Pollo con Fidellos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1130,
+    "name": "Consome De Pollo",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Consome",
+    "description": "",
+    "image": "images/Grocery-Malher-consome-Consome de Pollo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 130,
+    "metadata": {
+      "source_file": "Grocery-Malher-consome-Consome de Pollo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1131,
+    "name": "Sazonador",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Consome",
+    "description": "",
+    "image": "images/Grocery-Malher-Consome-Sazonador.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 131,
+    "metadata": {
+      "source_file": "Grocery-Malher-Consome-Sazonador.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1132,
+    "name": "Bote Pequeno Pollo",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Consume",
+    "description": "",
+    "image": "images/Grocery-Malher-Consume-Bote Pequeno Pollo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 132,
+    "metadata": {
+      "source_file": "Grocery-Malher-Consume-Bote Pequeno Pollo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1133,
+    "name": "Bote Res",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Consume",
+    "description": "",
+    "image": "images/Grocery-Malher-Consume-Bote Res.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 133,
+    "metadata": {
+      "source_file": "Grocery-Malher-Consume-Bote Res.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1134,
+    "name": "Camaron",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Consume",
+    "description": "",
+    "image": "images/Grocery-Malher-Consume-Camaron.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 134,
+    "metadata": {
+      "source_file": "Grocery-Malher-Consume-Camaron.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1135,
+    "name": "Grande De Pollo",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Consume",
+    "description": "",
+    "image": "images/Grocery-Malher-Consume-Grande de Pollo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 135,
+    "metadata": {
+      "source_file": "Grocery-Malher-Consume-Grande de Pollo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1136,
+    "name": "Res En Tiras",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Consume",
+    "description": "",
+    "image": "images/Grocery-Malher-Consume-Res en tiras.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 136,
+    "metadata": {
+      "source_file": "Grocery-Malher-Consume-Res en tiras.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1137,
+    "name": "Tiras Ablandador Y Sazonador",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Tiras",
+    "description": "",
+    "image": "images/Grocery-Malher-Tiras-Tiras Ablandador y Sazonador.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 137,
+    "metadata": {
+      "source_file": "Grocery-Malher-Tiras-Tiras Ablandador y Sazonador.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1138,
+    "name": "Tiras De Camaron",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Tiras",
+    "description": "",
+    "image": "images/Grocery-Malher-Tiras-Tiras de Camaron.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 138,
+    "metadata": {
+      "source_file": "Grocery-Malher-Tiras-Tiras de Camaron.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1139,
+    "name": "Tiras De Pollo",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Tiras",
+    "description": "",
+    "image": "images/Grocery-Malher-Tiras-Tiras de Pollo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 139,
+    "metadata": {
+      "source_file": "Grocery-Malher-Tiras-Tiras de Pollo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1140,
+    "name": "Tiras De Sal De Cebolla",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Tiras",
+    "description": "",
+    "image": "images/Grocery-Malher-Tiras-Tiras de Sal de Cebolla.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 140,
+    "metadata": {
+      "source_file": "Grocery-Malher-Tiras-Tiras de Sal de Cebolla.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1141,
+    "name": "Tiras De Sazonador",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Tiras",
+    "description": "",
+    "image": "images/Grocery-Malher-Tiras-Tiras de Sazonador.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 141,
+    "metadata": {
+      "source_file": "Grocery-Malher-Tiras-Tiras de Sazonador.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1142,
+    "name": "Inglesa Maya",
+    "brand": "Maya",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Maya-Salsa-Inglesa Maya.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 142,
+    "metadata": {
+      "source_file": "Grocery-Maya-Salsa-Inglesa Maya.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1143,
+    "name": "Salsa Soya",
+    "brand": "Maya",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Maya-Salsa-Salsa Soya.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 143,
+    "metadata": {
+      "source_file": "Grocery-Maya-Salsa-Salsa Soya.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1144,
+    "name": "Salsa Inglesa",
+    "brand": "MC",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-MC-Salsa-Salsa Inglesa.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 144,
+    "metadata": {
+      "source_file": "Grocery-MC-Salsa-Salsa Inglesa.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1145,
+    "name": "Jalisco",
+    "brand": "Mccormick",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Mccormick-Salsa-Jalisco.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 145,
+    "metadata": {
+      "source_file": "Grocery-Mccormick-Salsa-Jalisco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1146,
+    "name": "Classico",
+    "brand": "Melher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chocolate",
+    "description": "",
+    "image": "images/Grocery-melher-Chocolate classico.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 146,
+    "metadata": {
+      "source_file": "Grocery-melher-Chocolate classico.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1147,
+    "name": "Palillo Para Chocobanana",
+    "brand": "Melher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Melher-Misc-Palillo para Chocobanana.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 147,
+    "metadata": {
+      "source_file": "Grocery-Melher-Misc-Palillo para Chocobanana.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1148,
+    "name": "Salsa Natura Tomate",
+    "brand": "Natura",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Natura-salsa-Salsa Natura Tomate.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 148,
+    "metadata": {
+      "source_file": "Grocery-Natura-salsa-Salsa Natura Tomate.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1149,
+    "name": "Frijol Rojo Refrito",
+    "brand": "Naturas",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/Grocery-Naturas-Frijol Rojo-Refrito.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 149,
+    "metadata": {
+      "source_file": "Grocery-Naturas-Frijol Rojo-Refrito.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1150,
+    "name": "Frijol Rojo Naturas",
+    "brand": "Naturas",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Naturas-Granos-Frijol Rojo Naturas.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 150,
+    "metadata": {
+      "source_file": "Grocery-Naturas-Granos-Frijol Rojo Naturas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1151,
+    "name": "Frijoles",
+    "brand": "Naturas",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Naturas-Granos-Frijoles.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 151,
+    "metadata": {
+      "source_file": "Grocery-Naturas-Granos-Frijoles.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1152,
+    "name": "Criollo",
+    "brand": "Naturas",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Naturas-Salsa-Criollo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 152,
+    "metadata": {
+      "source_file": "Grocery-Naturas-Salsa-Criollo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1153,
+    "name": "Ranchera",
+    "brand": "Naturas",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Naturas-Salsa-Ranchera.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 153,
+    "metadata": {
+      "source_file": "Grocery-Naturas-Salsa-Ranchera.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1154,
+    "name": "Salsa Natura Con Queso",
+    "brand": "Naturas",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Naturas-Salsa-Salsa natura Con Queso.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 154,
+    "metadata": {
+      "source_file": "Grocery-Naturas-Salsa-Salsa natura Con Queso.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1155,
+    "name": "Harina",
+    "brand": "Nueva Cosecha",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Harina",
+    "description": "",
+    "image": "images/Grocery-Nueva Cosecha-Harina-Harina.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 155,
+    "metadata": {
+      "source_file": "Grocery-Nueva Cosecha-Harina-Harina.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1156,
+    "name": "Pan Galleta",
+    "brand": "Pan Genesis",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Pan Genesis-Pan Galleta-.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 156,
+    "metadata": {
+      "source_file": "Grocery-Pan Genesis-Pan Galleta-.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1157,
+    "name": "Hoja Picsy",
+    "brand": "Pan Genesis",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Pan Genesis-Pan Galleta-Hoja Picsy.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 157,
+    "metadata": {
+      "source_file": "Grocery-Pan Genesis-Pan Galleta-Hoja Picsy.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1158,
+    "name": "Margarita Jalea",
+    "brand": "Pan Genesis",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Pan Genesis-Pan Galleta-Margarita Jalea.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 158,
+    "metadata": {
+      "source_file": "Grocery-Pan Genesis-Pan Galleta-Margarita Jalea.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1159,
+    "name": "Salpor Almidon",
+    "brand": "Pan Genesis",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Pan Genesis-Pan Galleta-Salpor Almidon.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 159,
+    "metadata": {
+      "source_file": "Grocery-Pan Genesis-Pan Galleta-Salpor Almidon.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1160,
+    "name": "1",
+    "brand": "Pan Genisis",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Pan Genisis-Pan galleta-1.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 160,
+    "metadata": {
+      "source_file": "Grocery-Pan Genisis-Pan galleta-1.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1161,
+    "name": "Almendrada",
+    "brand": "Pan Genisis",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Pan Genisis-Pan Galleta-Almendrada.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 161,
+    "metadata": {
+      "source_file": "Grocery-Pan Genisis-Pan Galleta-Almendrada.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1162,
+    "name": "Carita",
+    "brand": "Pan Genisis",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Pan Genisis-Pan Galleta-Carita.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 162,
+    "metadata": {
+      "source_file": "Grocery-Pan Genisis-Pan Galleta-Carita.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1163,
+    "name": "Hojitas Picsy",
+    "brand": "Pan Genisis",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Pan Genisis-Pan Galleta-Hojitas Picsy.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 163,
+    "metadata": {
+      "source_file": "Grocery-Pan Genisis-Pan Galleta-Hojitas Picsy.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1164,
+    "name": "Picamas Rojo",
+    "brand": "Picamas",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Picamas-Salsa-Picamas Rojo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 164,
+    "metadata": {
+      "source_file": "Grocery-Picamas-Salsa-Picamas Rojo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1165,
+    "name": "Picamas Verde",
+    "brand": "Picamas",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Picamas-Salsa-Picamas Verde.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 165,
+    "metadata": {
+      "source_file": "Grocery-Picamas-Salsa-Picamas Verde.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1166,
+    "name": "Picamas Verde 1",
+    "brand": "Picamas",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-Picamas-Salsa-Picamas Verde(1).jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 166,
+    "metadata": {
+      "source_file": "Grocery-Picamas-Salsa-Picamas Verde(1).jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1167,
+    "name": "Club Extra",
+    "brand": "Pozuelo",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Pozuelo-Pan Galleta-Club Extra.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 167,
+    "metadata": {
+      "source_file": "Grocery-Pozuelo-Pan Galleta-Club Extra.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1168,
+    "name": "Avena Mosh",
+    "brand": "Quaker",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/Grocery-Quaker-Avena Mosh.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 168,
+    "metadata": {
+      "source_file": "Grocery-Quaker-Avena Mosh.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1169,
+    "name": "Avena Molida",
+    "brand": "Quaker",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Quaker-misc-Avena Molida.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 169,
+    "metadata": {
+      "source_file": "Grocery-Quaker-misc-Avena Molida.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1170,
+    "name": "Alguashte Powder",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Racor-Bebida-Alguashte powder.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 170,
+    "metadata": {
+      "source_file": "Grocery-Racor-Bebida-Alguashte powder.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1171,
+    "name": "Atol Shuco",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Racor-Bebida-Atol Shuco.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 171,
+    "metadata": {
+      "source_file": "Grocery-Racor-Bebida-Atol Shuco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1172,
+    "name": "Cebada",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Racor-Bebida-Cebada.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 172,
+    "metadata": {
+      "source_file": "Grocery-Racor-Bebida-Cebada.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1173,
+    "name": "Chilate",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Racor-Bebida-Chilate.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 173,
+    "metadata": {
+      "source_file": "Grocery-Racor-Bebida-Chilate.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1174,
+    "name": "Horchata De Morro",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Racor-Bebida-Horchata de Morro.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 174,
+    "metadata": {
+      "source_file": "Grocery-Racor-Bebida-Horchata de Morro.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1175,
+    "name": "Yuca Chips Con Sal",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Racor-Chips-Yuca chips con Sal.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 175,
+    "metadata": {
+      "source_file": "Grocery-Racor-Chips-Yuca chips con Sal.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1176,
+    "name": "Frijol Rojo",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Granos",
+    "description": "",
+    "image": "images/Grocery-Racor-Granos-Frijol Rojo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 176,
+    "metadata": {
+      "source_file": "Grocery-Racor-Granos-Frijol Rojo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1177,
+    "name": "Harina De Arroz",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Harina",
+    "description": "",
+    "image": "images/Grocery-Racor-Harina-Harina de Arroz.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 177,
+    "metadata": {
+      "source_file": "Grocery-Racor-Harina-Harina de Arroz.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1178,
+    "name": "Achiote",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Racor-misc-Achiote.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 178,
+    "metadata": {
+      "source_file": "Grocery-Racor-misc-Achiote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1179,
+    "name": "Cacao",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Grocery-Racor-misc-Cacao.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 179,
+    "metadata": {
+      "source_file": "Grocery-Racor-misc-Cacao.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1180,
+    "name": "Egg Yolk Sponge Cake",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Racor-Pan Galleta-Egg Yolk Sponge cake.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 180,
+    "metadata": {
+      "source_file": "Grocery-Racor-Pan Galleta-Egg Yolk Sponge cake.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1181,
+    "name": "Marquesote",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Racor-pan galleta-Marquesote.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 181,
+    "metadata": {
+      "source_file": "Grocery-Racor-pan galleta-Marquesote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1182,
+    "name": "Quesadilla",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Racor-Pan Galleta-Quesadilla.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 182,
+    "metadata": {
+      "source_file": "Grocery-Racor-Pan Galleta-Quesadilla.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1183,
+    "name": "Semita Alta",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Racor-Pan Galleta-Semita Alta.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 183,
+    "metadata": {
+      "source_file": "Grocery-Racor-Pan Galleta-Semita Alta.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1184,
+    "name": "Tortillitas",
+    "brand": "Senorial",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Senorial-Chips-Tortillitas.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 184,
+    "metadata": {
+      "source_file": "Grocery-Senorial-Chips-Tortillitas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1185,
+    "name": "Margarita",
+    "brand": "Sinai",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Sinai-Pan Galleta-Margarita.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 185,
+    "metadata": {
+      "source_file": "Grocery-Sinai-Pan Galleta-Margarita.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1186,
+    "name": "Maria Luisa",
+    "brand": "Sinai",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Sinai-Pan Galleta-Maria Luisa.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 186,
+    "metadata": {
+      "source_file": "Grocery-Sinai-Pan Galleta-Maria Luisa.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1187,
+    "name": "Marquezote",
+    "brand": "Sinai",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Sinai-Pan Galleta-Marquezote.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 187,
+    "metadata": {
+      "source_file": "Grocery-Sinai-Pan Galleta-Marquezote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1188,
+    "name": "Salpor",
+    "brand": "Sinai",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Sinai-Pan Galleta-Salpor.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 188,
+    "metadata": {
+      "source_file": "Grocery-Sinai-Pan Galleta-Salpor.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1189,
+    "name": "Semita",
+    "brand": "Sinai",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Pan Galleta",
+    "description": "",
+    "image": "images/Grocery-Sinai-Pan Galleta-Semita.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 189,
+    "metadata": {
+      "source_file": "Grocery-Sinai-Pan Galleta-Semita.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1190,
+    "name": "Juice Pack",
+    "brand": "Sula",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Sula-Bebida-Juice pack.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 190,
+    "metadata": {
+      "source_file": "Grocery-Sula-Bebida-Juice pack.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1191,
+    "name": "Vainisula",
+    "brand": "Sula",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Sula-Bebida-VainiSula.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 191,
+    "metadata": {
+      "source_file": "Grocery-Sula-Bebida-VainiSula.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1192,
+    "name": "Trompa De Chucho Rojo",
+    "brand": "TC",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-TC-Salsa-Trompa De Chucho Rojo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 192,
+    "metadata": {
+      "source_file": "Grocery-TC-Salsa-Trompa De Chucho Rojo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1193,
+    "name": "Trompa De Chucho Verde",
+    "brand": "TC",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Salsa",
+    "description": "",
+    "image": "images/Grocery-TC-Salsa-Trompa de Chucho Verde.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 193,
+    "metadata": {
+      "source_file": "Grocery-TC-Salsa-Trompa de Chucho Verde.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1194,
+    "name": "Tiky Pina",
+    "brand": "Tiky",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Grocery-Tiky-bebida-Tiky Pina.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 194,
+    "metadata": {
+      "source_file": "Grocery-Tiky-bebida-Tiky Pina.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1195,
+    "name": "Limon",
+    "brand": "Tortrix",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Tortrix-Chips-Limon.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 195,
+    "metadata": {
+      "source_file": "Grocery-Tortrix-Chips-Limon.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1196,
+    "name": "Anillitos",
+    "brand": "Yummies",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "Chips",
+    "description": "",
+    "image": "images/Grocery-Yummies-Chips-Anillitos.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 196,
+    "metadata": {
+      "source_file": "Grocery-Yummies-Chips-Anillitos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1197,
+    "name": "Centro Americano",
+    "brand": "Cremimex",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-Cremimex-crema-Centro Americano.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 197,
+    "metadata": {
+      "source_file": "Lactos-Cremimex-crema-Centro Americano.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1198,
+    "name": "Centro Americano 1",
+    "brand": "Cremimex",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-Cremimex-Crema-Centro Americano(1).jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 198,
+    "metadata": {
+      "source_file": "Lactos-Cremimex-Crema-Centro Americano(1).jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1199,
+    "name": "Salvadoreno",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-Cuzcatlecos-Crema-Salvadoreno.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 199,
+    "metadata": {
+      "source_file": "Lactos-Cuzcatlecos-Crema-Salvadoreno.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1200,
+    "name": "Clasico",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-cuzcatlecos-Queso-Clasico.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 200,
+    "metadata": {
+      "source_file": "Lactos-cuzcatlecos-Queso-Clasico.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1201,
+    "name": "Duro Blando",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-Cuzcatlecos-Queso-Duro Blando.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 201,
+    "metadata": {
+      "source_file": "Lactos-Cuzcatlecos-Queso-Duro Blando.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1202,
+    "name": "Cuajada Salvadoreno",
+    "brand": "DLC",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Cuajada",
+    "description": "",
+    "image": "images/Lactos-DLC-Cuajada-Cuajada Salvadoreno.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 202,
+    "metadata": {
+      "source_file": "Lactos-DLC-Cuajada-Cuajada Salvadoreno.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1203,
+    "name": "Duro Blando Con Chile",
+    "brand": "DLC",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-DLC-Queso-Duro Blando con Chile.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 203,
+    "metadata": {
+      "source_file": "Lactos-DLC-Queso-Duro Blando con Chile.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1204,
+    "name": "Duro Blando Loroco",
+    "brand": "DLC",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-DLC-Queso-Duro Blando Loroco.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 204,
+    "metadata": {
+      "source_file": "Lactos-DLC-Queso-Duro Blando Loroco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1205,
+    "name": "Duro Blando",
+    "brand": "DLC",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-DLC-Queso-Duro Blando.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 205,
+    "metadata": {
+      "source_file": "Lactos-DLC-Queso-Duro Blando.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1206,
+    "name": "Duro Viejo",
+    "brand": "DLC",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-DLC-Queso-Duro Viejo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 206,
+    "metadata": {
+      "source_file": "Lactos-DLC-Queso-Duro Viejo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1207,
+    "name": "Morolique",
+    "brand": "DLC",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-DLC-Queso-Morolique.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 207,
+    "metadata": {
+      "source_file": "Lactos-DLC-Queso-Morolique.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1208,
+    "name": "Quesillo",
+    "brand": "DLC",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-DLC-Queso-Quesillo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 208,
+    "metadata": {
+      "source_file": "Lactos-DLC-Queso-Quesillo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1209,
+    "name": "Guatemal",
+    "brand": "Frusecha",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-Frusecha-Crema-Guatemal.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 209,
+    "metadata": {
+      "source_file": "Lactos-Frusecha-Crema-Guatemal.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1210,
+    "name": "Guatemala",
+    "brand": "Frusecha",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-Frusecha-Crema-Guatemala.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 210,
+    "metadata": {
+      "source_file": "Lactos-Frusecha-Crema-Guatemala.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1211,
+    "name": "Salvadorena",
+    "brand": "Frusecha",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-Frusecha-Crema-Salvadorena.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 211,
+    "metadata": {
+      "source_file": "Lactos-Frusecha-Crema-Salvadorena.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1212,
+    "name": "Chorizo Guatemala",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Chorizo",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Chorizo-Chorizo Guatemala.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 212,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Chorizo-Chorizo Guatemala.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1213,
+    "name": "Chorizo Salvadoreno",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Chorizo",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Chorizo-Chorizo Salvadoreno.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 213,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Chorizo-Chorizo Salvadoreno.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1214,
+    "name": "Longaniza De Cerdo",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Chorizo",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Chorizo-Longaniza de Cerdo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 214,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Chorizo-Longaniza de Cerdo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1215,
+    "name": "Chontaleno",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Chontaleno.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 215,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Chontaleno.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1216,
+    "name": "Economica",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Economica.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 216,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Economica.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1217,
+    "name": "Guanaquita",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Guanaquita.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 217,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Guanaquita.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1218,
+    "name": "Guatemala Bote",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Guatemala Bote.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 218,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Guatemala Bote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1219,
+    "name": "Guatemala Bote 1",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Guatemala Bote(1).jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 219,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Guatemala Bote(1).jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1220,
+    "name": "Guatemala En Bote",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Guatemala en bote.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 220,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Guatemala en bote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1221,
+    "name": "Miguelena",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Miguelena.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 221,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Miguelena.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1222,
+    "name": "Olancho",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Olancho.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 222,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Olancho.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1223,
+    "name": "Quetzal",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Quetzal.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 223,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Quetzal.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1224,
+    "name": "Rala",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Rala.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 224,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Rala.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1225,
+    "name": "Salvadorena Bote",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Crema-Salvadorena Bote.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 225,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Crema-Salvadorena Bote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1226,
+    "name": "Cuajada Con Chile",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Cuajada",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Cuajada-Cuajada con Chile.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 226,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Cuajada-Cuajada con Chile.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1227,
+    "name": "Cuajada En Terron",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Cuajada",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Cuajada-Cuajada en Terron.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 227,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Cuajada-Cuajada en Terron.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1228,
+    "name": "Fresca Con Loroco",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Cuajada",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Cuajada-Fresca con Loroco.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 228,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Cuajada-Fresca con Loroco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1229,
+    "name": "Fresca Hondurena",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Cuajada",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Cuajada-Fresca Hondurena.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 229,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Cuajada-Fresca Hondurena.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1230,
+    "name": "Fresca Salvadorena",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Cuajada",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Cuajada-Fresca Salvadorena.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 230,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Cuajada-Fresca Salvadorena.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1231,
+    "name": "Fresca Salvadorena 1",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Cuajada",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Cuajada-Fresca Salvadorena(1).jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 231,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Cuajada-Fresca Salvadorena(1).jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1232,
+    "name": "Fresco Guatamala",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Cuajada",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Cuajada-Fresco Guatamala.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 232,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Cuajada-Fresco Guatamala.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1233,
+    "name": "Mi Ranchito",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Cuajada",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Cuajada-Mi Ranchito.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 233,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Cuajada-Mi Ranchito.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1234,
+    "name": "Misc Pescaditos",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "",
+    "description": "",
+    "image": "images/Lactos-La Ricura-misc-Pescaditos.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 234,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-misc-Pescaditos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1235,
+    "name": "Misc Vegetales Encurtidos",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "",
+    "description": "",
+    "image": "images/Lactos-La Ricura-misc-Vegetales Encurtidos.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 235,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-misc-Vegetales Encurtidos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1236,
+    "name": "Arrocero",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Arrocero.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 236,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Arrocero.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1237,
+    "name": "Bolsa Azul",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Bolsa Azul.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 237,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Bolsa Azul.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1238,
+    "name": "Chinameca",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Chinameca.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 238,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Chinameca.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1239,
+    "name": "Chontaleno",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Chontaleno.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 239,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Chontaleno.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1240,
+    "name": "Coyolito",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Coyolito.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 240,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Coyolito.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1241,
+    "name": "Duro Viejo",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Duro Viejo .jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 241,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Duro Viejo .jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1242,
+    "name": "Economico",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Economico.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 242,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Economico.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1243,
+    "name": "Fresco Con Mashan",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Fresco con Mashan.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 243,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Fresco con Mashan.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1244,
+    "name": "Frijolero Con Chile",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Frijolero con Chile.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 244,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Frijolero con Chile.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1245,
+    "name": "Frijolero Con Loroco",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Frijolero con Loroco.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 245,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Frijolero con Loroco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1246,
+    "name": "Frijolero",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Frijolero.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 246,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Frijolero.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1247,
+    "name": "Olancho Arrocero",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Olancho Arrocero.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 247,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Olancho Arrocero.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1248,
+    "name": "Olancho Frijolero",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Olancho Frijolero.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 248,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Olancho Frijolero.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1249,
+    "name": "Para Freir",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Para Freir.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 249,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Para Freir.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1250,
+    "name": "Perla",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Perla.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 250,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Perla.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1251,
+    "name": "Pupusa 1lb",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Pupusa 1lb.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 251,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Pupusa 1lb.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1252,
+    "name": "Pupusa 2lb",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Pupusa 2lb.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 252,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Pupusa 2lb.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1253,
+    "name": "San Miguel",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-San Miguel.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 253,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-San Miguel.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1254,
+    "name": "Zacapa",
+    "brand": "La Ricura",
+    "sku": "",
+    "unit_size": "",
+    "category": "dairy",
+    "subcategory": "Queso",
+    "description": "",
+    "image": "images/Lactos-La Ricura-Queso-Zacapa.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 254,
+    "metadata": {
+      "source_file": "Lactos-La Ricura-Queso-Zacapa.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1255,
+    "name": "Soup Cremademariscos",
+    "brand": "Maggi",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/soup_maggi_cremademariscos.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 255,
+    "metadata": {
+      "source_file": "soup_maggi_cremademariscos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1256,
+    "name": "Soup Polloconarroz",
+    "brand": "Maggi",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/soup_maggi_polloconarroz.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 256,
+    "metadata": {
+      "source_file": "soup_maggi_polloconarroz.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1257,
+    "name": "Soup Polloconcaracolitos",
+    "brand": "Maggi",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/soup_maggi_polloconcaracolitos.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 257,
+    "metadata": {
+      "source_file": "soup_maggi_polloconcaracolitos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1258,
+    "name": "Soup Polloconfideos",
+    "brand": "Maggi",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/soup_maggi_polloconfideos.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 258,
+    "metadata": {
+      "source_file": "soup_maggi_polloconfideos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1259,
+    "name": "Soup Resconfideos",
+    "brand": "Maggi",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/soup_maggi_resconfideos.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 259,
+    "metadata": {
+      "source_file": "soup_maggi_resconfideos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1260,
+    "name": "Soup Sopacriollagallinaconfideos",
+    "brand": "Maggi",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/soup_maggi_sopacriollagallinaconfideos.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 260,
+    "metadata": {
+      "source_file": "soup_maggi_sopacriollagallinaconfideos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1261,
+    "name": "Spice Saldecebolla",
+    "brand": "Malher",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/spice_malher_saldecebolla.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 261,
+    "metadata": {
+      "source_file": "spice_malher_saldecebolla.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1262,
+    "name": "Spice Especiasparapavoytamal",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/spice_racor_especiasparapavoytamal.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 262,
+    "metadata": {
+      "source_file": "spice_racor_especiasparapavoytamal.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1263,
+    "name": "Spices Donalisa Relajomix",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/spices_donalisa_relajomix.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 263,
+    "metadata": {
+      "source_file": "spices_donalisa_relajomix.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1264,
+    "name": "Spread Sandwichspreadpepinesa",
+    "brand": "Mccormick",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/spread_mccormick_sandwichspreadpepinesa.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 264,
+    "metadata": {
+      "source_file": "spread_mccormick_sandwichspreadpepinesa.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1265,
+    "name": "Sugar Delcanal Darkbrown",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/sugar_delcanal_darkbrown.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 265,
+    "metadata": {
+      "source_file": "sugar_delcanal_darkbrown.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1266,
+    "name": "Sugar Delcanal Darkbrownsugar",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/sugar_delcanal_darkbrownsugar.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 266,
+    "metadata": {
+      "source_file": "sugar_delcanal_darkbrownsugar.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1267,
+    "name": "Sugar Delcanal Whitesugar",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/sugar_delcanal_whitesugar.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 267,
+    "metadata": {
+      "source_file": "sugar_delcanal_whitesugar.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1268,
+    "name": "Supplement Ballenaazul Orangeflavor",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_ballenaazul_orangeflavor.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 268,
+    "metadata": {
+      "source_file": "supplement_ballenaazul_orangeflavor.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1269,
+    "name": "Supplement Biokemical Foskrolwithvitamins",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_biokemical_foskrolwithvitamins.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 269,
+    "metadata": {
+      "source_file": "supplement_biokemical_foskrolwithvitamins.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1270,
+    "name": "Supplement Dese Sstress Plus",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_dese_sstress_plus.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 270,
+    "metadata": {
+      "source_file": "supplement_dese_sstress_plus.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1271,
+    "name": "Supplement Desestress Plus",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_desestress_plus.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 271,
+    "metadata": {
+      "source_file": "supplement_desestress_plus.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1272,
+    "name": "Supplement Lainez Bacaolinita",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_lainez_bacaolinita.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 272,
+    "metadata": {
+      "source_file": "supplement_lainez_bacaolinita.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1273,
+    "name": "Supplement Mentevital Forte",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_mentevital_forte.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 273,
+    "metadata": {
+      "source_file": "supplement_mentevital_forte.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1274,
+    "name": "Supplement Nervi Doce",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_nervi_doce.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 274,
+    "metadata": {
+      "source_file": "supplement_nervi_doce.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1275,
+    "name": "Supplement Neurobion Active",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_neurobion_active.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 275,
+    "metadata": {
+      "source_file": "supplement_neurobion_active.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1276,
+    "name": "Supplement Neurobion Classicformula",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_neurobion_classicformula.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 276,
+    "metadata": {
+      "source_file": "supplement_neurobion_classicformula.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1277,
+    "name": "Supplement Neurobion",
+    "brand": "Energy",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_neurobion_energy.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 277,
+    "metadata": {
+      "source_file": "supplement_neurobion_energy.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1278,
+    "name": "Supplement Neurocampolon",
+    "brand": "Energy",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_neurocampolon_energy.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 278,
+    "metadata": {
+      "source_file": "supplement_neurocampolon_energy.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1279,
+    "name": "Supplement Neuroferrical B12 1",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_neuroferrical_b12_1.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 279,
+    "metadata": {
+      "source_file": "supplement_neuroferrical_b12_1.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1280,
+    "name": "Supplement Neuroferrical B12",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_neuroferrical_b12.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 280,
+    "metadata": {
+      "source_file": "supplement_neuroferrical_b12.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1281,
+    "name": "Supplement Neurofosfaton Tonicforthenervesandbrain",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_neurofosfaton_tonicforthenervesandbrain.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 281,
+    "metadata": {
+      "source_file": "supplement_neurofosfaton_tonicforthenervesandbrain.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1282,
+    "name": "Supplement Pharmamedica Vitalfuerteef",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_pharmamedica_vitalfuerteef.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 282,
+    "metadata": {
+      "source_file": "supplement_pharmamedica_vitalfuerteef.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1283,
+    "name": "Supplement Sinestres Stressrelief",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_sinestres_stressrelief.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 283,
+    "metadata": {
+      "source_file": "supplement_sinestres_stressrelief.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1284,
+    "name": "Supplement Sukrol Glutamicacidlecithinandthiamin",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_sukrol_glutamicacidlecithinandthiamin.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 284,
+    "metadata": {
+      "source_file": "supplement_sukrol_glutamicacidlecithinandthiamin.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1285,
+    "name": "Supplement Sukrol Liquishot",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_sukrol_liquishot.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 285,
+    "metadata": {
+      "source_file": "supplement_sukrol_liquishot.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1286,
+    "name": "Supplement Sukrol Vigoref",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_sukrol_vigoref.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 286,
+    "metadata": {
+      "source_file": "supplement_sukrol_vigoref.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1287,
+    "name": "Supplement Sukrol Vigormujer",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_sukrol_vigormujer.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 287,
+    "metadata": {
+      "source_file": "supplement_sukrol_vigormujer.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1288,
+    "name": "Supplement Vitalfuerte H3ef",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/supplement_vitalfuerte_h3ef.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 288,
+    "metadata": {
+      "source_file": "supplement_vitalfuerte_h3ef.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1289,
+    "name": "Syrup Ancalmo Zorritone",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/syrup_ancalmo_zorritone.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 289,
+    "metadata": {
+      "source_file": "syrup_ancalmo_zorritone.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1290,
+    "name": "Tamal Insti",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/Tamal Insti.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 290,
+    "metadata": {
+      "source_file": "Tamal Insti.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1291,
+    "name": "Tamale Chipilin",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamale_cuzcatlecos_chipilin.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 291,
+    "metadata": {
+      "source_file": "tamale_cuzcatlecos_chipilin.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1292,
+    "name": "Tamale Corn Tamales",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamale_cuzcatlecos_corn_tamales.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 292,
+    "metadata": {
+      "source_file": "tamale_cuzcatlecos_corn_tamales.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1293,
+    "name": "Tamale Derajasconqueso",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamale_cuzcatlecos_derajasconqueso.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 293,
+    "metadata": {
+      "source_file": "tamale_cuzcatlecos_derajasconqueso.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1294,
+    "name": "Tamale Mexicansweetcorntamale",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamale_cuzcatlecos_mexicansweetcorntamale.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 294,
+    "metadata": {
+      "source_file": "tamale_cuzcatlecos_mexicansweetcorntamale.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1295,
+    "name": "Tamale Sweetdulce",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamale_cuzcatlecos_sweetdulce.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 295,
+    "metadata": {
+      "source_file": "tamale_cuzcatlecos_sweetdulce.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1296,
+    "name": "Tamale Tamaldeelote",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamale_cuzcatlecos_tamaldeelote.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 296,
+    "metadata": {
+      "source_file": "tamale_cuzcatlecos_tamaldeelote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1297,
+    "name": "Tamale Tamalesderajas",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamale_cuzcatlecos_tamalesderajas.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 297,
+    "metadata": {
+      "source_file": "tamale_cuzcatlecos_tamalesderajas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1298,
+    "name": "Tamale Tamalesderajasconfrijoles",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamale_cuzcatlecos_tamalesderajasconfrijoles.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 298,
+    "metadata": {
+      "source_file": "tamale_cuzcatlecos_tamalesderajasconfrijoles.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1299,
+    "name": "Tamale Pisquetamale",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamale_racor_pisquetamale.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 299,
+    "metadata": {
+      "source_file": "tamale_racor_pisquetamale.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1300,
+    "name": "Tamales Tamaldeelotesweetdulce",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tamales_cuzcatlecos_tamaldeelotesweetdulce.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 300,
+    "metadata": {
+      "source_file": "tamales_cuzcatlecos_tamaldeelotesweetdulce.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1301,
+    "name": "Tortilla Culcatleco Corntortillas",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tortilla_culcatleco_corntortillas.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 301,
+    "metadata": {
+      "source_file": "tortilla_culcatleco_corntortillas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1302,
+    "name": "Tortilla Sweetcorntortilla",
+    "brand": "Cuzcatlecos",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tortilla_cuzcatlecos_sweetcorntortilla.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 302,
+    "metadata": {
+      "source_file": "tortilla_cuzcatlecos_sweetcorntortilla.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1303,
+    "name": "Tortilla Laricura Guatemaltecascorntortillas",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tortilla_laricura_guatemaltecascorntortillas.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 303,
+    "metadata": {
+      "source_file": "tortilla_laricura_guatemaltecascorntortillas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1304,
+    "name": "Tortilla Laricura Handmadetortillas",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tortilla_laricura_handmadetortillas.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 304,
+    "metadata": {
+      "source_file": "tortilla_laricura_handmadetortillas.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1305,
+    "name": "Tortilla Nokal Frijolconqueso",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tortilla_nokal_frijolconqueso.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 305,
+    "metadata": {
+      "source_file": "tortilla_nokal_frijolconqueso.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1306,
+    "name": "Tortilla Cuzcatlecos",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tortilla_racor_cuzcatlecos.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 306,
+    "metadata": {
+      "source_file": "tortilla_racor_cuzcatlecos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1307,
+    "name": "Tortilla Sweetcorntortillawithbeans",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tortilla_racor_sweetcorntortillawithbeans.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 307,
+    "metadata": {
+      "source_file": "tortilla_racor_sweetcorntortillawithbeans.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1308,
+    "name": "Tortilla Sweetcorntortillawithcheese",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/tortilla_racor_sweetcorntortillawithcheese.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 308,
+    "metadata": {
+      "source_file": "tortilla_racor_sweetcorntortillawithcheese.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1309,
+    "name": "Vegetable Donalisa Babycornin Vinegar",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/vegetable_donalisa_babycornin_vinegar.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 309,
+    "metadata": {
+      "source_file": "vegetable_donalisa_babycornin_vinegar.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1310,
+    "name": "Vegetable Laricura Yuca 1",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/vegetable_laricura_yuca_1.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 310,
+    "metadata": {
+      "source_file": "vegetable_laricura_yuca_1.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1311,
+    "name": "Vegetable Laricura Yuca",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/vegetable_laricura_yuca.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 311,
+    "metadata": {
+      "source_file": "vegetable_laricura_yuca.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1312,
+    "name": "Vegetable Flordeizote",
+    "brand": "Listto",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/vegetable_listto_flordeizote.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 312,
+    "metadata": {
+      "source_file": "vegetable_listto_flordeizote.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1313,
+    "name": "Vegetable Pacaya",
+    "brand": "Listto",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/vegetable_listto_pacaya.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 313,
+    "metadata": {
+      "source_file": "vegetable_listto_pacaya.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1314,
+    "name": "Vegetable Flordeloroco",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/vegetable_racor_flordeloroco.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 314,
+    "metadata": {
+      "source_file": "vegetable_racor_flordeloroco.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1315,
+    "name": "Vegetable Hojasdechipilin",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/vegetable_racor_hojasdechipilin.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 315,
+    "metadata": {
+      "source_file": "vegetable_racor_hojasdechipilin.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1316,
+    "name": "Vegetable Lorocosflower",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/vegetable_racor_lorocosflower.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 316,
+    "metadata": {
+      "source_file": "vegetable_racor_lorocosflower.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1317,
+    "name": "Vegetables Chufle",
+    "brand": "Racor",
+    "sku": "",
+    "unit_size": "",
+    "category": "grocery",
+    "subcategory": "",
+    "description": "",
+    "image": "images/vegetables_racor_chufle.jpg",
+    "visible": false,
+    "featured": false,
+    "sort_order": 317,
+    "metadata": {
+      "source_file": "vegetables_racor_chufle.jpg",
+      "generated_from_image_name": true,
+      "needs_review": true
+    }
+  },
+  {
+    "id": 1318,
+    "name": "Antigrip Am",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitamina-Bebida-Antigrip AM.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 318,
+    "metadata": {
+      "source_file": "Vitamina-Bebida-Antigrip AM.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1319,
+    "name": "Antigrip Pm",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitamina-Bebida-Antigrip Pm.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 319,
+    "metadata": {
+      "source_file": "Vitamina-Bebida-Antigrip Pm.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1320,
+    "name": "Bebida",
+    "brand": "Aspirina",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitamina-Bebida-Aspirina.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 320,
+    "metadata": {
+      "source_file": "Vitamina-Bebida-Aspirina.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1321,
+    "name": "Daytime Liquid",
+    "brand": "Sanatos",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitamina-Bebida-Sanatos Daytime Liquid.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 321,
+    "metadata": {
+      "source_file": "Vitamina-Bebida-Sanatos Daytime Liquid.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1322,
+    "name": "Nighttime Liquid",
+    "brand": "Sanatos",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitamina-Bebida-SanaTos Nighttime liquid.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 322,
+    "metadata": {
+      "source_file": "Vitamina-Bebida-SanaTos Nighttime liquid.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1323,
+    "name": "Sanatosx Fast Action",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitamina-Bebida-SanaTosX Fast Action.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 323,
+    "metadata": {
+      "source_file": "Vitamina-Bebida-SanaTosX Fast Action.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1324,
+    "name": "Fuerte Rojo",
+    "brand": "Kofal",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Vitamina-crema-Kofal fuerte rojo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 324,
+    "metadata": {
+      "source_file": "Vitamina-crema-Kofal fuerte rojo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1325,
+    "name": "Original Azul",
+    "brand": "Kofal",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Vitamina-crema-Kofal Original azul.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 325,
+    "metadata": {
+      "source_file": "Vitamina-crema-Kofal Original azul.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1326,
+    "name": "Vaporub",
+    "brand": "Vicks",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Vitamina-crema-Vicks VapoRub.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 326,
+    "metadata": {
+      "source_file": "Vitamina-crema-Vicks VapoRub.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1327,
+    "name": "Kids",
+    "brand": "Sanatos",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Kids",
+    "description": "",
+    "image": "images/Vitamina-kids-Sanatos.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 327,
+    "metadata": {
+      "source_file": "Vitamina-kids-Sanatos.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1328,
+    "name": "Liquido Concentrado De Rabano",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Misc",
+    "description": "",
+    "image": "images/Vitamina-misc-liquido-Concentrado de Rabano.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 328,
+    "metadata": {
+      "source_file": "Vitamina-misc-liquido-Concentrado de Rabano.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1329,
+    "name": "Anadent",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Pastilla",
+    "description": "",
+    "image": "images/Vitamina-pastilla-AnaDent.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 329,
+    "metadata": {
+      "source_file": "Vitamina-pastilla-AnaDent.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1330,
+    "name": "Antigrip Fast Relief",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Pastilla",
+    "description": "",
+    "image": "images/Vitamina-Pastilla-Antigrip Fast Relief.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 330,
+    "metadata": {
+      "source_file": "Vitamina-Pastilla-Antigrip Fast Relief.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1331,
+    "name": "Dolex Extra Fuerte",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Pastilla",
+    "description": "",
+    "image": "images/Vitamina-Pastilla-Dolex Extra Fuerte.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 331,
+    "metadata": {
+      "source_file": "Vitamina-Pastilla-Dolex Extra Fuerte.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1332,
+    "name": "Extra Forte",
+    "brand": "NeuroBion",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitaminas-Bebida-NeuroBion Extra Forte.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 332,
+    "metadata": {
+      "source_file": "Vitaminas-Bebida-NeuroBion Extra Forte.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1333,
+    "name": "Immune Support",
+    "brand": "NeuroBion",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitaminas-Bebida-NeuroBion Immune Support.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 333,
+    "metadata": {
+      "source_file": "Vitaminas-Bebida-NeuroBion Immune Support.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1334,
+    "name": "Plus",
+    "brand": "NeuroBion",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitaminas-Bebida-NeuroBion Plus.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 334,
+    "metadata": {
+      "source_file": "Vitaminas-Bebida-NeuroBion Plus.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1335,
+    "name": "Ultra Doceplex",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Bebida",
+    "description": "",
+    "image": "images/Vitaminas-Bebida-Ultra Doceplex.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 335,
+    "metadata": {
+      "source_file": "Vitaminas-Bebida-Ultra Doceplex.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1336,
+    "name": "Rojo",
+    "brand": "Kofal",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Crema",
+    "description": "",
+    "image": "images/Vitaminas-Crema-Kofal rojo.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 336,
+    "metadata": {
+      "source_file": "Vitaminas-Crema-Kofal rojo.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1337,
+    "name": "Cremas",
+    "brand": "Mariguanol",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Cremas",
+    "description": "",
+    "image": "images/Vitaminas-Cremas-Mariguanol.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 337,
+    "metadata": {
+      "source_file": "Vitaminas-Cremas-Mariguanol.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1338,
+    "name": "Liquido Glotolin",
+    "brand": "",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "Kids",
+    "description": "",
+    "image": "images/Vitaminas-Kids-Liquido-Glotolin.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 338,
+    "metadata": {
+      "source_file": "Vitaminas-Kids-Liquido-Glotolin.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1339,
+    "name": "Dolo Neurobion",
+    "brand": "NueroBion",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "",
+    "description": "",
+    "image": "images/Vitaminas-nuerobion-dolo neurobion.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 339,
+    "metadata": {
+      "source_file": "Vitaminas-nuerobion-dolo neurobion.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  },
+  {
+    "id": 1340,
+    "name": "Energy",
+    "brand": "NueroBion",
+    "sku": "",
+    "unit_size": "",
+    "category": "vitamins",
+    "subcategory": "",
+    "description": "",
+    "image": "images/Vitaminas-NueroBion-Energy.jpg",
+    "visible": true,
+    "featured": false,
+    "sort_order": 340,
+    "metadata": {
+      "source_file": "Vitaminas-NueroBion-Energy.jpg",
+      "generated_from_image_name": true,
+      "needs_review": false
+    }
+  }
+]

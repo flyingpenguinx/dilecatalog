@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
-import { CATEGORIES } from '../products.js';
+import { CATEGORIES } from './data/catalog-config.js';
 import imageManifest from './data/image-manifest.json';
 import {
   createEmptyProduct,
@@ -371,7 +371,7 @@ function CatalogPage({ products, subcategoryDefinitions }) {
                   <div className="catalog-copy">
                     <span className="catalog-meta">{formatCategory(product.category)}</span>
                     <h3>{product.name}</h3>
-                    <p>{[product.brand, product.unit_size].filter(Boolean).join(' · ')}</p>
+                    <p>{product.brand || 'Sin marca'}</p>
                   </div>
                 </button>
               </article>
@@ -1408,11 +1408,9 @@ export default function App() {
           <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/">
             Catálogo
           </NavLink>
-          {session ? (
-            <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/admin">
-              Admin
-            </NavLink>
-          ) : null}
+          <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/admin">
+            Admin
+          </NavLink>
         </nav>
       </header>
 
