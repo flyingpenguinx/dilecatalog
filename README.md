@@ -1,6 +1,4 @@
-# DILE React + Supabase migration
-
-This repo has been converted from a static HTML catalog into a React application powered by Vite, with a Supabase-ready admin panel.
+# DILE Catalog
 
 ## What changed
 
@@ -11,14 +9,24 @@ This repo has been converted from a static HTML catalog into a React application
   - brand
   - SKU
   - unit size
-  - category and subcategory
+  - main category and subcategory
   - optional description
-  - image uploads to Supabase Storage
+  - image replacement
   - visible/hidden state
   - featured state
   - sort order
-- A seed action can push the current local catalog into Supabase.
+- A backup export can download the current products and subcategories as JSON.
+- A backup restore can replace the current catalog from a JSON export.
+- A bulk image upload script can move catalog images to Storage and generate a manifest so the site can stop depending on repo-hosted images.
 - GitHub Pages remains workable because the app uses hash routing.
+
+## Data safety
+
+- Product changes made by admins are stored in Supabase, not in the website code.
+- Frontend changes such as layout, colors, or component structure do not overwrite product data unless code explicitly writes to the database.
+- Subcategories are now stored separately in `catalog_subcategories`, so catalog structure changes are not tied to product rows.
+- Use the admin `Exportar respaldo` button before major catalog edits if you want a manual JSON backup.
+- Use the admin `Restaurar respaldo` control only when you intentionally want to replace the current catalog with a saved backup.
 
 ## Recommended hosting
 
@@ -71,11 +79,33 @@ npm run dev
 npm run build
 ```
 
+## Bulk image upload
+
+If you want to stop pushing large image folders through GitHub, use the bulk uploader:
+
+```bash
+npm run upload:images
+```
+
+Requirements:
+
+- `VITE_SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+What it does:
+
+- scans the local `images/` folder
+- converts HEIC images to compressed JPG when needed
+- uploads images to the `product-images` bucket
+- writes `src/data/image-manifest.json`
+
+After that, the app will prefer the uploaded image URLs from the manifest and only fall back to local files when no manifest entry exists.
+
 ## Supabase bootstrap
 
-After signing in to `/admin`, you can click `Seed actual a Supabase` to push the current local catalog into the `products` table.
-
 Use the image upload field in the admin form to send product images directly to the `product-images` bucket and store the resulting public URL on the product.
+
+If you want admin-managed subcategories, apply the `catalog_subcategories` table from `supabase/schema.sql`.
 
 If your Supabase project was created before SKU and unit size support were added, update the `products` table to include:
 

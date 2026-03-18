@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { CATEGORIES } from '../products.js';
+import imageManifest from './data/image-manifest.json';
 import {
   createEmptyProduct,
+  deleteSubcategoryDefinition,
   deleteProduct,
   fetchCatalog,
   fetchProfile,
-  getCategoryMeta,
   getCurrentSession,
-  normalizeCategoryId,
-  PRODUCT_IMAGE_BUCKET,
+  fetchSubcategoryDefinitions,
+  restoreCatalogBackup,
   saveProduct,
+  saveSubcategoryDefinition,
   signInWithPassword,
   signOut,
   subscribeToAuthChanges,
@@ -43,8 +45,23 @@ function formatImagePath(image) {
   return `/${image}`;
 }
 
+function resolveManifestImage(image) {
+  const normalized = formatImagePath(image);
+
+  if (!normalized || normalized.startsWith('http://') || normalized.startsWith('https://')) {
+    return '';
+  }
+
+  const trimmed = normalized.replace(/^\//, '');
+  const filename = trimmed.split('/').pop() ?? '';
+  const baseName = filename.replace(/\.[^./]+$/, '');
+
+  return imageManifest[normalized] ?? imageManifest[trimmed] ?? imageManifest[filename] ?? imageManifest[baseName] ?? '';
+}
+
 function buildImageCandidates(image) {
   const normalized = formatImagePath(image);
+  const manifestImage = resolveManifestImage(image);
 
   if (!normalized || normalized.startsWith('http://') || normalized.startsWith('https://')) {
     return normalized ? [normalized] : [];
@@ -53,7 +70,19 @@ function buildImageCandidates(image) {
   const extensionMatch = normalized.match(/\.[^./]+$/);
   const basePath = extensionMatch ? normalized.slice(0, -extensionMatch[0].length) : normalized;
 
-  return [...new Set([normalized, `${basePath}.HEIC`, `${basePath}.heic`, '/logos/dile logo cow.jpg'])];
+  return [
+    ...new Set([
+      manifestImage,
+      normalized,
+      `${basePath}.jpg`,
+      `${basePath}.jpeg`,
+      `${basePath}.png`,
+      `${basePath}.webp`,
+      `${basePath}.HEIC`,
+      `${basePath}.heic`,
+      '/logos/dile logo cow.jpg',
+    ].filter(Boolean)),
+  ];
 }
 
 function ProductImage({ alt, image, className }) {
@@ -84,7 +113,7 @@ function ProductImage({ alt, image, className }) {
   );
 }
 
-function buildCategorySummary(products) {
+function buildCategorySummary(products, subcategoryDefinitions) {
   return ['all', ...CATEGORIES.map((category) => category.id)].map((categoryId) => ({
     id: categoryId,
     label: categoryId === 'all' ? 'Todos' : formatCategory(categoryId),
@@ -92,12 +121,36 @@ function buildCategorySummary(products) {
       categoryId === 'all'
         ? '00'
         : String(CATEGORIES.findIndex((category) => category.id === categoryId) + 1).padStart(2, '0'),
-    note: categoryId === 'all' ? 'Colección completa' : getCategoryMeta(categoryId)?.name ?? 'Categoría',
+    note:
+      categoryId === 'all'
+        ? 'Colección completa'
+        : `${subcategoryDefinitions.filter((definition) => definition.category === categoryId).length} subcategorías`,
     count:
       categoryId === 'all'
         ? products.length
         : products.filter((product) => product.category === categoryId).length,
   }));
+}
+
+function buildSubcategorySuggestions(categoryId, subcategoryDefinitions, currentValue = '') {
+  return [...new Set(
+    subcategoryDefinitions
+      .filter((definition) => definition.category === categoryId)
+      .map((definition) => definition.name)
+      .concat(currentValue ? [currentValue] : []),
+  )].sort((left, right) => left.localeCompare(right));
+}
+
+function downloadJson(filename, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(objectUrl);
 }
 
 function applyCatalogFilters(products, search, category, subcategory, featuredOnly) {
@@ -184,7 +237,7 @@ function ProductModal({ product, onClose }) {
   );
 }
 
-function CatalogPage({ products }) {
+function CatalogPage({ products, subcategoryDefinitions }) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [subcategory, setSubcategory] = useState('all');
@@ -199,7 +252,10 @@ function CatalogPage({ products }) {
     () => products.filter((product) => product.visible !== false),
     [products],
   );
-  const categorySummary = useMemo(() => buildCategorySummary(visibleProducts), [visibleProducts]);
+  const categorySummary = useMemo(
+    () => buildCategorySummary(visibleProducts, subcategoryDefinitions),
+    [subcategoryDefinitions, visibleProducts],
+  );
   const subcategories = useMemo(() => {
     if (category === 'all') {
       return [];
@@ -292,19 +348,16 @@ function CatalogPage({ products }) {
       <section className="catalog-section">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">Catálogo público</span>
-            <h2>{filteredProducts.length} productos listos para mostrar</h2>
+            <span className="eyebrow">Catálogo</span>
+            <h2>{filteredProducts.length} productos disponibles</h2>
           </div>
-          <p>
-            Los productos ocultos quedan fuera del catálogo público, pero siguen siendo editables en
-            el panel de administración.
-          </p>
+          <p>Usa categorías, subcategorías y búsqueda para encontrar productos rápido.</p>
         </div>
 
         {filteredProducts.length === 0 ? (
           <div className="empty-panel">
             <h3>No hay coincidencias</h3>
-            <p>Ajusta los filtros o corrige los productos desde el panel de administración.</p>
+            <p>Prueba otra búsqueda o cambia los filtros.</p>
           </div>
         ) : (
           <div className="catalog-grid">
@@ -360,7 +413,7 @@ function LoginPanel({ onSignedIn }) {
           <span className="eyebrow">Admin</span>
           <h2>Inicia sesión para editar el catálogo</h2>
         </div>
-        <p>Supabase Auth controla quién puede entrar. El panel requiere un perfil con rol admin o editor.</p>
+        <p>Solo usuarios autorizados pueden entrar y hacer cambios.</p>
       </div>
       <form className="admin-form auth-form" onSubmit={handleSubmit}>
         <label>
@@ -396,8 +449,7 @@ function AccessDenied({ onSignOut }) {
   return (
     <section className="admin-shell narrow-shell">
       <div className="notice notice-error">
-        Tu usuario no tiene rol de administrador. Agrega tu uid en la tabla profiles con role
-        = admin o editor.
+        Tu usuario no tiene permisos para administrar el catálogo.
       </div>
       <button className="ghost-button" onClick={onSignOut} type="button">
         Cerrar sesión
@@ -406,13 +458,115 @@ function AccessDenied({ onSignOut }) {
   );
 }
 
-function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange }) {
+function AdminHelp() {
+  return (
+    <section className="admin-help">
+      <div className="admin-help-header">
+        <div>
+          <span className="eyebrow">Guía rápida</span>
+          <h3>Cómo usar el panel</h3>
+        </div>
+        <p>Todo está pensado para editar el catálogo sin tocar nada técnico.</p>
+      </div>
+      <div className="admin-help-grid">
+        <details open>
+          <summary>Editar un producto</summary>
+          <p>Busca el producto, haz clic sobre él, cambia los campos y presiona Guardar cambios.</p>
+        </details>
+        <details>
+          <summary>Cambiar la imagen</summary>
+          <p>Usa el campo de subida para reemplazar la imagen. También puedes pegar una URL si ya la tienes.</p>
+        </details>
+        <details>
+          <summary>Categorías y subcategorías</summary>
+          <p>Las categorías principales son fijas. Las subcategorías se pueden crear, editar o eliminar abajo.</p>
+        </details>
+        <details>
+          <summary>Respaldo y restauración</summary>
+          <p>Exporta un respaldo antes de cambios grandes. Si hace falta, puedes restaurar un archivo JSON del catálogo.</p>
+        </details>
+      </div>
+    </section>
+  );
+}
+
+function ProductPicker({ onClose, onSelect, products, query, setQuery, selectedId }) {
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+
+  return (
+    <div className="overlay" onClick={onClose}>
+      <section className="picker-shell" onClick={(event) => event.stopPropagation()}>
+        <div className="picker-header">
+          <div>
+            <span className="eyebrow">Lista rápida</span>
+            <h3>Buscar productos por nombre</h3>
+          </div>
+          <button className="ghost-button" onClick={onClose} type="button">
+            Cerrar
+          </button>
+        </div>
+        <label className="picker-search">
+          <span>Buscar producto</span>
+          <input
+            autoFocus
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Escribe nombre, marca, SKU o subcategoría"
+            type="search"
+            value={query}
+          />
+        </label>
+        <div className="picker-list">
+          {products.map((product) => (
+            <button
+              className={classNames('picker-item', selectedId === product.id && 'picker-item-active')}
+              key={product.id}
+              onClick={() => onSelect(product)}
+              type="button"
+            >
+              <strong>{product.name}</strong>
+              <span>{[product.brand || 'Sin marca', formatCategory(product.category), product.subcategory || null].filter(Boolean).join(' · ')}</span>
+            </button>
+          ))}
+          {products.length === 0 ? <p className="taxonomy-empty">No hay productos con esa búsqueda.</p> : null}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function AdminDashboard({
+  products,
+  profile,
+  subcategoryDefinitions,
+  onCatalogRefresh,
+  onProductsChange,
+  onSubcategoriesChange,
+}) {
   const [selectedId, setSelectedId] = useState(products[0]?.id ?? null);
   const [draft, setDraft] = useState(products[0] ?? createEmptyProduct());
   const [query, setQuery] = useState('');
   const [notice, setNotice] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isProductPickerOpen, setIsProductPickerOpen] = useState(false);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [subcategoryDraft, setSubcategoryDraft] = useState({
+    id: '',
+    category: CATEGORIES[0]?.id ?? 'frozen',
+    name: '',
+    sort_order: 0,
+  });
+  const [isSavingSubcategory, setIsSavingSubcategory] = useState(false);
+  const [isRestoringBackup, setIsRestoringBackup] = useState(false);
 
   useEffect(() => {
     if (!products.length) {
@@ -425,6 +579,18 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
     setSelectedId(nextProduct.id);
     setDraft(nextProduct);
   }, [products, selectedId]);
+
+  useEffect(() => {
+    setSubcategoryDraft((current) =>
+      current.id
+        ? current
+        : {
+            ...current,
+            category: draft.category || current.category,
+            sort_order: subcategoryDefinitions.length,
+          },
+    );
+  }, [draft.category, subcategoryDefinitions.length]);
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -449,6 +615,81 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
     setDraft((current) => ({ ...current, [field]: value }));
   };
 
+  const handleSelectProduct = (product) => {
+    setSelectedId(product.id);
+    setDraft(product);
+    setIsProductPickerOpen(false);
+  };
+
+  const handleSelectForBulk = (productId, checked) => {
+    setSelectedProductIds((current) => {
+      if (checked) {
+        return current.includes(productId) ? current : [...current, productId];
+      }
+
+      return current.filter((id) => id !== productId);
+    });
+  };
+
+  const persistProducts = async (nextProducts) => {
+    const sortedProducts = [...nextProducts].sort(
+      (left, right) => left.sort_order - right.sort_order || left.name.localeCompare(right.name),
+    );
+    onProductsChange(sortedProducts);
+    await onCatalogRefresh();
+    return sortedProducts;
+  };
+
+  const handleSetProductVisibility = async (productIds, visible) => {
+    if (!productIds.length) {
+      return;
+    }
+
+    setNotice('');
+
+    try {
+      const nextProducts = [...products];
+
+      await Promise.all(
+        productIds.map(async (productId) => {
+          const index = nextProducts.findIndex((product) => product.id === productId);
+          if (index < 0) {
+            return;
+          }
+
+          const result = await saveProduct({ ...nextProducts[index], visible });
+          nextProducts[index] = result.product;
+        }),
+      );
+
+      await persistProducts(nextProducts);
+      setSelectedProductIds((current) => current.filter((id) => !productIds.includes(id)));
+      setNotice(
+        visible
+          ? `${productIds.length} producto(s) marcados como activos en el catálogo.`
+          : `${productIds.length} producto(s) ocultados del catálogo.`,
+      );
+    } catch (error) {
+      setNotice(error.message ?? 'No se pudo actualizar la visibilidad de los productos.');
+    }
+  };
+
+  const suggestedSubcategories = useMemo(
+    () => buildSubcategorySuggestions(draft.category, subcategoryDefinitions, draft.subcategory),
+    [draft.category, draft.subcategory, subcategoryDefinitions],
+  );
+
+  const groupedSubcategories = useMemo(
+    () =>
+      CATEGORIES.map((category) => ({
+        ...category,
+        items: subcategoryDefinitions
+          .filter((definition) => definition.category === category.id)
+          .sort((left, right) => left.sort_order - right.sort_order || left.name.localeCompare(right.name)),
+      })),
+    [subcategoryDefinitions],
+  );
+
   const handleImageUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) {
@@ -468,7 +709,7 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
     try {
       const upload = await uploadProductImage(file, draft.id);
       setDraft((current) => ({ ...current, image: upload.publicUrl }));
-      setNotice(`Imagen subida a Storage en ${PRODUCT_IMAGE_BUCKET}. Guarda el producto para persistir la URL.`);
+      setNotice('Imagen cargada. Guarda el producto para aplicar el cambio.');
     } catch (error) {
       setNotice(error.message ?? 'No se pudo subir la imagen.');
     } finally {
@@ -493,15 +734,9 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
         nextProducts.unshift(result.product);
       }
 
-      nextProducts.sort((left, right) => left.sort_order - right.sort_order || left.name.localeCompare(right.name));
-      onProductsChange(nextProducts);
+      await persistProducts(nextProducts);
       setSelectedId(result.product.id);
-      setNotice(
-        result.persisted
-          ? 'Producto guardado en Supabase.'
-          : 'Supabase no está configurado. El cambio solo vive en esta sesión.',
-      );
-      await onCatalogRefresh();
+      setNotice(result.persisted ? 'Producto guardado correctamente.' : 'Producto guardado en esta sesión.');
     } catch (error) {
       setNotice(error.message ?? 'No se pudo guardar el producto.');
     } finally {
@@ -523,20 +758,169 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
     try {
       const result = await deleteProduct(draft.id);
       const nextProducts = products.filter((product) => product.id !== draft.id);
-      onProductsChange(nextProducts);
-      setNotice(
-        result.persisted
-          ? 'Producto eliminado de Supabase.'
-          : 'Supabase no está configurado. El producto solo desapareció del preview actual.',
-      );
-      await onCatalogRefresh();
+      await persistProducts(nextProducts);
+      setSelectedProductIds((current) => current.filter((id) => id !== draft.id));
+      setNotice(result.persisted ? 'Producto eliminado correctamente.' : 'Producto eliminado en esta sesión.');
     } catch (error) {
       setNotice(error.message ?? 'No se pudo eliminar el producto.');
     }
   };
 
+  const handleSaveSubcategory = async () => {
+    setNotice('');
+    setIsSavingSubcategory(true);
+
+    try {
+      const result = await saveSubcategoryDefinition(subcategoryDraft);
+      const nextDefinitions = [...subcategoryDefinitions];
+      const definitionIndex = nextDefinitions.findIndex((definition) => definition.id === result.definition.id);
+
+      if (definitionIndex >= 0) {
+        nextDefinitions[definitionIndex] = result.definition;
+      } else {
+        nextDefinitions.push(result.definition);
+      }
+
+      nextDefinitions.sort(
+        (left, right) =>
+          left.category.localeCompare(right.category) ||
+          left.sort_order - right.sort_order ||
+          left.name.localeCompare(right.name),
+      );
+      onSubcategoriesChange(nextDefinitions);
+      setSubcategoryDraft({
+        id: '',
+        category: draft.category,
+        name: '',
+        sort_order: nextDefinitions.length,
+      });
+      setNotice(result.persisted ? 'Subcategoría guardada correctamente.' : 'Subcategoría guardada en esta sesión.');
+    } catch (error) {
+      setNotice(error.message ?? 'No se pudo guardar la subcategoría.');
+    } finally {
+      setIsSavingSubcategory(false);
+    }
+  };
+
+  const handleSaveCurrentProductSubcategory = async () => {
+    setSubcategoryDraft((current) => ({
+      ...current,
+      category: draft.category,
+      name: draft.subcategory,
+    }));
+
+    try {
+      const result = await saveSubcategoryDefinition({
+        category: draft.category,
+        name: draft.subcategory,
+        sort_order: subcategoryDefinitions.length,
+      });
+      const nextDefinitions = [...subcategoryDefinitions];
+      const definitionIndex = nextDefinitions.findIndex((definition) => definition.id === result.definition.id);
+
+      if (definitionIndex >= 0) {
+        nextDefinitions[definitionIndex] = result.definition;
+      } else {
+        nextDefinitions.push(result.definition);
+      }
+
+      nextDefinitions.sort(
+        (left, right) =>
+          left.category.localeCompare(right.category) ||
+          left.sort_order - right.sort_order ||
+          left.name.localeCompare(right.name),
+      );
+      onSubcategoriesChange(nextDefinitions);
+      setNotice(result.persisted ? 'Subcategoría agregada a las opciones.' : 'Subcategoría guardada en esta sesión.');
+    } catch (error) {
+      setNotice(error.message ?? 'No se pudo guardar la subcategoría actual.');
+    }
+  };
+
+  const handleDeleteSubcategory = async (definition) => {
+    setNotice('');
+
+    try {
+      const result = await deleteSubcategoryDefinition(definition.id);
+      onSubcategoriesChange(subcategoryDefinitions.filter((item) => item.id !== definition.id));
+
+      if (draft.subcategory === definition.name && draft.category === definition.category) {
+        setDraft((current) => ({ ...current, subcategory: '' }));
+      }
+
+      if (subcategoryDraft.id === definition.id) {
+        setSubcategoryDraft({
+          id: '',
+          category: draft.category,
+          name: '',
+          sort_order: subcategoryDefinitions.length,
+        });
+      }
+
+      setNotice(result.persisted ? 'Subcategoría eliminada correctamente.' : 'Subcategoría eliminada en esta sesión.');
+    } catch (error) {
+      setNotice(error.message ?? 'No se pudo eliminar la subcategoría.');
+    }
+  };
+
+  const handleExportBackup = () => {
+    downloadJson(`dile-catalog-backup-${new Date().toISOString().slice(0, 10)}.json`, {
+      exported_at: new Date().toISOString(),
+      products,
+      subcategories: subcategoryDefinitions,
+    });
+    setNotice('Respaldo descargado en JSON.');
+  };
+
+  const handleRestoreBackup = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setNotice('');
+    setIsRestoringBackup(true);
+
+    try {
+      const text = await file.text();
+      const snapshot = JSON.parse(text);
+
+      if (!window.confirm('Esto reemplazará el catálogo actual con el contenido del respaldo. ¿Continuar?')) {
+        return;
+      }
+
+      const result = await restoreCatalogBackup(snapshot);
+      onProductsChange(result.products);
+      onSubcategoriesChange(result.subcategories);
+      setNotice(
+        result.persisted
+          ? `Respaldo restaurado. ${result.products.length} productos y ${result.subcategories.length} subcategorías sincronizados.`
+          : 'Respaldo cargado en esta sesión.',
+      );
+      await onCatalogRefresh();
+    } catch (error) {
+      setNotice(error.message ?? 'No se pudo restaurar el respaldo.');
+    } finally {
+      setIsRestoringBackup(false);
+      event.target.value = '';
+    }
+  };
+
   return (
     <section className="admin-shell">
+      <AdminHelp />
+
+      {isProductPickerOpen ? (
+        <ProductPicker
+          onClose={() => setIsProductPickerOpen(false)}
+          onSelect={handleSelectProduct}
+          products={filteredProducts}
+          query={query}
+          selectedId={draft?.id}
+          setQuery={setQuery}
+        />
+      ) : null}
+
       <div className="section-heading">
         <div>
           <span className="eyebrow">Panel administrativo</span>
@@ -559,32 +943,72 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
               type="search"
               value={query}
             />
+            {selectedProductIds.length ? (
+              <div className="bulk-action-row">
+                <button
+                  className="ghost-button bulk-action-button bulk-action-button-green"
+                  onClick={() => handleSetProductVisibility(selectedProductIds, true)}
+                  type="button"
+                >
+                  Activar seleccionados ({selectedProductIds.length})
+                </button>
+                <button
+                  className="ghost-button bulk-action-button"
+                  onClick={() => handleSetProductVisibility(selectedProductIds, false)}
+                  type="button"
+                >
+                  Ocultar seleccionados
+                </button>
+              </div>
+            ) : null}
             <button className="ghost-button" onClick={() => setDraft(createEmptyProduct())} type="button">
               Nuevo producto
             </button>
+            <button className="ghost-button" onClick={() => setIsProductPickerOpen(true)} type="button">
+              Lista de productos
+            </button>
+            <button className="ghost-button" onClick={handleExportBackup} type="button">
+              Exportar respaldo
+            </button>
+            <label className="ghost-button backup-upload-button">
+              {isRestoringBackup ? 'Restaurando...' : 'Restaurar respaldo'}
+              <input accept="application/json" onChange={handleRestoreBackup} type="file" />
+            </label>
           </div>
           <div className="admin-list">
             {filteredProducts.map((product) => (
-              <button
+              <div
                 className={classNames('admin-list-item', draft?.id === product.id && 'admin-list-item-active')}
                 key={product.id}
-                onClick={() => {
-                  setSelectedId(product.id);
-                  setDraft(product);
-                }}
-                type="button"
               >
-                <div>
-                  <strong>{product.name}</strong>
-                  <span>{[product.brand || 'Sin marca', product.sku || null, product.unit_size || null].filter(Boolean).join(' · ')}</span>
-                </div>
+                <label className="admin-list-check">
+                  <input
+                    checked={selectedProductIds.includes(product.id)}
+                    onChange={(event) => handleSelectForBulk(product.id, event.target.checked)}
+                    type="checkbox"
+                  />
+                </label>
+                <button className="admin-list-main" onClick={() => handleSelectProduct(product)} type="button">
+                  <div>
+                    <strong>{product.name}</strong>
+                    <span>{[product.brand || 'Sin marca', product.sku || null, product.unit_size || null].filter(Boolean).join(' · ')}</span>
+                  </div>
+                </button>
                 <div className="status-cluster">
-                  <span className={classNames('status-pill', product.visible ? 'status-pill-green' : 'status-pill-gray')}>
-                    {product.visible ? 'Visible' : 'Oculto'}
-                  </span>
+                  <button
+                    className={classNames(
+                      'status-pill',
+                      'status-toggle-button',
+                      product.visible ? 'status-pill-green' : 'status-pill-gray',
+                    )}
+                    onClick={() => handleSetProductVisibility([product.id], !product.visible)}
+                    type="button"
+                  >
+                    {product.visible ? 'Activo' : 'Oculto'}
+                  </button>
                   {product.featured ? <span className="status-pill status-pill-gold">Destacado</span> : null}
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         </aside>
@@ -660,22 +1084,34 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
             <label>
               Subcategoría
               <input
+                list="subcategory-options"
                 onChange={(event) => handleFieldChange('subcategory', event.target.value)}
                 type="text"
                 value={draft.subcategory}
               />
+              <datalist id="subcategory-options">
+                {suggestedSubcategories.map((value) => (
+                  <option key={value} value={value} />
+                ))}
+              </datalist>
+            </label>
+            <label>
+              Guardar esta subcategoría
+              <button className="ghost-button admin-inline-button" onClick={handleSaveCurrentProductSubcategory} type="button">
+                {isSavingSubcategory ? 'Guardando...' : 'Guardar opción'}
+              </button>
             </label>
             <label className="full-span">
               Imagen actual
               <input
                 onChange={(event) => handleFieldChange('image', event.target.value)}
-                placeholder="https://... o URL pública de Supabase Storage"
+                placeholder="https://... o ruta de imagen"
                 type="text"
                 value={draft.image}
               />
             </label>
             <label className="full-span upload-field">
-              Subir imagen a Supabase Storage
+              Subir nueva imagen
               <input
                 accept="image/png,image/jpeg,image/webp,image/avif,image/heic,.heic,.HEIC"
                 disabled={!isSupabaseConfigured || isUploadingImage}
@@ -686,8 +1122,8 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
                 {isSupabaseConfigured
                   ? isUploadingImage
                     ? 'Subiendo imagen...'
-                    : 'La imagen se sube al bucket product-images y luego se guarda la URL pública en el producto.'
-                  : 'Configura Supabase y el bucket product-images para habilitar uploads.'}
+                    : 'La imagen nueva reemplaza la actual cuando guardas el producto.'
+                  : 'La subida de imágenes no está disponible en este entorno.'}
               </small>
             </label>
             <label className="full-span">
@@ -697,6 +1133,7 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
                 rows="5"
                 value={draft.description}
               />
+              <small>Este campo es opcional.</small>
             </label>
           </div>
 
@@ -746,21 +1183,124 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange 
               Duplicar
             </button>
           </div>
+
+          <section className="taxonomy-panel">
+            <div className="taxonomy-panel-header">
+              <div>
+                <span className="eyebrow">Subcategorías</span>
+                <h3>Gestionar opciones por categoría</h3>
+              </div>
+              <p>Las cuatro categorías principales siguen fijas. Aquí administras las subcategorías.</p>
+            </div>
+            <div className="form-grid taxonomy-form-grid">
+              <label>
+                Categoría principal
+                <select
+                  onChange={(event) =>
+                    setSubcategoryDraft((current) => ({ ...current, category: event.target.value }))
+                  }
+                  value={subcategoryDraft.category}
+                >
+                  {CATEGORIES.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {formatCategory(category.id)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Nombre de subcategoría
+                <input
+                  onChange={(event) =>
+                    setSubcategoryDraft((current) => ({ ...current, name: event.target.value }))
+                  }
+                  type="text"
+                  value={subcategoryDraft.name}
+                />
+              </label>
+              <label>
+                Orden
+                <input
+                  onChange={(event) =>
+                    setSubcategoryDraft((current) => ({ ...current, sort_order: event.target.value }))
+                  }
+                  type="number"
+                  value={subcategoryDraft.sort_order}
+                />
+              </label>
+            </div>
+            <div className="button-row">
+              <button className="primary-button" onClick={handleSaveSubcategory} type="button">
+                {isSavingSubcategory ? 'Guardando...' : subcategoryDraft.id ? 'Actualizar subcategoría' : 'Crear subcategoría'}
+              </button>
+              {subcategoryDraft.id ? (
+                <button
+                  className="ghost-button"
+                  onClick={() =>
+                    setSubcategoryDraft({
+                      id: '',
+                      category: draft.category,
+                      name: '',
+                      sort_order: subcategoryDefinitions.length,
+                    })
+                  }
+                  type="button"
+                >
+                  Cancelar edición
+                </button>
+              ) : null}
+            </div>
+            <div className="taxonomy-groups">
+              {groupedSubcategories.map((category) => (
+                <div className="taxonomy-group" key={category.id}>
+                  <h4>{formatCategory(category.id)}</h4>
+                  <div className="taxonomy-list">
+                    {category.items.map((definition) => (
+                      <div className="taxonomy-item" key={definition.id}>
+                        <button
+                          className="ghost-button taxonomy-item-button"
+                          onClick={() => setSubcategoryDraft(definition)}
+                          type="button"
+                        >
+                          {definition.name}
+                        </button>
+                        <button
+                          className="ghost-button taxonomy-item-delete"
+                          onClick={() => handleDeleteSubcategory(definition)}
+                          type="button"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    ))}
+                    {!category.items.length ? <p className="taxonomy-empty">Sin subcategorías guardadas.</p> : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </form>
       </div>
     </section>
   );
 }
 
-function AdminPage({ products, profile, session, onCatalogRefresh, onProductsChange }) {
+function AdminPage({
+  products,
+  profile,
+  session,
+  subcategoryDefinitions,
+  onCatalogRefresh,
+  onProductsChange,
+  onSubcategoriesChange,
+}) {
   const canManage = profile?.role === 'admin' || profile?.role === 'editor';
 
   if (!isSupabaseConfigured) {
     return (
       <section className="admin-shell narrow-shell">
         <div className="notice notice-warning">
-          El panel administrativo está bloqueado hasta que Supabase Auth esté configurado en este
-          entorno.
+          El acceso administrativo no está disponible en este entorno.
         </div>
       </section>
     );
@@ -778,14 +1318,17 @@ function AdminPage({ products, profile, session, onCatalogRefresh, onProductsCha
     <AdminDashboard
       onCatalogRefresh={onCatalogRefresh}
       onProductsChange={onProductsChange}
+      onSubcategoriesChange={onSubcategoriesChange}
       products={products}
       profile={{ ...profile, email: session.user.email }}
+      subcategoryDefinitions={subcategoryDefinitions}
     />
   );
 }
 
 export default function App() {
   const [products, setProducts] = useState([]);
+  const [subcategoryDefinitions, setSubcategoryDefinitions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -793,8 +1336,12 @@ export default function App() {
   const canManage = profile?.role === 'admin' || profile?.role === 'editor';
 
   const refreshCatalog = async () => {
-    const result = await fetchCatalog({ includeHidden: canManage });
-    setProducts(result.products);
+    const [catalogResult, subcategoryResult] = await Promise.all([
+      fetchCatalog({ includeHidden: canManage }),
+      fetchSubcategoryDefinitions(),
+    ]);
+    setProducts(catalogResult.products);
+    setSubcategoryDefinitions(subcategoryResult.definitions);
     setLoading(false);
   };
 
@@ -872,21 +1419,23 @@ export default function App() {
       {loading ? (
         <main className="loading-shell">
           <div className="spinner" />
-          <p>Preparando catálogo y panel administrativo...</p>
+          <p>Cargando catálogo...</p>
         </main>
       ) : (
         <main className="page-shell">
           <Routes>
-            <Route path="/" element={<CatalogPage products={products} />} />
+            <Route path="/" element={<CatalogPage products={products} subcategoryDefinitions={subcategoryDefinitions} />} />
             <Route
               path="/admin"
               element={
                 <AdminPage
                   onCatalogRefresh={refreshCatalog}
                   onProductsChange={setProducts}
+                  onSubcategoriesChange={setSubcategoryDefinitions}
                   products={products}
                   profile={profile}
                   session={session}
+                  subcategoryDefinitions={subcategoryDefinitions}
                 />
               }
             />

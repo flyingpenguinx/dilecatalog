@@ -24,6 +24,16 @@ create table if not exists public.profiles (
   updated_at timestamptz not null default timezone('utc', now())
 );
 
+create table if not exists public.catalog_subcategories (
+  id text primary key,
+  category text not null check (category in ('frozen', 'grocery', 'dairy', 'vitamins')),
+  name text not null,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  unique (category, name)
+);
+
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
@@ -46,8 +56,15 @@ before update on public.profiles
 for each row
 execute function public.set_updated_at();
 
+drop trigger if exists catalog_subcategories_set_updated_at on public.catalog_subcategories;
+create trigger catalog_subcategories_set_updated_at
+before update on public.catalog_subcategories
+for each row
+execute function public.set_updated_at();
+
 alter table public.products enable row level security;
 alter table public.profiles enable row level security;
+alter table public.catalog_subcategories enable row level security;
 
 drop policy if exists "public can read visible products" on public.products;
 create policy "public can read visible products"
@@ -103,5 +120,33 @@ with check (
     from public.profiles manager
     where manager.id = auth.uid()
       and manager.role = 'admin'
+  )
+);
+
+drop policy if exists "public can read catalog subcategories" on public.catalog_subcategories;
+create policy "public can read catalog subcategories"
+on public.catalog_subcategories
+for select
+using (true);
+
+drop policy if exists "admins can manage catalog subcategories" on public.catalog_subcategories;
+create policy "admins can manage catalog subcategories"
+on public.catalog_subcategories
+for all
+to authenticated
+using (
+  exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
   )
 );

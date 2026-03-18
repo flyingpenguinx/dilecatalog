@@ -15,6 +15,16 @@ const CATEGORY_ALIASES = new Map([
 
 export const PRODUCT_IMAGE_BUCKET = 'product-images';
 
+function slugify(value) {
+  return String(value ?? '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export function normalizeCategoryId(categoryId) {
   const normalized = String(categoryId ?? '')
     .trim()
@@ -48,6 +58,116 @@ function createFallbackProduct(product, index) {
 
 export function buildFallbackCatalog() {
   return PRODUCTS.map(createFallbackProduct);
+}
+
+function normalizeSubcategoryDefinition(definition, index = 0) {
+  const category = normalizeCategoryId(definition.category);
+  const name = String(definition.name ?? '')
+    .trim();
+
+  return {
+    id: definition.id ?? `${category}:${slugify(name)}`,
+    category,
+    name,
+    sort_order: Number(definition.sort_order) || index,
+  };
+}
+
+export function buildFallbackSubcategoryDefinitions() {
+  return CATEGORIES.flatMap((category, categoryIndex) =>
+    (category.subcategories ?? []).map((name, subcategoryIndex) =>
+      normalizeSubcategoryDefinition(
+        {
+          category: category.id,
+          name,
+          sort_order: categoryIndex * 100 + subcategoryIndex,
+        },
+        categoryIndex * 100 + subcategoryIndex,
+      ),
+    ),
+  );
+}
+
+export async function fetchSubcategoryDefinitions() {
+  const fallback = buildFallbackSubcategoryDefinitions();
+
+  if (!isSupabaseConfigured || !supabase) {
+    return { definitions: fallback, source: 'local' };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('catalog_subcategories')
+      .select('*')
+      .order('category')
+      .order('sort_order')
+      .order('name');
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      return { definitions: fallback, source: 'seed' };
+    }
+
+    return {
+      definitions: data.map((definition, index) => normalizeSubcategoryDefinition(definition, index)),
+      source: 'supabase',
+    };
+  } catch (error) {
+    return {
+      definitions: fallback,
+      source: 'fallback',
+      error: error.message ?? 'Supabase returned an error.',
+    };
+  }
+}
+
+export async function saveSubcategoryDefinition(definition) {
+  const normalized = normalizeSubcategoryDefinition(definition, definition.sort_order);
+
+  if (!normalized.name) {
+    throw new Error('La subcategoría necesita un nombre.');
+  }
+
+  if (!isSupabaseConfigured || !supabase) {
+    return {
+      definition: normalized,
+      persisted: false,
+      source: 'local',
+    };
+  }
+
+  const { data, error } = await supabase
+    .from('catalog_subcategories')
+    .upsert([normalized], { onConflict: 'id' })
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return {
+    definition: normalizeSubcategoryDefinition(data, data.sort_order ?? 0),
+    persisted: true,
+    source: 'supabase',
+  };
+}
+
+export async function deleteSubcategoryDefinition(definitionId) {
+  if (!isSupabaseConfigured || !supabase) {
+    return { persisted: false, source: 'local' };
+  }
+
+  const { error } = await supabase.from('catalog_subcategories').delete().eq('id', definitionId);
+
+  if (error) {
+    throw error;
+  }
+
+  return { persisted: true, source: 'supabase' };
 }
 
 export function getCategoryMeta(categoryId) {
@@ -277,5 +397,94 @@ export async function uploadProductImage(file, productId) {
   return {
     path,
     publicUrl,
+  };
+}
+
+export async function restoreCatalogBackup(snapshot) {
+  const normalizedProducts = Array.isArray(snapshot?.products)
+    ? snapshot.products.map(normalizeForWrite)
+    : [];
+  const normalizedSubcategories = Array.isArray(snapshot?.subcategories)
+    ? snapshot.subcategories.map((definition, index) => normalizeSubcategoryDefinition(definition, index))
+    : [];
+
+  if (!normalizedProducts.length && !normalizedSubcategories.length) {
+    throw new Error('El archivo no contiene productos o subcategorías válidas.');
+  }
+
+  if (!isSupabaseConfigured || !supabase) {
+    return {
+      products: normalizedProducts.map((product, index) => createFallbackProduct(product, index)),
+      subcategories: normalizedSubcategories,
+      persisted: false,
+      source: 'local',
+    };
+  }
+
+  const { data: currentProducts, error: currentProductsError } = await supabase
+    .from('products')
+    .select('id');
+
+  if (currentProductsError) {
+    throw currentProductsError;
+  }
+
+  const { data: currentSubcategories, error: currentSubcategoriesError } = await supabase
+    .from('catalog_subcategories')
+    .select('id');
+
+  if (currentSubcategoriesError) {
+    throw currentSubcategoriesError;
+  }
+
+  if (normalizedProducts.length) {
+    const { error } = await supabase.from('products').upsert(normalizedProducts, { onConflict: 'id' });
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  if (normalizedSubcategories.length) {
+    const { error } = await supabase
+      .from('catalog_subcategories')
+      .upsert(normalizedSubcategories, { onConflict: 'id' });
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  const productIds = new Set(normalizedProducts.map((product) => product.id));
+  const subcategoryIds = new Set(normalizedSubcategories.map((definition) => definition.id));
+  const productsToDelete = (currentProducts ?? []).map((row) => row.id).filter((id) => !productIds.has(id));
+  const subcategoriesToDelete = (currentSubcategories ?? [])
+    .map((row) => row.id)
+    .filter((id) => !subcategoryIds.has(id));
+
+  if (productsToDelete.length) {
+    const { error } = await supabase.from('products').delete().in('id', productsToDelete);
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  if (subcategoriesToDelete.length) {
+    const { error } = await supabase
+      .from('catalog_subcategories')
+      .delete()
+      .in('id', subcategoriesToDelete);
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  return {
+    products: normalizedProducts.map((product, index) => createFallbackProduct(product, index)),
+    subcategories: normalizedSubcategories,
+    persisted: true,
+    source: 'supabase',
   };
 }
