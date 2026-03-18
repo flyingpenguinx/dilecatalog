@@ -340,7 +340,7 @@ export function subscribeToAuthChanges(callback) {
 
 export async function signInWithPassword(email, password) {
   if (!isSupabaseConfigured || !supabase) {
-    throw new Error('Configure Supabase before using login.');
+    throw new Error('La conexión con Supabase no está activa. Reinicia la app después de configurar las variables.');
   }
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });

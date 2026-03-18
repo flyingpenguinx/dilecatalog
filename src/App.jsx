@@ -435,6 +435,11 @@ function LoginPanel({ onSignedIn }) {
             value={password}
           />
         </label>
+          {!isSupabaseConfigured ? (
+            <p className="notice notice-warning">
+              El acceso requiere una conexión activa con Supabase. Si acabas de configurar las variables del proyecto, reinicia la app y vuelve a intentar.
+            </p>
+          ) : null}
         {error ? <p className="notice notice-error">{error}</p> : null}
         <button className="primary-button" disabled={isSubmitting} type="submit">
           {isSubmitting ? 'Entrando...' : 'Entrar'}
@@ -1294,23 +1299,6 @@ function AdminPage({
   onSubcategoriesChange,
 }) {
   const canManage = profile?.role === 'admin' || profile?.role === 'editor';
-
-  if (!isSupabaseConfigured) {
-    return (
-      <section className="admin-shell narrow-shell">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">Acceso</span>
-            <h2>El panel necesita Supabase para iniciar sesión</h2>
-          </div>
-          <p>Por seguridad no existe acceso local sin autenticación real.</p>
-        </div>
-        <div className="notice notice-warning">
-          Configura VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY, luego reinicia npm run dev o vuelve a compilar el proyecto.
-        </div>
-      </section>
-    );
-  }
 
   if (!session) {
     return <LoginPanel onSignedIn={onCatalogRefresh} />;
