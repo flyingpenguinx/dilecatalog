@@ -1,5 +1,5 @@
 // Categories with their unique brands - Updated structure based on image naming convention
-const CATEGORIES = [
+export const CATEGORIES = [
     { 
         id: 'frozen', 
         name: 'Frozen', 
@@ -31,7 +31,7 @@ const CATEGORIES = [
 ];
 
 // Products organized by category - Generated from image files with Category-Brand-Subcategory-Name pattern
-const PRODUCTS = [
+export const PRODUCTS = [
     // ==================== FROZEN ====================
     // Atol
     { id: 1001, name: 'Atol de elote', brand: 'Cuzcatlecos', category: 'frozen', subcategory: 'Atol', description: 'Traditional corn atole drink.', image: 'images/Frozen-Cuzcatlecos-Atol-Atol de elote.jpg' },
@@ -286,47 +286,47 @@ const PRODUCTS = [
 ];
 
 // Get products by category
-function getProductsByCategory(categoryId) {
+export function getProductsByCategory(categoryId) {
     return PRODUCTS.filter(p => p.category === categoryId);
 }
 
 // Get products by category and subcategory
-function getProductsBySubcategory(categoryId, subcategory) {
+export function getProductsBySubcategory(categoryId, subcategory) {
     return PRODUCTS.filter(p => p.category === categoryId && p.subcategory === subcategory);
 }
 
 // Get products by brand
-function getProductsByBrand(brand) {
+export function getProductsByBrand(brand) {
     return PRODUCTS.filter(p => p.brand.toLowerCase() === brand.toLowerCase());
 }
 
 // Get brands for a category
-function getBrandsForCategory(categoryId) {
+export function getBrandsForCategory(categoryId) {
     const category = CATEGORIES.find(c => c.id === categoryId);
     return category ? category.brands : [];
 }
 
 // Get subcategories for a category
-function getSubcategoriesForCategory(categoryId) {
+export function getSubcategoriesForCategory(categoryId) {
     const category = CATEGORIES.find(c => c.id === categoryId);
     return category ? category.subcategories : [];
 }
 
 // Get unique brands from products in a category
-function getUniqueBrandsInCategory(categoryId) {
+export function getUniqueBrandsInCategory(categoryId) {
     const products = getProductsByCategory(categoryId);
     const brands = [...new Set(products.map(p => p.brand))];
     return brands.filter(b => b); // Remove empty strings
 }
 
 // Get unique subcategories from products in a category
-function getUniqueSubcategoriesInCategory(categoryId) {
+export function getUniqueSubcategoriesInCategory(categoryId) {
     const products = getProductsByCategory(categoryId);
     return [...new Set(products.map(p => p.subcategory))].filter(s => s);
 }
 
 // Search products
-function searchProducts(query) {
+export function searchProducts(query) {
     const lowerQuery = query.toLowerCase();
     return PRODUCTS.filter(p => 
         p.name.toLowerCase().includes(lowerQuery) ||
