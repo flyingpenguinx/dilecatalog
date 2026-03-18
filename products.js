@@ -3,28 +3,24 @@ export const CATEGORIES = [
     { 
         id: 'frozen', 
         name: 'Frozen', 
-        icon: '❄️',
         subcategories: ['Pupusa', 'Tamal', 'Atol', 'Fruit', 'Platano'],
         brands: ['Nokal', 'Cuzcatlecos', 'Racor', 'La Ricura', 'Maya']
     },
     { 
         id: 'grocery', 
         name: 'Grocery', 
-        icon: '🛒',
         subcategories: ['Chips', 'Pan Galleta', 'Granos', 'Harina', 'Cafe', 'Bebida', 'Salsa', 'Consume', 'Sopa', 'Chocolate', 'Vidro', 'Empanizador', 'Misc'],
         brands: ['Diana', 'Bocadeli', 'Naturas', 'Malher', 'Maggi', 'Racor', 'Dona Lisa', 'Lido', 'Pan Genesis', 'Pan Genisis', 'Sinai', 'Pozuelo', 'McCormick', 'Mccormick', 'Tortrix', 'Chiky', 'Melher', 'Cuzcatlecos', 'Cosecha Nueva', 'Nueva Cosecha', 'Arroz San Francisco', 'Centroamericano', 'Ducal', 'El Migueleno', 'Cafe Quetzal', 'La Jarrillita', 'La Salvadorena', 'La Salvadoreno', 'Lempira', 'Listto', 'Picamas', 'Senorial', 'TC', 'Yummies', 'Alo', 'De la Granja', 'Del Fruto', 'Energy', 'Frito Lays', 'Frusecha', 'Incaparina', 'Dona Blanca', 'El Salvadoreno', 'Sula']
     },
     { 
-        id: 'lactos', 
-        name: 'Lácteos/Dairy', 
-        icon: '🧀',
+        id: 'dairy', 
+        name: 'Dairy', 
         subcategories: ['Queso', 'Crema', 'Cuajada'],
         brands: ['La Ricura', 'Cuzcatlecos', 'DLC', 'Cremimex', 'Frusecha']
     },
     { 
-        id: 'vitaminas', 
-        name: 'Vitaminas', 
-        icon: '💊',
+        id: 'vitamins', 
+        name: 'Vitamins', 
         subcategories: ['Crema', 'Kids', 'Liquido'],
         brands: ['Kofal', 'Mariguanol', 'NueroBion', 'nuerobion']
     }

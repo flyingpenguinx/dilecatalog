@@ -209,7 +209,6 @@ a {
 
 .hero-panel {
   display: grid;
-  grid-template-columns: 1.4fr 0.8fr;
   gap: 1.25rem;
   padding: 1.4rem;
   border-radius: var(--radius-xl);
@@ -241,42 +240,6 @@ a {
 }
 
 .hero-copy p,
-.section-heading p,
-.modal-description,
-.catalog-copy p,
-.notice,
-.empty-panel p {
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.9rem;
-  margin-top: 1.2rem;
-}
-
-.search-shell {
-  display: grid;
-  gap: 0.5rem;
-  flex: 1 1 320px;
-  padding: 1rem;
-  border-radius: var(--radius-lg);
-  background: var(--panel-strong);
-  border: 1px solid var(--line);
-}
-
-.search-shell span,
-.detail-label {
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-}
-
-.search-shell input,
 .admin-toolbar input,
 .admin-form input,
 .admin-form select,
@@ -572,13 +535,26 @@ a {
 
 .admin-layout {
   display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 1rem;
+  grid-template-columns: 300px 1fr;
+  gap: 0.85rem;
+}
+
+.admin-shell .section-heading {
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.admin-shell .section-heading h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.admin-shell .section-heading p {
+  font-size: 0.95rem;
 }
 
 .admin-list-panel,
 .admin-form {
-  padding: 1rem;
+  padding: 0.85rem;
   border-radius: var(--radius-lg);
   background: var(--panel-strong);
   border: 1px solid var(--line);
@@ -601,9 +577,9 @@ a {
 
 .admin-list {
   display: grid;
-  gap: 0.65rem;
-  margin-top: 0.9rem;
-  max-height: 780px;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  max-height: 700px;
   overflow: auto;
 }
 
@@ -612,18 +588,21 @@ a {
   justify-content: space-between;
   gap: 0.8rem;
   width: 100%;
-  padding: 0.9rem;
-  border-radius: 16px;
+  padding: 0.75rem 0.8rem;
+  border-radius: 14px;
   border: 1px solid var(--line);
   background: white;
   text-align: left;
 }
+.admin-list-item strong {
+  font-size: 0.96rem;
+}
 
 .admin-list-item span {
   display: block;
-  margin-top: 0.25rem;
+  margin-top: 0.18rem;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 .admin-list-item-active {
@@ -656,13 +635,14 @@ a {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.9rem;
+  gap: 0.75rem;
 }
 
 .admin-form label,
 .auth-form label {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.35rem;
+  font-size: 0.92rem;
   font-weight: 600;
 }
 
@@ -682,18 +662,19 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.95rem 1rem;
-  border-radius: 16px;
+  padding: 0.7rem 0.85rem;
+  border-radius: 14px;
   border: 1px solid var(--line);
   background: white;
+  font-size: 0.92rem;
 }
 
 .preview-panel {
   margin-top: 1rem;
-  padding: 0.8rem;
-  border-radius: 22px;
+  padding: 0.65rem;
+  border-radius: 18px;
   overflow: hidden;
-  max-width: 320px;
+  max-width: 260px;
 }
 
 .preview-panel img {
@@ -759,7 +740,6 @@ a {
   .admin-layout,
   .modal-layout,
   .section-heading,
-  .hero-card dl,
   .detail-grid {
     grid-template-columns: 1fr;
   }

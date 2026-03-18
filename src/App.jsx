@@ -8,9 +8,9 @@ import {
   fetchProfile,
   getCategoryMeta,
   getCurrentSession,
+  normalizeCategoryId,
   PRODUCT_IMAGE_BUCKET,
   saveProduct,
-  seedSupabaseCatalog,
   signInWithPassword,
   signOut,
   subscribeToAuthChanges,
@@ -22,8 +22,8 @@ const CATEGORY_LABELS = {
   all: 'Todos',
   frozen: 'Frozen',
   grocery: 'Grocery',
-  lactos: 'Lácteos',
-  vitaminas: 'Vitaminas',
+  dairy: 'Dairy',
+  vitamins: 'Vitamins',
 };
 
 function classNames(...values) {
@@ -41,6 +41,47 @@ function formatImagePath(image) {
   }
 
   return `/${image}`;
+}
+
+function buildImageCandidates(image) {
+  const normalized = formatImagePath(image);
+
+  if (!normalized || normalized.startsWith('http://') || normalized.startsWith('https://')) {
+    return normalized ? [normalized] : [];
+  }
+
+  const extensionMatch = normalized.match(/\.[^./]+$/);
+  const basePath = extensionMatch ? normalized.slice(0, -extensionMatch[0].length) : normalized;
+
+  return [...new Set([normalized, `${basePath}.HEIC`, `${basePath}.heic`, '/logos/dile logo cow.jpg'])];
+}
+
+function ProductImage({ alt, image, className }) {
+  const candidates = useMemo(() => buildImageCandidates(image), [image]);
+  const [candidateIndex, setCandidateIndex] = useState(0);
+
+  useEffect(() => {
+    setCandidateIndex(0);
+  }, [image]);
+
+  const src = candidates[candidateIndex] ?? '/logos/dile logo cow.jpg';
+
+  return (
+    <img
+      alt={alt}
+      className={className}
+      onError={() => {
+        setCandidateIndex((current) => {
+          if (current >= candidates.length - 1) {
+            return current;
+          }
+
+          return current + 1;
+        });
+      }}
+      src={src}
+    />
+  );
 }
 
 function buildCategorySummary(products) {
@@ -105,7 +146,7 @@ function ProductModal({ product, onClose }) {
         </button>
         <div className="modal-layout">
           <div className="modal-visual">
-            <img src={formatImagePath(product.image)} alt={product.name} />
+            <ProductImage alt={product.name} image={product.image} />
           </div>
           <div className="modal-copy">
             <span className="eyebrow">{formatCategory(product.category)}</span>
@@ -143,7 +184,7 @@ function ProductModal({ product, onClose }) {
   );
 }
 
-function CatalogPage({ products, sourceLabel }) {
+function CatalogPage({ products }) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [subcategory, setSubcategory] = useState('all');
@@ -180,10 +221,10 @@ function CatalogPage({ products, sourceLabel }) {
       <section className="hero-panel">
         <div className="hero-copy">
           <span className="eyebrow">DILE Distributors</span>
-          <h1>Catálogo React listo para Supabase.</h1>
+          <h1>Encuentra los productos que distribuimos.</h1>
           <p>
-            El sitio ahora puede funcionar con datos en vivo, control de visibilidad, productos
-            destacados y panel administrativo con login.
+            Explora por categoria, filtra productos destacados y encuentra rapidamente lo que tu
+            negocio necesita.
           </p>
           <div className="hero-actions">
             <label className="search-shell" htmlFor="catalog-search">
@@ -204,23 +245,6 @@ function CatalogPage({ products, sourceLabel }) {
               {featuredOnly ? 'Mostrando solo destacados' : 'Filtrar destacados'}
             </button>
           </div>
-        </div>
-        <div className="hero-card">
-          <img alt="DILE banner" src="/logos/dile logo banner.jpg" />
-          <dl>
-            <div>
-              <dt>Fuente actual</dt>
-              <dd>{sourceLabel}</dd>
-            </div>
-            <div>
-              <dt>Productos visibles</dt>
-              <dd>{visibleProducts.length}</dd>
-            </div>
-            <div>
-              <dt>Destacados</dt>
-              <dd>{visibleProducts.filter((product) => product.featured).length}</dd>
-            </div>
-          </dl>
         </div>
       </section>
 
@@ -288,7 +312,7 @@ function CatalogPage({ products, sourceLabel }) {
               <article className="catalog-card" key={product.id}>
                 <button className="catalog-card-button" onClick={() => setSelectedProduct(product)} type="button">
                   <div className="catalog-image-shell">
-                    <img alt={product.name} src={formatImagePath(product.image)} />
+                    <ProductImage alt={product.name} image={product.image} />
                     {product.featured ? <span className="floating-badge">Destacado</span> : null}
                   </div>
                   <div className="catalog-copy">
@@ -382,7 +406,7 @@ function AccessDenied({ onSignOut }) {
   );
 }
 
-function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange, sourceLabel }) {
+function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange }) {
   const [selectedId, setSelectedId] = useState(products[0]?.id ?? null);
   const [draft, setDraft] = useState(products[0] ?? createEmptyProduct());
   const [query, setQuery] = useState('');
@@ -511,41 +535,18 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange,
     }
   };
 
-  const handleSeed = async () => {
-    setNotice('');
-
-    try {
-      const result = await seedSupabaseCatalog();
-      setNotice(
-        result.source === 'supabase'
-          ? `Se enviaron ${result.inserted} productos a Supabase.`
-          : 'Supabase no está configurado. El seed quedó disponible solo como fallback local.',
-      );
-      await onCatalogRefresh();
-    } catch (error) {
-      setNotice(error.message ?? 'No se pudo poblar Supabase con el catálogo actual.');
-    }
-  };
-
   return (
     <section className="admin-shell">
       <div className="section-heading">
         <div>
           <span className="eyebrow">Panel administrativo</span>
-          <h2>Editar nombres, descripciones y visibilidad</h2>
+          <h2>Gestionar productos</h2>
         </div>
         <p>
           Sesión: {profile?.display_name || profile?.email || 'Usuario autenticado'} · Rol:{' '}
-          {profile?.role || 'sin rol'} · Fuente: {sourceLabel}
+          {profile?.role || 'sin rol'}
         </p>
       </div>
-
-      {!isSupabaseConfigured ? (
-        <div className="notice notice-warning">
-          Supabase no está configurado todavía. El panel funciona como preview local para terminar la
-          migración sin bloquearte.
-        </div>
-      ) : null}
 
       {notice ? <div className="notice notice-info">{notice}</div> : null}
 
@@ -560,9 +561,6 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange,
             />
             <button className="ghost-button" onClick={() => setDraft(createEmptyProduct())} type="button">
               Nuevo producto
-            </button>
-            <button className="ghost-button" onClick={handleSeed} type="button">
-              Seed actual a Supabase
             </button>
           </div>
           <div className="admin-list">
@@ -679,7 +677,7 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange,
             <label className="full-span upload-field">
               Subir imagen a Supabase Storage
               <input
-                accept="image/png,image/jpeg,image/webp,image/avif"
+                accept="image/png,image/jpeg,image/webp,image/avif,image/heic,.heic,.HEIC"
                 disabled={!isSupabaseConfigured || isUploadingImage}
                 onChange={handleImageUpload}
                 type="file"
@@ -723,7 +721,7 @@ function AdminDashboard({ products, profile, onCatalogRefresh, onProductsChange,
 
           {draft.image ? (
             <div className="preview-panel">
-              <img alt={draft.name || 'Preview de producto'} src={formatImagePath(draft.image)} />
+              <ProductImage alt={draft.name || 'Preview de producto'} image={draft.image} />
             </div>
           ) : null}
 
@@ -759,13 +757,12 @@ function AdminPage({ products, profile, session, onCatalogRefresh, onProductsCha
 
   if (!isSupabaseConfigured) {
     return (
-      <AdminDashboard
-        onCatalogRefresh={onCatalogRefresh}
-        onProductsChange={onProductsChange}
-        products={products}
-        profile={{ display_name: 'Preview local', role: 'admin' }}
-        sourceLabel="fallback local"
-      />
+      <section className="admin-shell narrow-shell">
+        <div className="notice notice-warning">
+          El panel administrativo está bloqueado hasta que Supabase Auth esté configurado en este
+          entorno.
+        </div>
+      </section>
     );
   }
 
@@ -783,30 +780,21 @@ function AdminPage({ products, profile, session, onCatalogRefresh, onProductsCha
       onProductsChange={onProductsChange}
       products={products}
       profile={{ ...profile, email: session.user.email }}
-      sourceLabel="Supabase"
     />
   );
 }
 
 export default function App() {
   const [products, setProducts] = useState([]);
-  const [sourceLabel, setSourceLabel] = useState('cargando');
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
 
-  const canManage = profile?.role === 'admin' || profile?.role === 'editor' || !isSupabaseConfigured;
+  const canManage = profile?.role === 'admin' || profile?.role === 'editor';
 
   const refreshCatalog = async () => {
     const result = await fetchCatalog({ includeHidden: canManage });
     setProducts(result.products);
-    setSourceLabel(
-      result.source === 'supabase'
-        ? 'Supabase en vivo'
-        : result.source === 'seed'
-          ? 'fallback local hasta poblar Supabase'
-          : 'catálogo local migrado desde products.js',
-    );
     setLoading(false);
   };
 
@@ -873,9 +861,11 @@ export default function App() {
           <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/">
             Catálogo
           </NavLink>
-          <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/admin">
-            Admin
-          </NavLink>
+          {session ? (
+            <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/admin">
+              Admin
+            </NavLink>
+          ) : null}
         </nav>
       </header>
 
@@ -887,7 +877,7 @@ export default function App() {
       ) : (
         <main className="page-shell">
           <Routes>
-            <Route path="/" element={<CatalogPage products={products} sourceLabel={sourceLabel} />} />
+            <Route path="/" element={<CatalogPage products={products} />} />
             <Route
               path="/admin"
               element={
@@ -906,8 +896,7 @@ export default function App() {
       )}
 
       <footer className="site-footer">
-        <p>DILE Distributors · React + Supabase migration starter</p>
-        <p>GitHub Pages compatible with hash routing. Vercel is the cleaner host once Storage and Auth are live.</p>
+        <p>DILE Distributors</p>
       </footer>
     </div>
   );

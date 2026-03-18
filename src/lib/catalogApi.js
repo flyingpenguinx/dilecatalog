@@ -2,7 +2,26 @@ import { CATEGORIES, PRODUCTS } from '../../products.js';
 import { isSupabaseConfigured, supabase } from './supabase.js';
 
 const categoryById = new Map(CATEGORIES.map((category) => [category.id, category]));
+const CATEGORY_ALIASES = new Map([
+  ['frozen', 'frozen'],
+  ['grocery', 'grocery'],
+  ['dairy', 'dairy'],
+  ['lactos', 'dairy'],
+  ['lacteos', 'dairy'],
+  ['vitamins', 'vitamins'],
+  ['vitaminas', 'vitamins'],
+  ['vitamina', 'vitamins'],
+]);
+
 export const PRODUCT_IMAGE_BUCKET = 'product-images';
+
+export function normalizeCategoryId(categoryId) {
+  const normalized = String(categoryId ?? '')
+    .trim()
+    .toLowerCase();
+
+  return CATEGORY_ALIASES.get(normalized) ?? (normalized || 'grocery');
+}
 
 function normalizeImagePath(image) {
   if (!image) return '';
@@ -16,6 +35,7 @@ function normalizeImagePath(image) {
 function createFallbackProduct(product, index) {
   return {
     ...product,
+    category: normalizeCategoryId(product.category),
     image: normalizeImagePath(product.image),
     sku: product.sku ?? '',
     unit_size: product.unit_size ?? '',
@@ -31,7 +51,7 @@ export function buildFallbackCatalog() {
 }
 
 export function getCategoryMeta(categoryId) {
-  return categoryById.get(categoryId) ?? null;
+  return categoryById.get(normalizeCategoryId(categoryId)) ?? null;
 }
 
 export async function fetchCatalog(options = {}) {
@@ -79,7 +99,7 @@ export function createEmptyProduct() {
     brand: '',
     sku: '',
     unit_size: '',
-    category: CATEGORIES[0]?.id ?? 'grocery',
+    category: CATEGORIES[0]?.id ?? 'frozen',
     subcategory: '',
     description: '',
     image: '',
@@ -97,7 +117,7 @@ function normalizeForWrite(product) {
     brand: product.brand?.trim() ?? '',
     sku: product.sku?.trim() ?? '',
     unit_size: product.unit_size?.trim() ?? '',
-    category: product.category,
+    category: normalizeCategoryId(product.category),
     subcategory: product.subcategory?.trim() ?? '',
     description: product.description?.trim() ?? '',
     image: product.image?.trim() ?? '',
