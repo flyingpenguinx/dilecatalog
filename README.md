@@ -7,16 +7,19 @@
 - A protected admin route can edit:
   - product names
   - brand
+  - brand library
   - SKU
   - unit size
   - main category and subcategory
+  - category library
   - optional description
   - image replacement
   - visible/hidden state
   - featured state
   - sort order
-- A backup export can download the current products and subcategories as JSON.
-- A backup restore can replace the current catalog from a JSON export.
+- A backup export can download the current products, brands, categories, and subcategories as JSON.
+- A CSV export can be opened in Excel or Google Sheets and imported back for bulk SKU/product updates.
+- The admin panel now includes an image audit so you can review assigned and unassigned local images.
 - A bulk image upload script can move catalog images to Storage and generate a manifest so the site can stop depending on repo-hosted images.
 - GitHub Pages remains workable because the app uses hash routing.
 
@@ -24,9 +27,9 @@
 
 - Product changes made by admins are stored in Supabase, not in the website code.
 - Frontend changes such as layout, colors, or component structure do not overwrite product data unless code explicitly writes to the database.
-- Subcategories are now stored separately in `catalog_subcategories`, so catalog structure changes are not tied to product rows.
+- Categories, brands, and subcategories can now live in separate tables so catalog structure changes are not tied to product rows.
 - Use the admin `Exportar respaldo` button before major catalog edits if you want a manual JSON backup.
-- Use the admin `Restaurar respaldo` control only when you intentionally want to replace the current catalog with a saved backup.
+- Use the admin CSV import for bulk SKU updates or to prepare data in Excel or Google Sheets.
 
 ## Recommended hosting
 
@@ -59,14 +62,13 @@ GitHub Pages still works for a purely client-rendered setup.
 ## Local setup
 
 1. Install dependencies.
-2. Copy `.env.example` to `.env`.
-3. Add your Supabase URL and anon key.
-4. Create a public Storage bucket named `product-images`.
-5. Make sure authenticated admins can upload and public users can read images.
-6. Run the SQL in `supabase/schema.sql` inside the Supabase SQL editor, or use your Supabase AI agent to apply the same tables and RLS rules.
-7. Create your first auth user in Supabase Auth.
-8. Insert that user's uid into `profiles` with `role = 'admin'`.
-9. Start the app.
+2. Create a local `.env` file with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` if you want to run against Supabase locally.
+3. Create a public Storage bucket named `product-images`.
+4. Make sure authenticated admins can upload and public users can read images.
+5. Run the SQL in `supabase/schema.sql` inside the Supabase SQL editor.
+6. Create your first auth user in Supabase Auth.
+7. Insert that user's uid into `profiles` with `role = 'admin'`.
+8. Start the app.
 
 ```bash
 npm install
@@ -105,17 +107,16 @@ After that, the app will prefer the uploaded image URLs from the manifest and on
 
 Use the image upload field in the admin form to send product images directly to the `product-images` bucket and store the resulting public URL on the product.
 
-If you want admin-managed subcategories, apply the `catalog_subcategories` table from `supabase/schema.sql`.
+If your Supabase project already exists, apply the updated `supabase/schema.sql` so these admin features persist:
 
-If your Supabase project was created before SKU and unit size support were added, update the `products` table to include:
-
-- `sku text not null default ''`
-- `unit_size text not null default ''`
+- `catalog_categories`
+- `catalog_brands`
+- `catalog_subcategories`
+- `sku` and `unit_size` columns on `products` if they were missing before
 
 ## Suggested next features
 
 - inventory counts per SKU
 - per-product price or wholesale tiers
-- brand management table
 - scheduled publish/unpublish dates
 - audit log of admin changes

@@ -16,6 +16,9 @@ create table if not exists public.products (
   updated_at timestamptz not null default timezone('utc', now())
 );
 
+alter table public.products add column if not exists sku text not null default '';
+alter table public.products add column if not exists unit_size text not null default '';
+
 create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   display_name text,
@@ -24,15 +27,36 @@ create table if not exists public.profiles (
   updated_at timestamptz not null default timezone('utc', now())
 );
 
+create table if not exists public.catalog_categories (
+  id text primary key,
+  name text not null,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now())
+);
+
+create table if not exists public.catalog_brands (
+  id text primary key,
+  name text not null unique,
+  category text not null default '',
+  notes text not null default '',
+  sort_order integer not null default 0,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now())
+);
+
 create table if not exists public.catalog_subcategories (
   id text primary key,
-  category text not null check (category in ('frozen', 'grocery', 'dairy', 'vitamins')),
+  category text not null,
   name text not null,
   sort_order integer not null default 0,
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
   unique (category, name)
 );
+
+alter table public.catalog_subcategories
+drop constraint if exists catalog_subcategories_category_check;
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -56,6 +80,18 @@ before update on public.profiles
 for each row
 execute function public.set_updated_at();
 
+drop trigger if exists catalog_categories_set_updated_at on public.catalog_categories;
+create trigger catalog_categories_set_updated_at
+before update on public.catalog_categories
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists catalog_brands_set_updated_at on public.catalog_brands;
+create trigger catalog_brands_set_updated_at
+before update on public.catalog_brands
+for each row
+execute function public.set_updated_at();
+
 drop trigger if exists catalog_subcategories_set_updated_at on public.catalog_subcategories;
 create trigger catalog_subcategories_set_updated_at
 before update on public.catalog_subcategories
@@ -64,6 +100,8 @@ execute function public.set_updated_at();
 
 alter table public.products enable row level security;
 alter table public.profiles enable row level security;
+alter table public.catalog_categories enable row level security;
+alter table public.catalog_brands enable row level security;
 alter table public.catalog_subcategories enable row level security;
 
 drop policy if exists "public can read visible products" on public.products;
@@ -123,6 +161,62 @@ with check (
   )
 );
 
+drop policy if exists "public can read catalog categories" on public.catalog_categories;
+create policy "public can read catalog categories"
+on public.catalog_categories
+for select
+using (true);
+
+drop policy if exists "admins can manage catalog categories" on public.catalog_categories;
+create policy "admins can manage catalog categories"
+on public.catalog_categories
+for all
+to authenticated
+using (
+  exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
+  )
+);
+
+drop policy if exists "public can read catalog brands" on public.catalog_brands;
+create policy "public can read catalog brands"
+on public.catalog_brands
+for select
+using (true);
+
+drop policy if exists "admins can manage catalog brands" on public.catalog_brands;
+create policy "admins can manage catalog brands"
+on public.catalog_brands
+for all
+to authenticated
+using (
+  exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
+  )
+);
+
 drop policy if exists "public can read catalog subcategories" on public.catalog_subcategories;
 create policy "public can read catalog subcategories"
 on public.catalog_subcategories
@@ -150,3 +244,72 @@ with check (
       and profiles.role in ('admin', 'editor')
   )
 );
+
+insert into public.catalog_categories (id, name, sort_order)
+select *
+from (
+  values
+    ('frozen', 'Frozen', 10),
+    ('grocery', 'Grocery', 20),
+    ('dairy', 'Dairy', 30),
+    ('vitamins', 'Vitamins', 40)
+) as seed (id, name, sort_order)
+on conflict (id) do update set
+  name = excluded.name,
+  sort_order = excluded.sort_order;
+
+insert into public.catalog_brands (id, name, category, sort_order)
+select
+  lower(regexp_replace(trim(brand), '[^a-zA-Z0-9]+', '-', 'g')) as id,
+  trim(brand) as name,
+  coalesce(nullif(trim(category), ''), '') as category,
+  row_number() over (order by min(sort_order), trim(brand)) * 10 as sort_order
+from public.products
+where trim(brand) <> ''
+group by trim(brand), coalesce(nullif(trim(category), ''), '')
+on conflict (id) do nothing;
+
+insert into public.catalog_subcategories (id, category, name, sort_order)
+select *
+from (
+  values
+    ('frozen:pupusa', 'frozen', 'Pupusa', 10),
+    ('frozen:tamal', 'frozen', 'Tamal', 20),
+    ('frozen:atol', 'frozen', 'Atol', 30),
+    ('frozen:fruit', 'frozen', 'Fruit', 40),
+    ('frozen:platano', 'frozen', 'Platano', 50),
+    ('grocery:chips', 'grocery', 'Chips', 110),
+    ('grocery:pan-galleta', 'grocery', 'Pan Galleta', 120),
+    ('grocery:granos', 'grocery', 'Granos', 130),
+    ('grocery:harina', 'grocery', 'Harina', 140),
+    ('grocery:cafe', 'grocery', 'Cafe', 150),
+    ('grocery:bebida', 'grocery', 'Bebida', 160),
+    ('grocery:salsa', 'grocery', 'Salsa', 170),
+    ('grocery:consume', 'grocery', 'Consume', 180),
+    ('grocery:sopa', 'grocery', 'Sopa', 190),
+    ('grocery:chocolate', 'grocery', 'Chocolate', 200),
+    ('grocery:vidro', 'grocery', 'Vidro', 210),
+    ('grocery:empanizador', 'grocery', 'Empanizador', 220),
+    ('grocery:misc', 'grocery', 'Misc', 230),
+    ('dairy:queso', 'dairy', 'Queso', 310),
+    ('dairy:crema', 'dairy', 'Crema', 320),
+    ('dairy:cuajada', 'dairy', 'Cuajada', 330),
+    ('vitamins:crema', 'vitamins', 'Crema', 410),
+    ('vitamins:kids', 'vitamins', 'Kids', 420),
+    ('vitamins:liquido', 'vitamins', 'Liquido', 430)
+) as seed (id, category, name, sort_order)
+on conflict (id) do nothing;
+
+insert into public.catalog_subcategories (id, category, name, sort_order)
+select
+  lower(regexp_replace(trim(category), '[^a-zA-Z0-9]+', '-', 'g'))
+    || ':'
+    || lower(regexp_replace(trim(subcategory), '[^a-zA-Z0-9]+', '-', 'g')) as id,
+  trim(category) as category,
+  trim(subcategory) as name,
+  row_number() over (partition by trim(category) order by min(sort_order), trim(subcategory)) * 10 as sort_order
+from public.products
+where trim(category) <> ''
+  and trim(subcategory) <> ''
+group by trim(category), trim(subcategory)
+on conflict (id) do nothing;

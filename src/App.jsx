@@ -1,47 +1,39 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
-import { CATEGORIES } from './data/catalog-config.js';
-import imageManifest from './data/image-manifest.json';
 import {
+  buildFallbackCategoryDefinitions,
   createEmptyProduct,
-  deleteSubcategoryDefinition,
+  deleteBrandDefinition,
+  deleteCategoryDefinition,
   deleteProduct,
+  fetchBrandDefinitions,
   fetchCatalog,
+  fetchCategoryDefinitions,
   fetchProfile,
-  getCurrentSession,
   fetchSubcategoryDefinitions,
-  restoreCatalogBackup,
+  getCurrentSession,
+  importCatalogDataset,
+  PRODUCT_IMAGE_BUCKET,
+  saveBrandDefinition,
+  saveCategoryDefinition,
   saveProduct,
-  saveSubcategoryDefinition,
+  seedSupabaseCatalog,
   signInWithPassword,
   signOut,
   subscribeToAuthChanges,
   uploadProductImage,
 } from './lib/catalogApi.js';
+import {
+  buildCatalogSnapshot,
+  buildImageAudit,
+  buildProductsCsv,
+  downloadTextFile,
+  parseDatasetFile,
+} from './lib/catalogDataset.js';
 import { isSupabaseConfigured } from './lib/supabase.js';
-
-const CATEGORY_LABELS = {
-  all: 'Todos',
-  frozen: 'Congelados',
-  grocery: 'Abarrotes',
-  dairy: 'Lacteos',
-  vitamins: 'Vitaminas',
-};
 
 function classNames(...values) {
   return values.filter(Boolean).join(' ');
-}
-
-function NoTranslate({ as: Component = 'span', children, className }) {
-  return (
-    <Component className={className} translate="no">
-      {children}
-    </Component>
-  );
-}
-
-function formatCategory(categoryId) {
-  return CATEGORY_LABELS[categoryId] ?? categoryId;
 }
 
 function formatImagePath(image) {
@@ -53,117 +45,34 @@ function formatImagePath(image) {
   return `/${image}`;
 }
 
-function resolveManifestImage(image) {
-  const normalized = formatImagePath(image);
-
-  if (!normalized || normalized.startsWith('http://') || normalized.startsWith('https://')) {
-    return '';
-  }
-
-  const trimmed = normalized.replace(/^\//, '');
-  const filename = trimmed.split('/').pop() ?? '';
-  const baseName = filename.replace(/\.[^./]+$/, '');
-
-  return imageManifest[normalized] ?? imageManifest[trimmed] ?? imageManifest[filename] ?? imageManifest[baseName] ?? '';
+function titleCase(value) {
+  return String(value ?? '')
+    .replace(/[-_]+/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(' ');
 }
 
-function buildImageCandidates(image) {
-  const normalized = formatImagePath(image);
-  const manifestImage = resolveManifestImage(image);
-
-  if (!normalized || normalized.startsWith('http://') || normalized.startsWith('https://')) {
-    return normalized ? [normalized] : [];
-  }
-
-  const extensionMatch = normalized.match(/\.[^./]+$/);
-  const extension = extensionMatch?.[0]?.toLowerCase() ?? '';
-  const basePath = extension ? normalized.slice(0, -extension.length) : normalized;
-  const browserSafeExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
-  const isHeicSource = extension === '.heic' || extension === '.heif';
-  const safeFallbacks =
-    !extension || isHeicSource
-      ? browserSafeExtensions.map((value) => `${basePath}${value}`)
-      : [];
-
-  return [
-    ...new Set([
-      manifestImage,
-      ...safeFallbacks,
-      normalized,
-      '/logos/dile logo cow.jpg',
-    ].filter(Boolean)),
-  ];
+function getCategoryName(categoryId, categoryDefinitions) {
+  return categoryDefinitions.find((definition) => definition.id === categoryId)?.name ?? titleCase(categoryId);
 }
 
-function ProductImage({ alt, image, className, fetchPriority = 'auto', loading = 'lazy' }) {
-  const candidates = useMemo(() => buildImageCandidates(image), [image]);
-  const [candidateIndex, setCandidateIndex] = useState(0);
+function buildCategorySummary(products, categoryDefinitions) {
+  const categoryIds = [...new Set([
+    ...categoryDefinitions.map((definition) => definition.id),
+    ...products.map((product) => product.category).filter(Boolean),
+  ])];
 
-  useEffect(() => {
-    setCandidateIndex(0);
-  }, [image]);
-
-  const src = candidates[candidateIndex] ?? '/logos/dile logo cow.jpg';
-
-  return (
-    <img
-      alt={alt}
-      className={className}
-      decoding="async"
-      fetchPriority={fetchPriority}
-      loading={loading}
-      onError={() => {
-        setCandidateIndex((current) => {
-          if (current >= candidates.length - 1) {
-            return current;
-          }
-
-          return current + 1;
-        });
-      }}
-      src={src}
-    />
-  );
-}
-
-function buildCategorySummary(products, subcategoryDefinitions) {
-  return ['all', ...CATEGORIES.map((category) => category.id)].map((categoryId) => ({
+  return ['all', ...categoryIds].map((categoryId, index) => ({
     id: categoryId,
-    label: categoryId === 'all' ? 'Todos' : formatCategory(categoryId),
-    marker:
-      categoryId === 'all'
-        ? '00'
-        : String(CATEGORIES.findIndex((category) => category.id === categoryId) + 1).padStart(2, '0'),
-    note:
-      categoryId === 'all'
-        ? 'Colección completa'
-        : `${subcategoryDefinitions.filter((definition) => definition.category === categoryId).length} subcategorías`,
-    count:
-      categoryId === 'all'
-        ? products.length
-        : products.filter((product) => product.category === categoryId).length,
+    label: categoryId === 'all' ? 'Todos' : getCategoryName(categoryId, categoryDefinitions),
+    marker: categoryId === 'all' ? '00' : String(index).padStart(2, '0'),
+    note: categoryId === 'all' ? 'Colección completa' : 'Categoría activa',
+    count: categoryId === 'all'
+      ? products.length
+      : products.filter((product) => product.category === categoryId).length,
   }));
-}
-
-function buildSubcategorySuggestions(categoryId, subcategoryDefinitions, currentValue = '') {
-  return [...new Set(
-    subcategoryDefinitions
-      .filter((definition) => definition.category === categoryId)
-      .map((definition) => definition.name)
-      .concat(currentValue ? [currentValue] : []),
-  )].sort((left, right) => left.localeCompare(right));
-}
-
-function downloadJson(filename, payload) {
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const objectUrl = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = objectUrl;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(objectUrl);
 }
 
 function applyCatalogFilters(products, search, category, subcategory, featuredOnly) {
@@ -186,7 +95,57 @@ function applyCatalogFilters(products, search, category, subcategory, featuredOn
   });
 }
 
-function ProductModal({ product, onClose }) {
+function sortDefinitions(definitions) {
+  return [...definitions].sort(
+    (left, right) => (left.sort_order ?? 0) - (right.sort_order ?? 0) || left.name.localeCompare(right.name),
+  );
+}
+
+function upsertDefinition(definitions, definition) {
+  const next = [...definitions];
+  const index = next.findIndex((entry) => entry.id === definition.id);
+
+  if (index >= 0) {
+    next[index] = definition;
+  } else {
+    next.push(definition);
+  }
+
+  return sortDefinitions(next);
+}
+
+function mergeById(currentItems, incomingItems) {
+  const byId = new Map(currentItems.map((item) => [String(item.id), item]));
+  incomingItems.forEach((item) => {
+    byId.set(String(item.id), item);
+  });
+  return [...byId.values()];
+}
+
+function getNextSortOrder(definitions) {
+  const current = definitions.reduce((max, definition) => Math.max(max, Number(definition.sort_order) || 0), 0);
+  return current + 10;
+}
+
+function createEmptyBrand(categoryDefinitions, sortOrder) {
+  return {
+    id: `brand-${Date.now()}`,
+    name: '',
+    category: categoryDefinitions[0]?.id ?? '',
+    notes: '',
+    sort_order: sortOrder,
+  };
+}
+
+function createEmptyCategory(sortOrder) {
+  return {
+    id: '',
+    name: '',
+    sort_order: sortOrder,
+  };
+}
+
+function ProductModal({ categoryDefinitions, product, onClose }) {
   useEffect(() => {
     if (!product) {
       return undefined;
@@ -212,18 +171,16 @@ function ProductModal({ product, onClose }) {
         </button>
         <div className="modal-layout">
           <div className="modal-visual">
-            <ProductImage alt={product.name} fetchPriority="high" image={product.image} loading="eager" />
+            <img src={formatImagePath(product.image)} alt={product.name} />
           </div>
           <div className="modal-copy">
-            <span className="eyebrow">{formatCategory(product.category)}</span>
-            <NoTranslate as="h2">{product.name}</NoTranslate>
-            <NoTranslate as="p" className="modal-brand">
-              {product.brand || 'Sin marca'}
-            </NoTranslate>
+            <span className="eyebrow">{getCategoryName(product.category, categoryDefinitions)}</span>
+            <h2>{product.name}</h2>
+            <p className="modal-brand">{product.brand || 'Sin marca'}</p>
             <div className="detail-grid">
               <div>
                 <span className="detail-label">Subcategoría</span>
-                <NoTranslate as="strong">{product.subcategory || 'No definida'}</NoTranslate>
+                <strong>{product.subcategory || 'No definida'}</strong>
               </div>
               <div>
                 <span className="detail-label">SKU</span>
@@ -252,7 +209,7 @@ function ProductModal({ product, onClose }) {
   );
 }
 
-function CatalogPage({ products, subcategoryDefinitions }) {
+function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [subcategory, setSubcategory] = useState('all');
@@ -267,21 +224,28 @@ function CatalogPage({ products, subcategoryDefinitions }) {
     () => products.filter((product) => product.visible !== false),
     [products],
   );
+
   const categorySummary = useMemo(
-    () => buildCategorySummary(visibleProducts, subcategoryDefinitions),
-    [subcategoryDefinitions, visibleProducts],
+    () => buildCategorySummary(visibleProducts, categoryDefinitions),
+    [categoryDefinitions, visibleProducts],
   );
+
   const subcategories = useMemo(() => {
     if (category === 'all') {
       return [];
     }
 
-    return [...new Set(
-      visibleProducts
-        .filter((product) => product.category === category && product.subcategory)
-        .map((product) => product.subcategory),
-    )].sort((left, right) => left.localeCompare(right));
-  }, [category, visibleProducts]);
+    const productValues = visibleProducts
+      .filter((product) => product.category === category && product.subcategory)
+      .map((product) => product.subcategory);
+
+    const managedValues = subcategoryDefinitions
+      .filter((definition) => definition.category === category)
+      .map((definition) => definition.name);
+
+    return [...new Set([...managedValues, ...productValues])].sort((left, right) => left.localeCompare(right));
+  }, [category, subcategoryDefinitions, visibleProducts]);
+
   const filteredProducts = useMemo(
     () => applyCatalogFilters(visibleProducts, search, category, subcategory, featuredOnly),
     [category, featuredOnly, search, subcategory, visibleProducts],
@@ -289,18 +253,21 @@ function CatalogPage({ products, subcategoryDefinitions }) {
 
   return (
     <>
-      <section className="filter-panel filter-panel-compact">
-        <div className="catalog-toolbar">
-          <div className="catalog-toolbar-heading">
-            <span className="eyebrow">DILE Distribuidora León</span>
-            <p>Busca por producto, marca o descripción.</p>
-          </div>
-          <div className="catalog-toolbar-actions">
+      <section className="hero-panel">
+        <div className="hero-copy">
+          <span className="eyebrow">DILE Distributors</span>
+          <h1>Encuentra los productos que distribuimos.</h1>
+          <p>
+            Explora por categoría, filtra productos destacados y encuentra rápidamente lo que tu
+            negocio necesita.
+          </p>
+          <div className="hero-actions">
             <label className="search-shell" htmlFor="catalog-search">
+              <span>Buscar</span>
               <input
                 id="catalog-search"
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Buscar por producto, marca o descripción"
+                placeholder="Marca, producto o descripción"
                 type="search"
                 value={search}
               />
@@ -310,10 +277,13 @@ function CatalogPage({ products, subcategoryDefinitions }) {
               onClick={() => setFeaturedOnly((value) => !value)}
               type="button"
             >
-              {featuredOnly ? 'Solo destacados' : 'Destacados'}
+              {featuredOnly ? 'Mostrando solo destacados' : 'Filtrar destacados'}
             </button>
           </div>
         </div>
+      </section>
+
+      <section className="filter-panel">
         <div className="chip-row">
           {categorySummary.map((entry) => (
             <button
@@ -357,16 +327,19 @@ function CatalogPage({ products, subcategoryDefinitions }) {
       <section className="catalog-section">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">Catálogo</span>
-            <h2>{filteredProducts.length} productos disponibles</h2>
+            <span className="eyebrow">Catálogo público</span>
+            <h2>{filteredProducts.length} productos listos para mostrar</h2>
           </div>
-          <p>Usa categorías, subcategorías y búsqueda para encontrar productos rápido.</p>
+          <p>
+            Los productos ocultos quedan fuera del catálogo público, pero siguen siendo editables en
+            el panel de administración.
+          </p>
         </div>
 
         {filteredProducts.length === 0 ? (
           <div className="empty-panel">
             <h3>No hay coincidencias</h3>
-            <p>Prueba otra búsqueda o cambia los filtros.</p>
+            <p>Ajusta los filtros o corrige los productos desde el panel de administración.</p>
           </div>
         ) : (
           <div className="catalog-grid">
@@ -374,13 +347,13 @@ function CatalogPage({ products, subcategoryDefinitions }) {
               <article className="catalog-card" key={product.id}>
                 <button className="catalog-card-button" onClick={() => setSelectedProduct(product)} type="button">
                   <div className="catalog-image-shell">
-                    <ProductImage alt={product.name} image={product.image} />
+                    <img alt={product.name} src={formatImagePath(product.image)} />
                     {product.featured ? <span className="floating-badge">Destacado</span> : null}
                   </div>
                   <div className="catalog-copy">
-                    <span className="catalog-meta">{formatCategory(product.category)}</span>
-                    <NoTranslate as="h3">{product.name}</NoTranslate>
-                    <NoTranslate as="p">{product.brand || 'Sin marca'}</NoTranslate>
+                    <span className="catalog-meta">{getCategoryName(product.category, categoryDefinitions)}</span>
+                    <h3>{product.name}</h3>
+                    <p>{[product.brand, product.unit_size].filter(Boolean).join(' · ')}</p>
                   </div>
                 </button>
               </article>
@@ -389,7 +362,11 @@ function CatalogPage({ products, subcategoryDefinitions }) {
         )}
       </section>
 
-      <ProductModal onClose={() => setSelectedProduct(null)} product={selectedProduct} />
+      <ProductModal
+        categoryDefinitions={categoryDefinitions}
+        onClose={() => setSelectedProduct(null)}
+        product={selectedProduct}
+      />
     </>
   );
 }
@@ -422,7 +399,7 @@ function LoginPanel({ onSignedIn }) {
           <span className="eyebrow">Admin</span>
           <h2>Inicia sesión para editar el catálogo</h2>
         </div>
-        <p>Solo usuarios autorizados pueden entrar y hacer cambios.</p>
+        <p>Supabase Auth controla quién puede entrar. El panel requiere un perfil con rol admin o editor.</p>
       </div>
       <form className="admin-form auth-form" onSubmit={handleSubmit}>
         <label>
@@ -445,11 +422,6 @@ function LoginPanel({ onSignedIn }) {
             value={password}
           />
         </label>
-          {!isSupabaseConfigured ? (
-            <p className="notice notice-warning">
-              El acceso requiere una conexión activa con Supabase. Si acabas de configurar las variables del proyecto, reinicia la app y vuelve a intentar.
-            </p>
-          ) : null}
         {error ? <p className="notice notice-error">{error}</p> : null}
         <button className="primary-button" disabled={isSubmitting} type="submit">
           {isSubmitting ? 'Entrando...' : 'Entrar'}
@@ -459,34 +431,13 @@ function LoginPanel({ onSignedIn }) {
   );
 }
 
-function AccessDenied({ onSignOut, profile, session }) {
-  const role = profile?.role ?? null;
-  const email = session?.user?.email ?? '';
-  const missingProfile = !profile;
-
+function AccessDenied({ onSignOut }) {
   return (
     <section className="admin-shell narrow-shell">
-      <div className="section-heading">
-        <div>
-          <span className="eyebrow">Acceso</span>
-          <h2>La cuenta inició sesión, pero no puede administrar</h2>
-        </div>
-        <p>El panel solo permite los roles admin o editor.</p>
-      </div>
       <div className="notice notice-error">
-        {missingProfile
-          ? 'Esta cuenta no tiene un perfil en public.profiles.'
-          : `El rol actual de esta cuenta es ${role}.`}
+        Tu usuario no tiene rol de administrador. Agrega tu uid en la tabla profiles con role =
+        admin o editor.
       </div>
-      {email ? (
-        <div className="notice notice-warning">
-          Usuario actual: {email}
-          <br />
-          {missingProfile
-            ? 'Crea un registro en public.profiles para este usuario y asígnale role = admin.'
-            : 'Actualiza public.profiles y cambia role a admin o editor para este usuario.'}
-        </div>
-      ) : null}
       <button className="ghost-button" onClick={onSignOut} type="button">
         Cerrar sesión
       </button>
@@ -494,129 +445,43 @@ function AccessDenied({ onSignOut, profile, session }) {
   );
 }
 
-function AdminHelp() {
-  return (
-    <section className="admin-help">
-      <div className="admin-help-header">
-        <div>
-          <span className="eyebrow">Guía rápida</span>
-          <h3>Cómo usar el panel</h3>
-        </div>
-        <p>Todo está pensado para editar el catálogo sin tocar nada técnico.</p>
-      </div>
-      <div className="admin-help-grid">
-        <details open>
-          <summary>Editar un producto</summary>
-          <p>Busca el producto, haz clic sobre él, cambia los campos y presiona Guardar cambios.</p>
-        </details>
-        <details>
-          <summary>Cambiar la imagen</summary>
-          <p>Usa el campo de subida para reemplazar la imagen. También puedes pegar una URL si ya la tienes.</p>
-        </details>
-        <details>
-          <summary>Categorías y subcategorías</summary>
-          <p>Las categorías principales son fijas. Las subcategorías se pueden crear, editar o eliminar abajo.</p>
-        </details>
-        <details>
-          <summary>Respaldo y restauración</summary>
-          <p>Exporta un respaldo antes de cambios grandes. Si hace falta, puedes restaurar un archivo JSON del catálogo.</p>
-        </details>
-      </div>
-    </section>
-  );
-}
-
-function ProductPicker({ onClose, onSelect, products, query, setQuery, selectedId }) {
-  useEffect(() => {
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onClose]);
-
-  return (
-    <div className="overlay" onClick={onClose}>
-      <section className="picker-shell" onClick={(event) => event.stopPropagation()}>
-        <div className="picker-header">
-          <div>
-            <span className="eyebrow">Lista rápida</span>
-            <h3>Buscar productos por nombre</h3>
-          </div>
-          <button className="ghost-button" onClick={onClose} type="button">
-            Cerrar
-          </button>
-        </div>
-        <label className="picker-search">
-          <span>Buscar producto</span>
-          <input
-            autoFocus
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Escribe nombre, marca, SKU o subcategoría"
-            type="search"
-            value={query}
-          />
-        </label>
-        <div className="picker-list">
-          {products.map((product) => (
-            <button
-              className={classNames('picker-item', selectedId === product.id && 'picker-item-active')}
-              key={product.id}
-              onClick={() => onSelect(product)}
-              type="button"
-            >
-              <NoTranslate as="strong">{product.name}</NoTranslate>
-              <span>
-                <NoTranslate>{product.brand || 'Sin marca'}</NoTranslate>
-                {' · '}
-                {formatCategory(product.category)}
-                {product.subcategory ? (
-                  <>
-                    {' · '}
-                    <NoTranslate>{product.subcategory}</NoTranslate>
-                  </>
-                ) : null}
-              </span>
-            </button>
-          ))}
-          {products.length === 0 ? <p className="taxonomy-empty">No hay productos con esa búsqueda.</p> : null}
-        </div>
-      </section>
-    </div>
-  );
-}
-
 function AdminDashboard({
+  brandDefinitions,
+  categoryDefinitions,
+  onBrandDefinitionsChange,
+  onCatalogRefresh,
+  onCategoryDefinitionsChange,
+  onProductsChange,
+  onSubcategoryDefinitionsChange,
   products,
   profile,
+  sourceLabel,
   subcategoryDefinitions,
-  onCatalogRefresh,
-  onProductsChange,
-  onSubcategoriesChange,
 }) {
+  const [selectedView, setSelectedView] = useState('products');
   const [selectedId, setSelectedId] = useState(products[0]?.id ?? null);
   const [draft, setDraft] = useState(products[0] ?? createEmptyProduct());
+  const [selectedBrandId, setSelectedBrandId] = useState(brandDefinitions[0]?.id ?? null);
+  const [brandDraft, setBrandDraft] = useState(
+    brandDefinitions[0] ?? createEmptyBrand(categoryDefinitions, getNextSortOrder(brandDefinitions)),
+  );
+  const [selectedCategoryId, setSelectedCategoryId] = useState(categoryDefinitions[0]?.id ?? null);
+  const [categoryDraft, setCategoryDraft] = useState(
+    categoryDefinitions[0] ?? createEmptyCategory(getNextSortOrder(categoryDefinitions)),
+  );
   const [query, setQuery] = useState('');
   const [notice, setNotice] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isSavingBrand, setIsSavingBrand] = useState(false);
+  const [isSavingCategory, setIsSavingCategory] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [isProductPickerOpen, setIsProductPickerOpen] = useState(false);
-  const [selectedProductIds, setSelectedProductIds] = useState([]);
-  const [subcategoryDraft, setSubcategoryDraft] = useState({
-    id: '',
-    category: CATEGORIES[0]?.id ?? 'frozen',
-    name: '',
-    sort_order: 0,
-  });
-  const [isSavingSubcategory, setIsSavingSubcategory] = useState(false);
-  const [isRestoringBackup, setIsRestoringBackup] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   useEffect(() => {
     if (!products.length) {
-      setDraft(createEmptyProduct());
+      const nextDraft = createEmptyProduct();
+      nextDraft.category = categoryDefinitions[0]?.id ?? nextDraft.category;
+      setDraft(nextDraft);
       setSelectedId(null);
       return;
     }
@@ -624,19 +489,31 @@ function AdminDashboard({
     const nextProduct = products.find((product) => product.id === selectedId) ?? products[0];
     setSelectedId(nextProduct.id);
     setDraft(nextProduct);
-  }, [products, selectedId]);
+  }, [categoryDefinitions, products, selectedId]);
 
   useEffect(() => {
-    setSubcategoryDraft((current) =>
-      current.id
-        ? current
-        : {
-            ...current,
-            category: draft.category || current.category,
-            sort_order: subcategoryDefinitions.length,
-          },
-    );
-  }, [draft.category, subcategoryDefinitions.length]);
+    if (!brandDefinitions.length) {
+      setSelectedBrandId(null);
+      setBrandDraft(createEmptyBrand(categoryDefinitions, getNextSortOrder(brandDefinitions)));
+      return;
+    }
+
+    const nextBrand = brandDefinitions.find((definition) => definition.id === selectedBrandId) ?? brandDefinitions[0];
+    setSelectedBrandId(nextBrand.id);
+    setBrandDraft(nextBrand);
+  }, [brandDefinitions, categoryDefinitions, selectedBrandId]);
+
+  useEffect(() => {
+    if (!categoryDefinitions.length) {
+      setSelectedCategoryId(null);
+      setCategoryDraft(createEmptyCategory(getNextSortOrder(categoryDefinitions)));
+      return;
+    }
+
+    const nextCategory = categoryDefinitions.find((definition) => definition.id === selectedCategoryId) ?? categoryDefinitions[0];
+    setSelectedCategoryId(nextCategory.id);
+    setCategoryDraft(nextCategory);
+  }, [categoryDefinitions, selectedCategoryId]);
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -657,84 +534,151 @@ function AdminDashboard({
     });
   }, [products, query]);
 
+  const filteredBrands = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return brandDefinitions;
+    }
+
+    return brandDefinitions.filter((definition) => {
+      return (
+        definition.name.toLowerCase().includes(normalizedQuery) ||
+        definition.category.toLowerCase().includes(normalizedQuery) ||
+        definition.notes.toLowerCase().includes(normalizedQuery)
+      );
+    });
+  }, [brandDefinitions, query]);
+
+  const filteredCategories = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return categoryDefinitions;
+    }
+
+    return categoryDefinitions.filter((definition) => {
+      return (
+        definition.name.toLowerCase().includes(normalizedQuery) ||
+        definition.id.toLowerCase().includes(normalizedQuery)
+      );
+    });
+  }, [categoryDefinitions, query]);
+
+  const imageAudit = useMemo(() => buildImageAudit(products), [products]);
+
+  const filteredAssignedImages = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return imageAudit.assigned;
+    }
+
+    return imageAudit.assigned.filter(({ imageKey, product }) => {
+      return (
+        product.name.toLowerCase().includes(normalizedQuery) ||
+        product.brand.toLowerCase().includes(normalizedQuery) ||
+        imageKey.toLowerCase().includes(normalizedQuery)
+      );
+    });
+  }, [imageAudit.assigned, query]);
+
+  const filteredUnassignedImages = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return imageAudit.unassignedLocal;
+    }
+
+    return imageAudit.unassignedLocal.filter((asset) => asset.path.toLowerCase().includes(normalizedQuery));
+  }, [imageAudit.unassignedLocal, query]);
+
+  const availableBrandNames = useMemo(() => {
+    return [...new Set([
+      ...brandDefinitions.map((definition) => definition.name).filter(Boolean),
+      ...products.map((product) => product.brand).filter(Boolean),
+    ])].sort((left, right) => left.localeCompare(right));
+  }, [brandDefinitions, products]);
+
+  const availableCategories = useMemo(() => {
+    if (categoryDefinitions.length > 0) {
+      return categoryDefinitions;
+    }
+
+    return buildFallbackCategoryDefinitions();
+  }, [categoryDefinitions]);
+
+  const availableSubcategories = useMemo(() => {
+    const currentCategory = draft.category || availableCategories[0]?.id || 'grocery';
+    const managed = subcategoryDefinitions
+      .filter((definition) => definition.category === currentCategory)
+      .map((definition) => definition.name);
+    const productValues = products
+      .filter((product) => product.category === currentCategory && product.subcategory)
+      .map((product) => product.subcategory);
+
+    return [...new Set([...managed, ...productValues])].sort((left, right) => left.localeCompare(right));
+  }, [availableCategories, draft.category, products, subcategoryDefinitions]);
+
+  const syncDefinitionFromProduct = async (product) => {
+    const warnings = [];
+
+    if (product.brand?.trim()) {
+      const nextBrand = brandDefinitions.find((definition) => definition.name === product.brand.trim());
+      if (!nextBrand) {
+        const result = await saveBrandDefinition({
+          name: product.brand.trim(),
+          category: product.category,
+          sort_order: getNextSortOrder(brandDefinitions),
+          notes: '',
+        });
+        onBrandDefinitionsChange((current) => upsertDefinition(current, result.definition));
+        if (result.warning) {
+          warnings.push(result.warning);
+        }
+      }
+    }
+
+    if (product.category?.trim()) {
+      const categoryId = product.category.trim().toLowerCase();
+      const nextCategory = categoryDefinitions.find((definition) => definition.id === categoryId);
+      if (!nextCategory) {
+        const result = await saveCategoryDefinition({
+          id: categoryId,
+          name: titleCase(categoryId),
+          sort_order: getNextSortOrder(categoryDefinitions),
+        });
+        onCategoryDefinitionsChange((current) => upsertDefinition(current, result.definition));
+        if (result.warning) {
+          warnings.push(result.warning);
+        }
+      }
+    }
+
+    if (product.subcategory?.trim()) {
+      const exists = subcategoryDefinitions.some((definition) => {
+        return definition.category === product.category && definition.name === product.subcategory.trim();
+      });
+
+      if (!exists) {
+        onSubcategoryDefinitionsChange((current) => sortDefinitions([
+          ...current,
+          {
+            id: `${product.category}:${product.subcategory.trim().toLowerCase().replace(/\s+/g, '-')}`,
+            category: product.category,
+            name: product.subcategory.trim(),
+            sort_order: getNextSortOrder(current),
+          },
+        ]));
+      }
+    }
+
+    return warnings;
+  };
+
   const handleFieldChange = (field, value) => {
     setDraft((current) => ({ ...current, [field]: value }));
   };
-
-  const handleSelectProduct = (product) => {
-    setSelectedId(product.id);
-    setDraft(product);
-    setIsProductPickerOpen(false);
-  };
-
-  const handleSelectForBulk = (productId, checked) => {
-    setSelectedProductIds((current) => {
-      if (checked) {
-        return current.includes(productId) ? current : [...current, productId];
-      }
-
-      return current.filter((id) => id !== productId);
-    });
-  };
-
-  const persistProducts = async (nextProducts) => {
-    const sortedProducts = [...nextProducts].sort(
-      (left, right) => left.sort_order - right.sort_order || left.name.localeCompare(right.name),
-    );
-    onProductsChange(sortedProducts);
-    await onCatalogRefresh();
-    return sortedProducts;
-  };
-
-  const handleSetProductVisibility = async (productIds, visible) => {
-    if (!productIds.length) {
-      return;
-    }
-
-    setNotice('');
-
-    try {
-      const nextProducts = [...products];
-
-      await Promise.all(
-        productIds.map(async (productId) => {
-          const index = nextProducts.findIndex((product) => product.id === productId);
-          if (index < 0) {
-            return;
-          }
-
-          const result = await saveProduct({ ...nextProducts[index], visible });
-          nextProducts[index] = result.product;
-        }),
-      );
-
-      await persistProducts(nextProducts);
-      setSelectedProductIds((current) => current.filter((id) => !productIds.includes(id)));
-      setNotice(
-        visible
-          ? `${productIds.length} producto(s) marcados como activos en el catálogo.`
-          : `${productIds.length} producto(s) ocultados del catálogo.`,
-      );
-    } catch (error) {
-      setNotice(error.message ?? 'No se pudo actualizar la visibilidad de los productos.');
-    }
-  };
-
-  const suggestedSubcategories = useMemo(
-    () => buildSubcategorySuggestions(draft.category, subcategoryDefinitions, draft.subcategory),
-    [draft.category, draft.subcategory, subcategoryDefinitions],
-  );
-
-  const groupedSubcategories = useMemo(
-    () =>
-      CATEGORIES.map((category) => ({
-        ...category,
-        items: subcategoryDefinitions
-          .filter((definition) => definition.category === category.id)
-          .sort((left, right) => left.sort_order - right.sort_order || left.name.localeCompare(right.name)),
-      })),
-    [subcategoryDefinitions],
-  );
 
   const handleImageUpload = async (event) => {
     const file = event.target.files?.[0];
@@ -755,7 +699,7 @@ function AdminDashboard({
     try {
       const upload = await uploadProductImage(file, draft.id);
       setDraft((current) => ({ ...current, image: upload.publicUrl }));
-      setNotice('Imagen cargada. Guarda el producto para aplicar el cambio.');
+      setNotice(`Imagen subida a Storage en ${PRODUCT_IMAGE_BUCKET}. Guarda el producto para persistir la URL.`);
     } catch (error) {
       setNotice(error.message ?? 'No se pudo subir la imagen.');
     } finally {
@@ -780,9 +724,16 @@ function AdminDashboard({
         nextProducts.unshift(result.product);
       }
 
-      await persistProducts(nextProducts);
+      nextProducts.sort((left, right) => left.sort_order - right.sort_order || left.name.localeCompare(right.name));
+      onProductsChange(nextProducts);
       setSelectedId(result.product.id);
-      setNotice(result.persisted ? 'Producto guardado correctamente.' : 'Producto guardado en esta sesión.');
+      const warnings = await syncDefinitionFromProduct(result.product);
+      setNotice(
+        result.persisted
+          ? ['Producto guardado en Supabase.', ...warnings].join(' ')
+          : ['Supabase no está configurado. El cambio solo vive en esta sesión.', ...warnings].join(' '),
+      );
+      await onCatalogRefresh();
     } catch (error) {
       setNotice(error.message ?? 'No se pudo guardar el producto.');
     } finally {
@@ -804,563 +755,754 @@ function AdminDashboard({
     try {
       const result = await deleteProduct(draft.id);
       const nextProducts = products.filter((product) => product.id !== draft.id);
-      await persistProducts(nextProducts);
-      setSelectedProductIds((current) => current.filter((id) => id !== draft.id));
-      setNotice(result.persisted ? 'Producto eliminado correctamente.' : 'Producto eliminado en esta sesión.');
+      onProductsChange(nextProducts);
+      setNotice(
+        result.persisted
+          ? 'Producto eliminado de Supabase.'
+          : 'Supabase no está configurado. El producto solo desapareció del preview actual.',
+      );
+      await onCatalogRefresh();
     } catch (error) {
       setNotice(error.message ?? 'No se pudo eliminar el producto.');
     }
   };
 
-  const handleSaveSubcategory = async () => {
-    setNotice('');
-    setIsSavingSubcategory(true);
-
-    try {
-      const result = await saveSubcategoryDefinition(subcategoryDraft);
-      const nextDefinitions = [...subcategoryDefinitions];
-      const definitionIndex = nextDefinitions.findIndex((definition) => definition.id === result.definition.id);
-
-      if (definitionIndex >= 0) {
-        nextDefinitions[definitionIndex] = result.definition;
-      } else {
-        nextDefinitions.push(result.definition);
-      }
-
-      nextDefinitions.sort(
-        (left, right) =>
-          left.category.localeCompare(right.category) ||
-          left.sort_order - right.sort_order ||
-          left.name.localeCompare(right.name),
-      );
-      onSubcategoriesChange(nextDefinitions);
-      setSubcategoryDraft({
-        id: '',
-        category: draft.category,
-        name: '',
-        sort_order: nextDefinitions.length,
-      });
-      setNotice(result.persisted ? 'Subcategoría guardada correctamente.' : 'Subcategoría guardada en esta sesión.');
-    } catch (error) {
-      setNotice(error.message ?? 'No se pudo guardar la subcategoría.');
-    } finally {
-      setIsSavingSubcategory(false);
-    }
-  };
-
-  const handleSaveCurrentProductSubcategory = async () => {
-    setSubcategoryDraft((current) => ({
-      ...current,
-      category: draft.category,
-      name: draft.subcategory,
-    }));
-
-    try {
-      const result = await saveSubcategoryDefinition({
-        category: draft.category,
-        name: draft.subcategory,
-        sort_order: subcategoryDefinitions.length,
-      });
-      const nextDefinitions = [...subcategoryDefinitions];
-      const definitionIndex = nextDefinitions.findIndex((definition) => definition.id === result.definition.id);
-
-      if (definitionIndex >= 0) {
-        nextDefinitions[definitionIndex] = result.definition;
-      } else {
-        nextDefinitions.push(result.definition);
-      }
-
-      nextDefinitions.sort(
-        (left, right) =>
-          left.category.localeCompare(right.category) ||
-          left.sort_order - right.sort_order ||
-          left.name.localeCompare(right.name),
-      );
-      onSubcategoriesChange(nextDefinitions);
-      setNotice(result.persisted ? 'Subcategoría agregada a las opciones.' : 'Subcategoría guardada en esta sesión.');
-    } catch (error) {
-      setNotice(error.message ?? 'No se pudo guardar la subcategoría actual.');
-    }
-  };
-
-  const handleDeleteSubcategory = async (definition) => {
+  const handleSeed = async () => {
     setNotice('');
 
     try {
-      const result = await deleteSubcategoryDefinition(definition.id);
-      onSubcategoriesChange(subcategoryDefinitions.filter((item) => item.id !== definition.id));
-
-      if (draft.subcategory === definition.name && draft.category === definition.category) {
-        setDraft((current) => ({ ...current, subcategory: '' }));
-      }
-
-      if (subcategoryDraft.id === definition.id) {
-        setSubcategoryDraft({
-          id: '',
-          category: draft.category,
-          name: '',
-          sort_order: subcategoryDefinitions.length,
-        });
-      }
-
-      setNotice(result.persisted ? 'Subcategoría eliminada correctamente.' : 'Subcategoría eliminada en esta sesión.');
+      const result = await seedSupabaseCatalog();
+      setNotice(
+        result.source === 'supabase'
+          ? `Se enviaron ${result.inserted} productos a Supabase. ${(result.warnings ?? []).join(' ')}`
+          : 'Supabase no está configurado. El seed quedó disponible solo como fallback local.',
+      );
+      await onCatalogRefresh();
     } catch (error) {
-      setNotice(error.message ?? 'No se pudo eliminar la subcategoría.');
+      setNotice(error.message ?? 'No se pudo poblar Supabase con el catálogo actual.');
     }
   };
 
-  const handleExportBackup = () => {
-    downloadJson(`dile-catalog-backup-${new Date().toISOString().slice(0, 10)}.json`, {
-      exported_at: new Date().toISOString(),
+  const handleExportJson = () => {
+    const snapshot = buildCatalogSnapshot({
       products,
+      categories: categoryDefinitions,
+      brands: brandDefinitions,
       subcategories: subcategoryDefinitions,
     });
-    setNotice('Respaldo descargado en JSON.');
+
+    downloadTextFile(
+      `dile-catalog-${new Date().toISOString().slice(0, 10)}.json`,
+      JSON.stringify(snapshot, null, 2),
+      'application/json;charset=utf-8',
+    );
+    setNotice('Respaldo JSON descargado.');
   };
 
-  const handleRestoreBackup = async (event) => {
+  const handleExportCsv = () => {
+    downloadTextFile(
+      `dile-catalog-${new Date().toISOString().slice(0, 10)}.csv`,
+      buildProductsCsv(products),
+      'text/csv;charset=utf-8',
+    );
+    setNotice('CSV descargado. Sirve para Excel y Google Sheets.');
+  };
+
+  const handleImportDataset = async (event) => {
     const file = event.target.files?.[0];
     if (!file) {
       return;
     }
 
     setNotice('');
-    setIsRestoringBackup(true);
+    setIsImporting(true);
 
     try {
-      const text = await file.text();
-      const snapshot = JSON.parse(text);
-
-      if (!window.confirm('Esto reemplazará el catálogo actual con el contenido del respaldo. ¿Continuar?')) {
-        return;
-      }
-
-      const result = await restoreCatalogBackup(snapshot);
+      const parsed = parseDatasetFile(file.name, await file.text());
+      const mergedSnapshot = {
+        products: mergeById(products, parsed.products),
+        categories: mergeById(categoryDefinitions, parsed.categories),
+        brands: mergeById(brandDefinitions, parsed.brands),
+        subcategories: mergeById(subcategoryDefinitions, parsed.subcategories),
+      };
+      const result = await importCatalogDataset(mergedSnapshot);
       onProductsChange(result.products);
-      onSubcategoriesChange(result.subcategories);
+      onCategoryDefinitionsChange(sortDefinitions(result.categories));
+      onBrandDefinitionsChange(sortDefinitions(result.brands));
+      onSubcategoryDefinitionsChange(sortDefinitions(result.subcategories));
+      setSelectedView('products');
       setNotice(
         result.persisted
-          ? `Respaldo restaurado. ${result.products.length} productos y ${result.subcategories.length} subcategorías sincronizados.`
-          : 'Respaldo cargado en esta sesión.',
+          ? `Importación completada. ${(result.warnings ?? []).join(' ')}`
+          : 'Importación completada solo en esta sesión local.',
       );
       await onCatalogRefresh();
     } catch (error) {
-      setNotice(error.message ?? 'No se pudo restaurar el respaldo.');
+      setNotice(error.message ?? 'No se pudo importar el archivo.');
     } finally {
-      setIsRestoringBackup(false);
+      setIsImporting(false);
       event.target.value = '';
     }
   };
 
+  const handleSaveBrand = async (event) => {
+    event.preventDefault();
+    setNotice('');
+    setIsSavingBrand(true);
+
+    try {
+      const result = await saveBrandDefinition(brandDraft);
+      onBrandDefinitionsChange((current) => upsertDefinition(current, result.definition));
+      setSelectedBrandId(result.definition.id);
+      setNotice(result.persisted ? 'Marca guardada.' : result.warning ?? 'Marca guardada solo en esta sesión.');
+    } catch (error) {
+      setNotice(error.message ?? 'No se pudo guardar la marca.');
+    } finally {
+      setIsSavingBrand(false);
+    }
+  };
+
+  const handleDeleteBrand = async () => {
+    if (!brandDraft?.id) {
+      return;
+    }
+
+    if (!window.confirm(`Eliminar la marca ${brandDraft.name || 'sin nombre'}?`)) {
+      return;
+    }
+
+    const result = await deleteBrandDefinition(brandDraft.id);
+    onBrandDefinitionsChange((current) => current.filter((definition) => definition.id !== brandDraft.id));
+    setNotice(result.persisted ? 'Marca eliminada.' : result.warning ?? 'Marca eliminada solo en esta sesión.');
+  };
+
+  const handleSaveCategory = async (event) => {
+    event.preventDefault();
+    setNotice('');
+    setIsSavingCategory(true);
+
+    try {
+      const payload = {
+        ...categoryDraft,
+        id: categoryDraft.id.trim().toLowerCase().replace(/\s+/g, '-'),
+      };
+      const result = await saveCategoryDefinition(payload);
+      onCategoryDefinitionsChange((current) => upsertDefinition(current, result.definition));
+      setSelectedCategoryId(result.definition.id);
+      setCategoryDraft(result.definition);
+      setNotice(result.persisted ? 'Categoría guardada.' : result.warning ?? 'Categoría guardada solo en esta sesión.');
+    } catch (error) {
+      setNotice(error.message ?? 'No se pudo guardar la categoría.');
+    } finally {
+      setIsSavingCategory(false);
+    }
+  };
+
+  const handleDeleteCategory = async () => {
+    if (!categoryDraft?.id) {
+      return;
+    }
+
+    if (!window.confirm(`Eliminar la categoría ${categoryDraft.name || categoryDraft.id}?`)) {
+      return;
+    }
+
+    const result = await deleteCategoryDefinition(categoryDraft.id);
+    onCategoryDefinitionsChange((current) => current.filter((definition) => definition.id !== categoryDraft.id));
+    setNotice(result.persisted ? 'Categoría eliminada.' : result.warning ?? 'Categoría eliminada solo en esta sesión.');
+  };
+
   return (
     <section className="admin-shell">
-      <AdminHelp />
-
-      {isProductPickerOpen ? (
-        <ProductPicker
-          onClose={() => setIsProductPickerOpen(false)}
-          onSelect={handleSelectProduct}
-          products={filteredProducts}
-          query={query}
-          selectedId={draft?.id}
-          setQuery={setQuery}
-        />
-      ) : null}
-
       <div className="section-heading">
         <div>
           <span className="eyebrow">Panel administrativo</span>
-          <h2>Gestionar productos</h2>
+          <h2>Productos, marcas, categorías e imágenes</h2>
         </div>
         <p>
           Sesión: {profile?.display_name || profile?.email || 'Usuario autenticado'} · Rol:{' '}
-          {profile?.role || 'sin rol'}
+          {profile?.role || 'sin rol'} · Fuente: {sourceLabel}
         </p>
       </div>
 
+      {!isSupabaseConfigured ? (
+        <div className="notice notice-warning">
+          Supabase no está configurado todavía. El panel funciona como preview local para terminar la
+          migración sin bloquearte.
+        </div>
+      ) : null}
+
       {notice ? <div className="notice notice-info">{notice}</div> : null}
+
+      <div className="admin-segmented-control">
+        {[
+          ['products', 'Productos'],
+          ['brands', 'Marcas'],
+          ['categories', 'Categorías'],
+          ['images', 'Imágenes'],
+        ].map(([value, label]) => (
+          <button
+            className={classNames('segment-button', selectedView === value && 'segment-button-active')}
+            key={value}
+            onClick={() => setSelectedView(value)}
+            type="button"
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
       <div className="admin-layout">
         <aside className="admin-list-panel">
           <div className="admin-toolbar">
             <input
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Buscar en admin"
+              placeholder={
+                selectedView === 'images'
+                  ? 'Buscar por nombre o ruta de imagen'
+                  : `Buscar ${selectedView === 'products' ? 'productos' : selectedView === 'brands' ? 'marcas' : 'categorías'}`
+              }
               type="search"
               value={query}
             />
-            {selectedProductIds.length ? (
-              <div className="bulk-action-row">
-                <button
-                  className="ghost-button bulk-action-button bulk-action-button-green"
-                  onClick={() => handleSetProductVisibility(selectedProductIds, true)}
-                  type="button"
-                >
-                  Activar seleccionados ({selectedProductIds.length})
-                </button>
-                <button
-                  className="ghost-button bulk-action-button"
-                  onClick={() => handleSetProductVisibility(selectedProductIds, false)}
-                  type="button"
-                >
-                  Ocultar seleccionados
-                </button>
-              </div>
-            ) : null}
-            <button className="ghost-button" onClick={() => setDraft(createEmptyProduct())} type="button">
-              Nuevo producto
-            </button>
-            <button className="ghost-button" onClick={() => setIsProductPickerOpen(true)} type="button">
-              Lista de productos
-            </button>
-            <button className="ghost-button" onClick={handleExportBackup} type="button">
-              Exportar respaldo
-            </button>
-            <label className="ghost-button backup-upload-button">
-              {isRestoringBackup ? 'Restaurando...' : 'Restaurar respaldo'}
-              <input accept="application/json" onChange={handleRestoreBackup} type="file" />
-            </label>
-          </div>
-          <div className="admin-list">
-            {filteredProducts.map((product) => (
-              <div
-                className={classNames('admin-list-item', draft?.id === product.id && 'admin-list-item-active')}
-                key={product.id}
-              >
-                <label className="admin-list-check">
-                  <input
-                    checked={selectedProductIds.includes(product.id)}
-                    onChange={(event) => handleSelectForBulk(product.id, event.target.checked)}
-                    type="checkbox"
-                  />
-                </label>
-                <button className="admin-list-main" onClick={() => handleSelectProduct(product)} type="button">
-                  <div>
-                    <NoTranslate as="strong">{product.name}</NoTranslate>
-                    <span>
-                      <NoTranslate>{product.brand || 'Sin marca'}</NoTranslate>
-                      {product.sku ? ` · ${product.sku}` : ''}
-                      {product.unit_size ? ` · ${product.unit_size}` : ''}
-                    </span>
-                  </div>
-                </button>
-                <div className="status-cluster">
+            <div className="button-row compact-row">
+              {selectedView === 'products' ? (
+                <>
                   <button
-                    className={classNames(
-                      'status-pill',
-                      'status-toggle-button',
-                      product.visible ? 'status-pill-green' : 'status-pill-gray',
-                    )}
-                    onClick={() => handleSetProductVisibility([product.id], !product.visible)}
+                    className="ghost-button"
+                    onClick={() => {
+                      const nextDraft = createEmptyProduct();
+                      nextDraft.category = availableCategories[0]?.id ?? nextDraft.category;
+                      setDraft(nextDraft);
+                      setSelectedId(null);
+                    }}
                     type="button"
                   >
-                    {product.visible ? 'Activo' : 'Oculto'}
+                    Nuevo producto
                   </button>
-                  {product.featured ? <span className="status-pill status-pill-gold">Destacado</span> : null}
+                  <button className="ghost-button" onClick={handleSeed} type="button">
+                    Seed actual a Supabase
+                  </button>
+                </>
+              ) : null}
+
+              {selectedView === 'brands' ? (
+                <button
+                  className="ghost-button"
+                  onClick={() => setBrandDraft(createEmptyBrand(availableCategories, getNextSortOrder(brandDefinitions)))}
+                  type="button"
+                >
+                  Nueva marca
+                </button>
+              ) : null}
+
+              {selectedView === 'categories' ? (
+                <button
+                  className="ghost-button"
+                  onClick={() => setCategoryDraft(createEmptyCategory(getNextSortOrder(categoryDefinitions)))}
+                  type="button"
+                >
+                  Nueva categoría
+                </button>
+              ) : null}
+            </div>
+
+            <div className="admin-export-panel">
+              <button className="ghost-button" onClick={handleExportJson} type="button">
+                Exportar JSON
+              </button>
+              <button className="ghost-button" onClick={handleExportCsv} type="button">
+                Exportar CSV
+              </button>
+              <label className="ghost-button upload-trigger">
+                {isImporting ? 'Importando...' : 'Importar CSV o JSON'}
+                <input accept=".csv,.json" disabled={isImporting} onChange={handleImportDataset} type="file" />
+              </label>
+            </div>
+          </div>
+
+          <div className="admin-list">
+            {selectedView === 'products'
+              ? filteredProducts.map((product) => (
+                  <button
+                    className={classNames('admin-list-item', draft?.id === product.id && 'admin-list-item-active')}
+                    key={product.id}
+                    onClick={() => {
+                      setSelectedId(product.id);
+                      setDraft(product);
+                    }}
+                    type="button"
+                  >
+                    <div>
+                      <strong>{product.name}</strong>
+                      <span>{[product.brand || 'Sin marca', product.sku || null, product.unit_size || null].filter(Boolean).join(' · ')}</span>
+                    </div>
+                    <div className="status-cluster">
+                      <span className={classNames('status-pill', product.visible ? 'status-pill-green' : 'status-pill-gray')}>
+                        {product.visible ? 'Visible' : 'Oculto'}
+                      </span>
+                      {product.featured ? <span className="status-pill status-pill-gold">Destacado</span> : null}
+                    </div>
+                  </button>
+                ))
+              : null}
+
+            {selectedView === 'brands'
+              ? filteredBrands.map((definition) => (
+                  <button
+                    className={classNames('admin-list-item', brandDraft?.id === definition.id && 'admin-list-item-active')}
+                    key={definition.id}
+                    onClick={() => {
+                      setSelectedBrandId(definition.id);
+                      setBrandDraft(definition);
+                    }}
+                    type="button"
+                  >
+                    <div>
+                      <strong>{definition.name}</strong>
+                      <span>{definition.category ? getCategoryName(definition.category, availableCategories) : 'Sin categoría fija'}</span>
+                    </div>
+                  </button>
+                ))
+              : null}
+
+            {selectedView === 'categories'
+              ? filteredCategories.map((definition) => (
+                  <button
+                    className={classNames('admin-list-item', categoryDraft?.id === definition.id && 'admin-list-item-active')}
+                    key={definition.id}
+                    onClick={() => {
+                      setSelectedCategoryId(definition.id);
+                      setCategoryDraft(definition);
+                    }}
+                    type="button"
+                  >
+                    <div>
+                      <strong>{definition.name}</strong>
+                      <span>{definition.id}</span>
+                    </div>
+                    <div className="status-cluster">
+                      <span className="status-pill status-pill-gray">
+                        {products.filter((product) => product.category === definition.id).length} productos
+                      </span>
+                    </div>
+                  </button>
+                ))
+              : null}
+
+            {selectedView === 'images' ? (
+              <div className="image-list-summary">
+                <div className="summary-card">
+                  <strong>{filteredAssignedImages.length}</strong>
+                  <span>Imágenes asignadas</span>
+                </div>
+                <div className="summary-card summary-card-warning">
+                  <strong>{filteredUnassignedImages.length}</strong>
+                  <span>Imágenes locales sin producto</span>
                 </div>
               </div>
-            ))}
+            ) : null}
           </div>
         </aside>
 
-        <form className="admin-form" onSubmit={handleSave}>
-          <div className="form-grid">
-            <label>
-              ID
-              <input
-                min="1"
-                onChange={(event) => handleFieldChange('id', event.target.value)}
-                required
-                type="number"
-                value={draft.id}
-              />
-            </label>
-            <label>
-              Orden
-              <input
-                onChange={(event) => handleFieldChange('sort_order', event.target.value)}
-                type="number"
-                value={draft.sort_order}
-              />
-            </label>
-            <label className="full-span">
-              Nombre
-              <input
-                onChange={(event) => handleFieldChange('name', event.target.value)}
-                required
-                type="text"
-                value={draft.name}
-              />
-            </label>
-            <label>
-              Marca
-              <input
-                onChange={(event) => handleFieldChange('brand', event.target.value)}
-                type="text"
-                value={draft.brand}
-              />
-            </label>
-            <label>
-              SKU opcional
-              <input
-                onChange={(event) => handleFieldChange('sku', event.target.value)}
-                placeholder="DILE-0001"
-                type="text"
-                value={draft.sku}
-              />
-            </label>
-            <label>
-              Unidad opcional
-              <input
-                onChange={(event) => handleFieldChange('unit_size', event.target.value)}
-                placeholder="16 oz / 12 pack / 500 g"
-                type="text"
-                value={draft.unit_size}
-              />
-            </label>
-            <label>
-              Categoría
-              <select
-                onChange={(event) => handleFieldChange('category', event.target.value)}
-                value={draft.category}
-              >
-                {CATEGORIES.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {formatCategory(category.id)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Subcategoría
-              <input
-                list="subcategory-options"
-                onChange={(event) => handleFieldChange('subcategory', event.target.value)}
-                type="text"
-                value={draft.subcategory}
-              />
-              <datalist id="subcategory-options">
-                {suggestedSubcategories.map((value) => (
-                  <option key={value} value={value} />
-                ))}
-              </datalist>
-            </label>
-            <label>
-              Guardar esta subcategoría
-              <button className="ghost-button admin-inline-button" onClick={handleSaveCurrentProductSubcategory} type="button">
-                {isSavingSubcategory ? 'Guardando...' : 'Guardar opción'}
-              </button>
-            </label>
-            <label className="full-span">
-              Imagen actual
-              <input
-                onChange={(event) => handleFieldChange('image', event.target.value)}
-                placeholder="https://... o ruta de imagen"
-                type="text"
-                value={draft.image}
-              />
-            </label>
-            <label className="full-span upload-field">
-              Subir nueva imagen
-              <input
-                accept="image/png,image/jpeg,image/webp,image/avif,image/heic,.heic,.HEIC"
-                disabled={!isSupabaseConfigured || isUploadingImage}
-                onChange={handleImageUpload}
-                type="file"
-              />
-              <small>
-                {isSupabaseConfigured
-                  ? isUploadingImage
-                    ? 'Subiendo imagen...'
-                    : 'La imagen nueva reemplaza la actual cuando guardas el producto.'
-                  : 'La subida de imágenes no está disponible en este entorno.'}
-              </small>
-            </label>
-            <label className="full-span">
-              Descripción opcional
-              <textarea
-                onChange={(event) => handleFieldChange('description', event.target.value)}
-                rows="5"
-                value={draft.description}
-              />
-              <small>Este campo es opcional.</small>
-            </label>
-          </div>
-
-          <div className="toggle-row">
-            <label className="toggle-card">
-              <input
-                checked={Boolean(draft.visible)}
-                onChange={(event) => handleFieldChange('visible', event.target.checked)}
-                type="checkbox"
-              />
-              <span>Visible en catálogo</span>
-            </label>
-            <label className="toggle-card">
-              <input
-                checked={Boolean(draft.featured)}
-                onChange={(event) => handleFieldChange('featured', event.target.checked)}
-                type="checkbox"
-              />
-              <span>Marcar como destacado</span>
-            </label>
-          </div>
-
-          {draft.image ? (
-            <div className="preview-panel">
-              <ProductImage alt={draft.name || 'Preview de producto'} image={draft.image} />
+        {selectedView === 'products' ? (
+          <form className="admin-form" onSubmit={handleSave}>
+            <div className="data-ops-card">
+              <h3>Carga inteligente para Excel y Sheets</h3>
+              <p>
+                El CSV exporta las columnas correctas para SKU, unidad, marca y categoría. La importación
+                reconoce encabezados como marca, brand, categoría, category, unidad y unit size.
+              </p>
+              <small>Las marcas se guardan exactamente como las escribas. No se traducen automáticamente.</small>
             </div>
-          ) : null}
 
-          <div className="button-row">
-            <button className="primary-button" disabled={isSaving} type="submit">
-              {isSaving ? 'Guardando...' : 'Guardar cambios'}
-            </button>
-            <button className="ghost-button" onClick={handleDelete} type="button">
-              Eliminar
-            </button>
-            <button
-              className="ghost-button"
-              onClick={() =>
-                setDraft((current) => ({
-                  ...current,
-                  id: Date.now(),
-                  name: `${current.name || 'Producto'} copia`,
-                }))
-              }
-              type="button"
-            >
-              Duplicar
-            </button>
-          </div>
-
-          <section className="taxonomy-panel">
-            <div className="taxonomy-panel-header">
-              <div>
-                <span className="eyebrow">Subcategorías</span>
-                <h3>Gestionar opciones por categoría</h3>
-              </div>
-              <p>Las cuatro categorías principales siguen fijas. Aquí administras las subcategorías.</p>
-            </div>
-            <div className="form-grid taxonomy-form-grid">
+            <div className="form-grid">
               <label>
-                Categoría principal
-                <select
-                  onChange={(event) =>
-                    setSubcategoryDraft((current) => ({ ...current, category: event.target.value }))
-                  }
-                  value={subcategoryDraft.category}
-                >
-                  {CATEGORIES.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {formatCategory(category.id)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Nombre de subcategoría
+                ID
                 <input
-                  onChange={(event) =>
-                    setSubcategoryDraft((current) => ({ ...current, name: event.target.value }))
-                  }
-                  type="text"
-                  value={subcategoryDraft.name}
+                  min="1"
+                  onChange={(event) => handleFieldChange('id', event.target.value)}
+                  required
+                  type="number"
+                  value={draft.id}
                 />
               </label>
               <label>
                 Orden
                 <input
-                  onChange={(event) =>
-                    setSubcategoryDraft((current) => ({ ...current, sort_order: event.target.value }))
-                  }
+                  onChange={(event) => handleFieldChange('sort_order', event.target.value)}
                   type="number"
-                  value={subcategoryDraft.sort_order}
+                  value={draft.sort_order}
+                />
+              </label>
+              <label className="full-span">
+                Nombre
+                <input
+                  onChange={(event) => handleFieldChange('name', event.target.value)}
+                  required
+                  type="text"
+                  value={draft.name}
+                />
+              </label>
+              <label>
+                Marca
+                <input
+                  list="brand-options"
+                  onChange={(event) => handleFieldChange('brand', event.target.value)}
+                  placeholder="Escoge una marca o escribe una nueva"
+                  type="text"
+                  value={draft.brand}
+                />
+                <datalist id="brand-options">
+                  {availableBrandNames.map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
+              </label>
+              <label>
+                SKU opcional
+                <input
+                  onChange={(event) => handleFieldChange('sku', event.target.value)}
+                  placeholder="DILE-0001"
+                  type="text"
+                  value={draft.sku}
+                />
+              </label>
+              <label>
+                Unidad opcional
+                <input
+                  onChange={(event) => handleFieldChange('unit_size', event.target.value)}
+                  placeholder="16 oz / 12 pack / 500 g"
+                  type="text"
+                  value={draft.unit_size}
+                />
+              </label>
+              <label>
+                Categoría
+                <select
+                  onChange={(event) => handleFieldChange('category', event.target.value)}
+                  value={draft.category}
+                >
+                  {availableCategories.map((definition) => (
+                    <option key={definition.id} value={definition.id}>
+                      {definition.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Subcategoría
+                <input
+                  list="subcategory-options"
+                  onChange={(event) => handleFieldChange('subcategory', event.target.value)}
+                  type="text"
+                  value={draft.subcategory}
+                />
+                <datalist id="subcategory-options">
+                  {availableSubcategories.map((value) => (
+                    <option key={value} value={value} />
+                  ))}
+                </datalist>
+              </label>
+              <label className="full-span">
+                Imagen actual
+                <input
+                  onChange={(event) => handleFieldChange('image', event.target.value)}
+                  placeholder="https://... o URL pública de Supabase Storage"
+                  type="text"
+                  value={draft.image}
+                />
+              </label>
+              <label className="full-span upload-field">
+                Subir imagen a Supabase Storage
+                <input
+                  accept="image/png,image/jpeg,image/webp,image/avif"
+                  disabled={!isSupabaseConfigured || isUploadingImage}
+                  onChange={handleImageUpload}
+                  type="file"
+                />
+                <small>
+                  {isSupabaseConfigured
+                    ? isUploadingImage
+                      ? 'Subiendo imagen...'
+                      : 'La imagen se sube al bucket product-images y luego se guarda la URL pública en el producto.'
+                    : 'Configura Supabase y el bucket product-images para habilitar uploads.'}
+                </small>
+              </label>
+              <label className="full-span">
+                Descripción opcional
+                <textarea
+                  onChange={(event) => handleFieldChange('description', event.target.value)}
+                  rows="5"
+                  value={draft.description}
+                />
+              </label>
+            </div>
+
+            <div className="toggle-row">
+              <label className="toggle-card">
+                <input
+                  checked={Boolean(draft.visible)}
+                  onChange={(event) => handleFieldChange('visible', event.target.checked)}
+                  type="checkbox"
+                />
+                <span>Visible en catálogo</span>
+              </label>
+              <label className="toggle-card">
+                <input
+                  checked={Boolean(draft.featured)}
+                  onChange={(event) => handleFieldChange('featured', event.target.checked)}
+                  type="checkbox"
+                />
+                <span>Marcar como destacado</span>
+              </label>
+            </div>
+
+            {draft.image ? (
+              <div className="preview-panel">
+                <img alt={draft.name || 'Preview de producto'} src={formatImagePath(draft.image)} />
+              </div>
+            ) : null}
+
+            <div className="button-row">
+              <button className="primary-button" disabled={isSaving} type="submit">
+                {isSaving ? 'Guardando...' : 'Guardar cambios'}
+              </button>
+              <button className="ghost-button" onClick={handleDelete} type="button">
+                Eliminar
+              </button>
+              <button
+                className="ghost-button"
+                onClick={() =>
+                  setDraft((current) => ({
+                    ...current,
+                    id: Date.now(),
+                    name: `${current.name || 'Producto'} copia`,
+                  }))
+                }
+                type="button"
+              >
+                Duplicar
+              </button>
+            </div>
+          </form>
+        ) : null}
+
+        {selectedView === 'brands' ? (
+          <form className="admin-form" onSubmit={handleSaveBrand}>
+            <div className="form-grid">
+              <label>
+                ID
+                <input
+                  onChange={(event) => setBrandDraft((current) => ({ ...current, id: event.target.value.trim().toLowerCase() }))}
+                  type="text"
+                  value={brandDraft.id}
+                />
+              </label>
+              <label>
+                Orden
+                <input
+                  onChange={(event) => setBrandDraft((current) => ({ ...current, sort_order: event.target.value }))}
+                  type="number"
+                  value={brandDraft.sort_order}
+                />
+              </label>
+              <label className="full-span">
+                Marca
+                <input
+                  onChange={(event) => setBrandDraft((current) => ({ ...current, name: event.target.value }))}
+                  required
+                  type="text"
+                  value={brandDraft.name}
+                />
+              </label>
+              <label>
+                Categoría sugerida
+                <select
+                  onChange={(event) => setBrandDraft((current) => ({ ...current, category: event.target.value }))}
+                  value={brandDraft.category}
+                >
+                  <option value="">Sin categoría fija</option>
+                  {availableCategories.map((definition) => (
+                    <option key={definition.id} value={definition.id}>
+                      {definition.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="full-span">
+                Nota interna
+                <textarea
+                  onChange={(event) => setBrandDraft((current) => ({ ...current, notes: event.target.value }))}
+                  rows="4"
+                  value={brandDraft.notes}
                 />
               </label>
             </div>
             <div className="button-row">
-              <button className="primary-button" onClick={handleSaveSubcategory} type="button">
-                {isSavingSubcategory ? 'Guardando...' : subcategoryDraft.id ? 'Actualizar subcategoría' : 'Crear subcategoría'}
+              <button className="primary-button" disabled={isSavingBrand} type="submit">
+                {isSavingBrand ? 'Guardando...' : 'Guardar marca'}
               </button>
-              {subcategoryDraft.id ? (
-                <button
-                  className="ghost-button"
-                  onClick={() =>
-                    setSubcategoryDraft({
-                      id: '',
-                      category: draft.category,
-                      name: '',
-                      sort_order: subcategoryDefinitions.length,
-                    })
-                  }
-                  type="button"
-                >
-                  Cancelar edición
-                </button>
-              ) : null}
+              <button className="ghost-button" onClick={handleDeleteBrand} type="button">
+                Eliminar
+              </button>
             </div>
-            <div className="taxonomy-groups">
-              {groupedSubcategories.map((category) => (
-                <div className="taxonomy-group" key={category.id}>
-                  <h4>{formatCategory(category.id)}</h4>
-                  <div className="taxonomy-list">
-                    {category.items.map((definition) => (
-                      <div className="taxonomy-item" key={definition.id}>
-                        <button
-                          className="ghost-button taxonomy-item-button"
-                          onClick={() => setSubcategoryDraft(definition)}
-                          type="button"
-                        >
-                          {definition.name}
-                        </button>
-                        <button
-                          className="ghost-button taxonomy-item-delete"
-                          onClick={() => handleDeleteSubcategory(definition)}
-                          type="button"
-                        >
-                          Eliminar
-                        </button>
+          </form>
+        ) : null}
+
+        {selectedView === 'categories' ? (
+          <form className="admin-form" onSubmit={handleSaveCategory}>
+            <div className="form-grid">
+              <label>
+                ID técnico
+                <input
+                  onChange={(event) => setCategoryDraft((current) => ({ ...current, id: event.target.value }))}
+                  placeholder="frozen, grocery, dairy, snacks"
+                  required
+                  type="text"
+                  value={categoryDraft.id}
+                />
+              </label>
+              <label>
+                Orden
+                <input
+                  onChange={(event) => setCategoryDraft((current) => ({ ...current, sort_order: event.target.value }))}
+                  type="number"
+                  value={categoryDraft.sort_order}
+                />
+              </label>
+              <label className="full-span">
+                Nombre visible
+                <input
+                  onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value }))}
+                  required
+                  type="text"
+                  value={categoryDraft.name}
+                />
+              </label>
+            </div>
+            <div className="button-row">
+              <button className="primary-button" disabled={isSavingCategory} type="submit">
+                {isSavingCategory ? 'Guardando...' : 'Guardar categoría'}
+              </button>
+              <button className="ghost-button" onClick={handleDeleteCategory} type="button">
+                Eliminar
+              </button>
+            </div>
+          </form>
+        ) : null}
+
+        {selectedView === 'images' ? (
+          <div className="admin-form">
+            <div className="section-heading image-heading">
+              <div>
+                <span className="eyebrow">Revisión visual</span>
+                <h2>Todas las imágenes del catálogo</h2>
+              </div>
+              <p>Revisa productos sin SKU, sin marca o imágenes locales que todavía no están asignadas.</p>
+            </div>
+
+            <div className="image-gallery-section">
+              <h3>Imágenes asignadas a productos</h3>
+              <div className="image-audit-grid">
+                {filteredAssignedImages.map(({ imageKey, issues, previewUrl, product, source }) => (
+                  <article className="image-audit-card" key={`${product.id}-${imageKey}`}>
+                    <div className="catalog-image-shell image-audit-visual">
+                      <img alt={product.name} src={formatImagePath(previewUrl)} />
+                    </div>
+                    <div className="image-audit-copy">
+                      <strong>{product.name}</strong>
+                      <span>{product.brand || 'Sin marca'} · {product.sku || 'Sin SKU'}</span>
+                      <small>{imageKey}</small>
+                      <div className="status-cluster status-cluster-inline">
+                        <span className="status-pill status-pill-gray">{source}</span>
+                        {issues.map((issue) => (
+                          <span className="status-pill status-pill-warning" key={issue}>{issue}</span>
+                        ))}
                       </div>
-                    ))}
-                    {!category.items.length ? <p className="taxonomy-empty">Sin subcategorías guardadas.</p> : null}
-                  </div>
-                </div>
-              ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
-          </section>
-        </form>
+
+            <div className="image-gallery-section">
+              <h3>Imágenes locales sin producto</h3>
+              <div className="image-audit-grid">
+                {filteredUnassignedImages.map((asset) => (
+                  <article className="image-audit-card" key={asset.path}>
+                    <div className="catalog-image-shell image-audit-visual">
+                      <img alt={asset.path} src={asset.previewUrl} />
+                    </div>
+                    <div className="image-audit-copy">
+                      <strong>No asignada</strong>
+                      <small>{asset.path}</small>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </section>
   );
 }
 
 function AdminPage({
+  brandDefinitions,
+  categoryDefinitions,
+  onBrandDefinitionsChange,
+  onCatalogRefresh,
+  onCategoryDefinitionsChange,
+  onProductsChange,
+  onSubcategoryDefinitionsChange,
   products,
   profile,
   session,
+  sourceLabel,
   subcategoryDefinitions,
-  onCatalogRefresh,
-  onProductsChange,
-  onSubcategoriesChange,
 }) {
   const canManage = profile?.role === 'admin' || profile?.role === 'editor';
+
+  if (!isSupabaseConfigured) {
+    return (
+      <AdminDashboard
+        brandDefinitions={brandDefinitions}
+        categoryDefinitions={categoryDefinitions}
+        onBrandDefinitionsChange={onBrandDefinitionsChange}
+        onCatalogRefresh={onCatalogRefresh}
+        onCategoryDefinitionsChange={onCategoryDefinitionsChange}
+        onProductsChange={onProductsChange}
+        onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
+        products={products}
+        profile={{ display_name: 'Preview local', role: 'admin' }}
+        sourceLabel="fallback local"
+        subcategoryDefinitions={subcategoryDefinitions}
+      />
+    );
+  }
 
   if (!session) {
     return <LoginPanel onSignedIn={onCatalogRefresh} />;
   }
 
   if (!canManage) {
-    return <AccessDenied onSignOut={signOut} profile={profile} session={session} />;
+    return <AccessDenied onSignOut={signOut} />;
   }
 
   return (
     <AdminDashboard
+      brandDefinitions={brandDefinitions}
+      categoryDefinitions={categoryDefinitions}
+      onBrandDefinitionsChange={onBrandDefinitionsChange}
       onCatalogRefresh={onCatalogRefresh}
+      onCategoryDefinitionsChange={onCategoryDefinitionsChange}
       onProductsChange={onProductsChange}
-      onSubcategoriesChange={onSubcategoriesChange}
+      onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
       products={products}
       profile={{ ...profile, email: session.user.email }}
+      sourceLabel={sourceLabel}
       subcategoryDefinitions={subcategoryDefinitions}
     />
   );
@@ -1368,20 +1510,35 @@ function AdminPage({
 
 export default function App() {
   const [products, setProducts] = useState([]);
+  const [categoryDefinitions, setCategoryDefinitions] = useState([]);
+  const [brandDefinitions, setBrandDefinitions] = useState([]);
   const [subcategoryDefinitions, setSubcategoryDefinitions] = useState([]);
+  const [sourceLabel, setSourceLabel] = useState('cargando');
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
 
-  const canManage = profile?.role === 'admin' || profile?.role === 'editor';
+  const canManage = profile?.role === 'admin' || profile?.role === 'editor' || !isSupabaseConfigured;
 
   const refreshCatalog = async () => {
-    const [catalogResult, subcategoryResult] = await Promise.all([
+    const [catalogResult, categoriesResult, brandsResult, subcategoriesResult] = await Promise.all([
       fetchCatalog({ includeHidden: canManage }),
+      fetchCategoryDefinitions(),
+      fetchBrandDefinitions(),
       fetchSubcategoryDefinitions(),
     ]);
+
     setProducts(catalogResult.products);
-    setSubcategoryDefinitions(subcategoryResult.definitions);
+    setCategoryDefinitions(sortDefinitions(categoriesResult.definitions));
+    setBrandDefinitions(sortDefinitions(brandsResult.definitions));
+    setSubcategoryDefinitions(sortDefinitions(subcategoriesResult.definitions));
+    setSourceLabel(
+      catalogResult.source === 'supabase'
+        ? 'Supabase en vivo'
+        : catalogResult.source === 'seed'
+          ? 'fallback local hasta poblar Supabase'
+          : 'catálogo local migrado desde products.js',
+    );
     setLoading(false);
   };
 
@@ -1440,8 +1597,8 @@ export default function App() {
         <div className="brand-lockup">
           <img alt="DILE logo" src="/logos/dile logo cow.jpg" />
           <div>
-            <NoTranslate as="span" className="eyebrow">Distribuidora León</NoTranslate>
-            <NoTranslate as="strong">DILE Distribuidora León</NoTranslate>
+            <span className="eyebrow">Distribuidora Leon</span>
+            <strong>DILE Distributors</strong>
           </div>
         </div>
         <nav className="main-nav">
@@ -1449,7 +1606,7 @@ export default function App() {
             Catálogo
           </NavLink>
           <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/admin">
-            Acceso
+            Admin
           </NavLink>
         </nav>
       </header>
@@ -1457,22 +1614,36 @@ export default function App() {
       {loading ? (
         <main className="loading-shell">
           <div className="spinner" />
-          <p>Cargando catálogo...</p>
+          <p>Preparando catálogo y panel administrativo...</p>
         </main>
       ) : (
         <main className="page-shell">
           <Routes>
-            <Route path="/" element={<CatalogPage products={products} subcategoryDefinitions={subcategoryDefinitions} />} />
+            <Route
+              path="/"
+              element={
+                <CatalogPage
+                  categoryDefinitions={categoryDefinitions}
+                  products={products}
+                  subcategoryDefinitions={subcategoryDefinitions}
+                />
+              }
+            />
             <Route
               path="/admin"
               element={
                 <AdminPage
+                  brandDefinitions={brandDefinitions}
+                  categoryDefinitions={categoryDefinitions}
+                  onBrandDefinitionsChange={setBrandDefinitions}
                   onCatalogRefresh={refreshCatalog}
+                  onCategoryDefinitionsChange={setCategoryDefinitions}
                   onProductsChange={setProducts}
-                  onSubcategoriesChange={setSubcategoryDefinitions}
+                  onSubcategoryDefinitionsChange={setSubcategoryDefinitions}
                   products={products}
                   profile={profile}
                   session={session}
+                  sourceLabel={sourceLabel}
                   subcategoryDefinitions={subcategoryDefinitions}
                 />
               }
@@ -1483,7 +1654,7 @@ export default function App() {
       )}
 
       <footer className="site-footer">
-        <NoTranslate as="p">DILE Distribuidora León</NoTranslate>
+        <p>DILE Distributors</p>
       </footer>
     </div>
   );
