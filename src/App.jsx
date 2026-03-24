@@ -145,6 +145,52 @@ function createEmptyCategory(sortOrder) {
   };
 }
 
+function RouteBar({ compact = false }) {
+  return (
+    <div className={classNames('route-bar', compact && 'route-bar-compact')}>
+      <div className="brand-lockup">
+        <img alt="DILE logo" src="/logos/dile logo cow.jpg" />
+        <div>
+          <span className="eyebrow">Distribuidora Leon</span>
+          <strong>DILE Distributors</strong>
+        </div>
+      </div>
+      <nav className="main-nav">
+        <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/">
+          Catálogo
+        </NavLink>
+        <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/admin">
+          Admin
+        </NavLink>
+      </nav>
+    </div>
+  );
+}
+
+function AuthPendingPanel() {
+  return (
+    <section className="admin-shell narrow-shell">
+      <RouteBar compact />
+      <div className="notice notice-info">Verificando sesión y permisos de administrador...</div>
+    </section>
+  );
+}
+
+function MissingProfilePanel({ email, onSignOut }) {
+  return (
+    <section className="admin-shell narrow-shell">
+      <RouteBar compact />
+      <div className="notice notice-warning">
+        Iniciaste sesión como {email || 'usuario autenticado'}, pero no existe un perfil en la tabla
+        profiles para ese usuario. Crea una fila con el mismo uid y usa role = admin o editor.
+      </div>
+      <button className="ghost-button" onClick={onSignOut} type="button">
+        Cerrar sesión
+      </button>
+    </section>
+  );
+}
+
 function ProductModal({ categoryDefinitions, product, onClose }) {
   useEffect(() => {
     if (!product) {
@@ -253,15 +299,18 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
 
   return (
     <>
-      <section className="hero-panel">
-        <div className="hero-copy">
-          <span className="eyebrow">DILE Distributors</span>
-          <h1>Encuentra los productos que distribuimos.</h1>
-          <p>
-            Explora por categoría, filtra productos destacados y encuentra rápidamente lo que tu
-            negocio necesita.
-          </p>
-          <div className="hero-actions">
+      <section className="catalog-top-section">
+        <RouteBar />
+        <div className="catalog-top-grid">
+          <div className="hero-copy">
+            <span className="eyebrow">Catálogo</span>
+            <h1>Encuentra los productos que distribuimos.</h1>
+            <p>
+              Explora por categoría, filtra productos destacados y encuentra rápidamente lo que tu
+              negocio necesita.
+            </p>
+          </div>
+          <div className="hero-actions hero-actions-flat">
             <label className="search-shell" htmlFor="catalog-search">
               <span>Buscar</span>
               <input
@@ -281,10 +330,7 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
             </button>
           </div>
         </div>
-      </section>
-
-      <section className="filter-panel">
-        <div className="chip-row">
+        <div className="chip-row chip-row-integrated">
           {categorySummary.map((entry) => (
             <button
               className={classNames('chip', category === entry.id && 'chip-active')}
@@ -394,6 +440,7 @@ function LoginPanel({ onSignedIn }) {
 
   return (
     <section className="admin-shell narrow-shell">
+      <RouteBar compact />
       <div className="section-heading">
         <div>
           <span className="eyebrow">Admin</span>
@@ -431,12 +478,13 @@ function LoginPanel({ onSignedIn }) {
   );
 }
 
-function AccessDenied({ onSignOut }) {
+function AccessDenied({ onSignOut, role }) {
   return (
     <section className="admin-shell narrow-shell">
+      <RouteBar compact />
       <div className="notice notice-error">
-        Tu usuario no tiene rol de administrador. Agrega tu uid en la tabla profiles con role =
-        admin o editor.
+        Tu usuario sí inició sesión, pero su rol actual es {role || 'sin rol'}. Cambia la fila en
+        profiles para usar role = admin o editor.
       </div>
       <button className="ghost-button" onClick={onSignOut} type="button">
         Cerrar sesión
@@ -1452,6 +1500,8 @@ function AdminDashboard({
 function AdminPage({
   brandDefinitions,
   categoryDefinitions,
+  profileLoading,
+  authResolved,
   onBrandDefinitionsChange,
   onCatalogRefresh,
   onCategoryDefinitionsChange,
@@ -1483,28 +1533,39 @@ function AdminPage({
     );
   }
 
+  if (!authResolved || profileLoading) {
+    return <AuthPendingPanel />;
+  }
+
   if (!session) {
     return <LoginPanel onSignedIn={onCatalogRefresh} />;
   }
 
+  if (!profile) {
+    return <MissingProfilePanel email={session.user.email} onSignOut={signOut} />;
+  }
+
   if (!canManage) {
-    return <AccessDenied onSignOut={signOut} />;
+    return <AccessDenied onSignOut={signOut} role={profile?.role} />;
   }
 
   return (
-    <AdminDashboard
-      brandDefinitions={brandDefinitions}
-      categoryDefinitions={categoryDefinitions}
-      onBrandDefinitionsChange={onBrandDefinitionsChange}
-      onCatalogRefresh={onCatalogRefresh}
-      onCategoryDefinitionsChange={onCategoryDefinitionsChange}
-      onProductsChange={onProductsChange}
-      onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
-      products={products}
-      profile={{ ...profile, email: session.user.email }}
-      sourceLabel={sourceLabel}
-      subcategoryDefinitions={subcategoryDefinitions}
-    />
+    <>
+      <RouteBar compact />
+      <AdminDashboard
+        brandDefinitions={brandDefinitions}
+        categoryDefinitions={categoryDefinitions}
+        onBrandDefinitionsChange={onBrandDefinitionsChange}
+        onCatalogRefresh={onCatalogRefresh}
+        onCategoryDefinitionsChange={onCategoryDefinitionsChange}
+        onProductsChange={onProductsChange}
+        onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
+        products={products}
+        profile={{ ...profile, email: session.user.email }}
+        sourceLabel={sourceLabel}
+        subcategoryDefinitions={subcategoryDefinitions}
+      />
+    </>
   );
 }
 
@@ -1516,7 +1577,9 @@ export default function App() {
   const [sourceLabel, setSourceLabel] = useState('cargando');
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(undefined);
+  const [profileLoading, setProfileLoading] = useState(isSupabaseConfigured);
+  const [authResolved, setAuthResolved] = useState(!isSupabaseConfigured);
 
   const canManage = profile?.role === 'admin' || profile?.role === 'editor' || !isSupabaseConfigured;
 
@@ -1545,38 +1608,42 @@ export default function App() {
   useEffect(() => {
     let mounted = true;
 
-    getCurrentSession().then(async (currentSession) => {
-      if (!mounted) return;
-      setSession(currentSession);
-
-      if (currentSession?.user?.id) {
-        try {
-          const loadedProfile = await fetchProfile(currentSession.user.id);
-          if (mounted) {
-            setProfile(loadedProfile);
-          }
-        } catch {
-          if (mounted) {
-            setProfile(null);
-          }
-        }
+    const syncAuthState = async (nextSession) => {
+      if (!mounted) {
+        return;
       }
-    });
 
-    const unsubscribe = subscribeToAuthChanges(async (nextSession) => {
       setSession(nextSession);
 
-      if (nextSession?.user?.id) {
-        try {
-          const loadedProfile = await fetchProfile(nextSession.user.id);
-          setProfile(loadedProfile);
-        } catch {
+      if (!nextSession?.user?.id) {
+        setProfile(null);
+        setProfileLoading(false);
+        setAuthResolved(true);
+        return;
+      }
+
+      setProfileLoading(true);
+
+      try {
+        const loadedProfile = await fetchProfile(nextSession.user.id);
+        if (mounted) {
+          setProfile(loadedProfile ?? null);
+        }
+      } catch {
+        if (mounted) {
           setProfile(null);
         }
-      } else {
-        setProfile(null);
+      } finally {
+        if (mounted) {
+          setProfileLoading(false);
+          setAuthResolved(true);
+        }
       }
-    });
+    };
+
+    getCurrentSession().then(syncAuthState);
+
+    const unsubscribe = subscribeToAuthChanges(syncAuthState);
 
     return () => {
       mounted = false;
@@ -1590,27 +1657,6 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <div className="background-orb orb-left" />
-      <div className="background-orb orb-right" />
-
-      <header className="site-header">
-        <div className="brand-lockup">
-          <img alt="DILE logo" src="/logos/dile logo cow.jpg" />
-          <div>
-            <span className="eyebrow">Distribuidora Leon</span>
-            <strong>DILE Distributors</strong>
-          </div>
-        </div>
-        <nav className="main-nav">
-          <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/">
-            Catálogo
-          </NavLink>
-          <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/admin">
-            Admin
-          </NavLink>
-        </nav>
-      </header>
-
       {loading ? (
         <main className="loading-shell">
           <div className="spinner" />
@@ -1635,6 +1681,8 @@ export default function App() {
                 <AdminPage
                   brandDefinitions={brandDefinitions}
                   categoryDefinitions={categoryDefinitions}
+                  profileLoading={profileLoading}
+                  authResolved={authResolved}
                   onBrandDefinitionsChange={setBrandDefinitions}
                   onCatalogRefresh={refreshCatalog}
                   onCategoryDefinitionsChange={setCategoryDefinitions}
