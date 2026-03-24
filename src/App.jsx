@@ -151,8 +151,8 @@ function RouteBar({ compact = false }) {
       <div className="brand-lockup">
         <img alt="DILE logo" src="/logos/dile logo cow.jpg" />
         <div>
-          <span className="eyebrow">Distribuidora Leon</span>
-          <strong>DILE Distributors</strong>
+          <span className="eyebrow">DILE</span>
+          <strong>Distribuidora Leon</strong>
         </div>
       </div>
       <nav className="main-nav">
@@ -170,19 +170,23 @@ function RouteBar({ compact = false }) {
 function AuthPendingPanel() {
   return (
     <section className="admin-shell narrow-shell">
-      <RouteBar compact />
       <div className="notice notice-info">Verificando sesión y permisos de administrador...</div>
     </section>
   );
 }
 
-function MissingProfilePanel({ email, onSignOut }) {
+function MissingProfilePanel({ email, onSignOut, userId }) {
+  const sql = `insert into public.profiles (id, display_name, role)\nvalues ('${userId}', 'Distribuidora Leon', 'admin')\non conflict (id) do update set role = 'admin', display_name = excluded.display_name;`;
+
   return (
     <section className="admin-shell narrow-shell">
-      <RouteBar compact />
       <div className="notice notice-warning">
-        Iniciaste sesión como {email || 'usuario autenticado'}, pero no existe un perfil en la tabla
-        profiles para ese usuario. Crea una fila con el mismo uid y usa role = admin o editor.
+        Falta el perfil para {email || 'este usuario'}. Ejecuta este SQL en Supabase para crear el
+        acceso admin con el mismo UID.
+      </div>
+      <div className="admin-sql-card">
+        <p><strong>UID</strong>: {userId}</p>
+        <pre className="admin-sql-block">{sql}</pre>
       </div>
       <button className="ghost-button" onClick={onSignOut} type="button">
         Cerrar sesión
@@ -300,35 +304,24 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
   return (
     <>
       <section className="catalog-top-section">
-        <RouteBar />
-        <div className="catalog-top-grid">
-          <div className="hero-copy">
-            <span className="eyebrow">Catálogo</span>
-            <h1>Encuentra los productos que distribuimos.</h1>
-            <p>
-              Explora por categoría, filtra productos destacados y encuentra rápidamente lo que tu
-              negocio necesita.
-            </p>
-          </div>
-          <div className="hero-actions hero-actions-flat">
-            <label className="search-shell" htmlFor="catalog-search">
-              <span>Buscar</span>
-              <input
-                id="catalog-search"
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Marca, producto o descripción"
-                type="search"
-                value={search}
-              />
-            </label>
-            <button
-              className={classNames('tag-button', featuredOnly && 'tag-button-active')}
-              onClick={() => setFeaturedOnly((value) => !value)}
-              type="button"
-            >
-              {featuredOnly ? 'Mostrando solo destacados' : 'Filtrar destacados'}
-            </button>
-          </div>
+        <div className="catalog-tools-row">
+          <label className="search-shell" htmlFor="catalog-search">
+            <span>Buscar</span>
+            <input
+              id="catalog-search"
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Marca, producto o descripción"
+              type="search"
+              value={search}
+            />
+          </label>
+          <button
+            className={classNames('tag-button', featuredOnly && 'tag-button-active')}
+            onClick={() => setFeaturedOnly((value) => !value)}
+            type="button"
+          >
+            {featuredOnly ? 'Solo destacados' : 'Destacados'}
+          </button>
         </div>
         <div className="chip-row chip-row-integrated">
           {categorySummary.map((entry) => (
@@ -371,15 +364,9 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
       </section>
 
       <section className="catalog-section">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">Catálogo público</span>
-            <h2>{filteredProducts.length} productos listos para mostrar</h2>
-          </div>
-          <p>
-            Los productos ocultos quedan fuera del catálogo público, pero siguen siendo editables en
-            el panel de administración.
-          </p>
+        <div className="catalog-summary-row">
+          <span className="eyebrow">Catálogo</span>
+          <strong>{filteredProducts.length} productos</strong>
         </div>
 
         {filteredProducts.length === 0 ? (
@@ -440,7 +427,6 @@ function LoginPanel({ onSignedIn }) {
 
   return (
     <section className="admin-shell narrow-shell">
-      <RouteBar compact />
       <div className="section-heading">
         <div>
           <span className="eyebrow">Admin</span>
@@ -481,7 +467,6 @@ function LoginPanel({ onSignedIn }) {
 function AccessDenied({ onSignOut, role }) {
   return (
     <section className="admin-shell narrow-shell">
-      <RouteBar compact />
       <div className="notice notice-error">
         Tu usuario sí inició sesión, pero su rol actual es {role || 'sin rol'}. Cambia la fila en
         profiles para usar role = admin o editor.
@@ -1542,7 +1527,7 @@ function AdminPage({
   }
 
   if (!profile) {
-    return <MissingProfilePanel email={session.user.email} onSignOut={signOut} />;
+    return <MissingProfilePanel email={session.user.email} onSignOut={signOut} userId={session.user.id} />;
   }
 
   if (!canManage) {
@@ -1550,22 +1535,19 @@ function AdminPage({
   }
 
   return (
-    <>
-      <RouteBar compact />
-      <AdminDashboard
-        brandDefinitions={brandDefinitions}
-        categoryDefinitions={categoryDefinitions}
-        onBrandDefinitionsChange={onBrandDefinitionsChange}
-        onCatalogRefresh={onCatalogRefresh}
-        onCategoryDefinitionsChange={onCategoryDefinitionsChange}
-        onProductsChange={onProductsChange}
-        onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
-        products={products}
-        profile={{ ...profile, email: session.user.email }}
-        sourceLabel={sourceLabel}
-        subcategoryDefinitions={subcategoryDefinitions}
-      />
-    </>
+    <AdminDashboard
+      brandDefinitions={brandDefinitions}
+      categoryDefinitions={categoryDefinitions}
+      onBrandDefinitionsChange={onBrandDefinitionsChange}
+      onCatalogRefresh={onCatalogRefresh}
+      onCategoryDefinitionsChange={onCategoryDefinitionsChange}
+      onProductsChange={onProductsChange}
+      onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
+      products={products}
+      profile={{ ...profile, email: session.user.email }}
+      sourceLabel={sourceLabel}
+      subcategoryDefinitions={subcategoryDefinitions}
+    />
   );
 }
 
@@ -1657,13 +1639,14 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      {loading ? (
-        <main className="loading-shell">
-          <div className="spinner" />
-          <p>Preparando catálogo y panel administrativo...</p>
-        </main>
-      ) : (
-        <main className="page-shell">
+      <main className="page-shell">
+        <RouteBar />
+        {loading ? (
+          <div className="loading-shell">
+            <div className="spinner" />
+            <p>Preparando catálogo y panel administrativo...</p>
+          </div>
+        ) : (
           <Routes>
             <Route
               path="/"
@@ -1698,11 +1681,11 @@ export default function App() {
             />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
-        </main>
-      )}
+        )}
+      </main>
 
       <footer className="site-footer">
-        <p>DILE Distributors</p>
+        <p>Distribuidora Leon</p>
       </footer>
     </div>
   );

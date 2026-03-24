@@ -68,6 +68,30 @@ begin
 end;
 $$;
 
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.profiles (id, display_name, role)
+  values (
+    new.id,
+    coalesce(
+      nullif(trim(coalesce(new.raw_user_meta_data->>'display_name', '')), ''),
+      nullif(trim(coalesce(new.raw_user_meta_data->>'full_name', '')), ''),
+      nullif(split_part(coalesce(new.email, ''), '@', 1), ''),
+      'usuario'
+    ),
+    'viewer'
+  )
+  on conflict (id) do nothing;
+
+  return new;
+end;
+$$;
+
 drop trigger if exists products_set_updated_at on public.products;
 create trigger products_set_updated_at
 before update on public.products
@@ -79,6 +103,12 @@ create trigger profiles_set_updated_at
 before update on public.profiles
 for each row
 execute function public.set_updated_at();
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+after insert on auth.users
+for each row
+execute function public.handle_new_user();
 
 drop trigger if exists catalog_categories_set_updated_at on public.catalog_categories;
 create trigger catalog_categories_set_updated_at
@@ -160,6 +190,21 @@ with check (
       and manager.role = 'admin'
   )
 );
+
+insert into public.profiles (id, display_name, role)
+select
+  users.id,
+  coalesce(
+    nullif(trim(coalesce(users.raw_user_meta_data->>'display_name', '')), ''),
+    nullif(trim(coalesce(users.raw_user_meta_data->>'full_name', '')), ''),
+    nullif(split_part(coalesce(users.email, ''), '@', 1), ''),
+    'usuario'
+  ),
+  'viewer'
+from auth.users as users
+left join public.profiles on profiles.id = users.id
+where profiles.id is null
+on conflict (id) do nothing;
 
 drop policy if exists "public can read catalog categories" on public.catalog_categories;
 create policy "public can read catalog categories"
