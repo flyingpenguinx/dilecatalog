@@ -796,15 +796,43 @@ export function subscribeToAuthChanges(callback) {
   return () => subscription.unsubscribe();
 }
 
+function normalizeAuthError(error) {
+  const message = String(error?.message ?? '').trim();
+  const normalizedMessage = message.toLowerCase();
+
+  if (!message) {
+    return new Error('Could not sign in. Check the account details and try again.');
+  }
+
+  if (normalizedMessage.includes('invalid login credentials')) {
+    return new Error('Email or password is incorrect.');
+  }
+
+  if (normalizedMessage.includes('email not confirmed')) {
+    return new Error('This email address is not confirmed yet. Confirm the account, then try again.');
+  }
+
+  if (normalizedMessage.includes('rate limit') || normalizedMessage.includes('too many requests')) {
+    return new Error('Too many sign-in attempts. Wait a minute and try again.');
+  }
+
+  if (error?.status === 400) {
+    return new Error(`Sign-in request was rejected: ${message}`);
+  }
+
+  return new Error(message);
+}
+
 export async function signInWithPassword(email, password) {
   if (!isSupabaseConfigured || !supabase) {
     throw new Error('The Supabase connection is not active. Restart the app after configuring the environment variables.');
   }
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const normalizedEmail = String(email ?? '').trim();
+  const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
 
   if (error) {
-    throw error;
+    throw normalizeAuthError(error);
   }
 }
 
