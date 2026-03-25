@@ -1,0 +1,130 @@
+SUPABASE LOGIN DEBUG NOTES
+
+This website connects to Supabase from the browser using the JavaScript client in:
+src/lib/supabase.js
+
+1. Connection setup
+
+- The app reads these environment variables:
+  VITE_SUPABASE_URL
+  VITE_SUPABASE_ANON_KEY
+
+- It creates the client with this call:
+  createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  })
+
+- This means the website is using the public anon key from the browser, not the service role key.
+
+2. What happens when you click login
+
+- The admin login form calls:
+  signInWithPassword(email, password)
+
+- That function calls Supabase with:
+  supabase.auth.signInWithPassword({ email, password })
+
+- What Supabase is being asked to confirm at this step:
+  - the email exists in Supabase Auth
+  - the password is correct
+  - a valid session can be created
+
+3. What happens right after login
+
+- The app asks Supabase for the current session with:
+  supabase.auth.getSession()
+
+- The app also subscribes to auth state changes with:
+  supabase.auth.onAuthStateChange((_event, session) => { ... })
+
+- What Supabase is being asked to confirm here:
+  - whether there is an active authenticated session
+  - which user ID belongs to that session
+  - which email belongs to that session
+
+4. How the app checks the profile row
+
+- Once a session exists, the app reads the user's profile with:
+  supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .maybeSingle()
+
+- What Supabase is being asked to confirm here:
+  - whether a row exists in public.profiles for the authenticated user's UID
+  - if it exists, what values are stored there, including role
+
+5. Important detail about the current frontend
+
+- The frontend no longer hard-blocks the admin page just because role/profile checks fail.
+- If you are signed in, the dashboard should now load.
+- If save/delete operations fail after that, the failure is coming from Supabase permissions or missing data, not from the website blocking the page first.
+
+6. What this login flow does NOT do
+
+- It does NOT use the service_role key
+- It does NOT directly bypass RLS
+- It does NOT run raw SQL from the browser
+- It does NOT create admin access automatically
+
+7. The exact Supabase calls used by the website for login
+
+- Connection:
+  createClient(supabaseUrl, supabaseAnonKey, ...)
+
+- Sign in:
+  supabase.auth.signInWithPassword({ email, password })
+
+- Read current session:
+  supabase.auth.getSession()
+
+- Listen for auth changes:
+  supabase.auth.onAuthStateChange((_event, session) => { ... })
+
+- Read profile row:
+  supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
+
+8. If there is still a miscommunication, it is most likely one of these
+
+- Supabase Auth has a valid session, but the matching row in public.profiles is not readable by that user
+- The row exists in public.profiles, but it is attached to a different UID than the signed-in auth user
+- The frontend is signed into one user, but the database row was updated for another user
+- The browser is holding an old session and not the account you think is logged in
+- Supabase policies allow login but reject later reads/writes
+
+9. What is already present in this repo's schema
+
+- The schema already includes a self-read policy on public.profiles:
+  using (id = auth.uid())
+
+- The schema already includes admin/editor write policies for:
+  public.products
+  public.catalog_categories
+  public.catalog_brands
+  public.catalog_subcategories
+
+- The schema already includes storage policies for the bucket:
+  product-images
+
+- So the most important thing to verify now is not whether those policies exist in theory, but whether the browser session UID is the same UID you updated in public.profiles.
+
+10. What the admin page now shows directly
+
+- The admin page now displays:
+  session UID
+  loaded profile UID
+  whether they match
+
+- If session UID and profile UID do not match, that is a concrete miscommunication and explains why the wrong row is being checked.
+
+- If the session UID exists but profile UID shows "sin perfil", then the app is signed in correctly but the profile row is still not being returned under RLS for that exact UID.
+
+11. Bottom line
+
+- Login itself asks Supabase Auth to verify email/password and return a session.
+- After login, the app asks the public.profiles table for the row whose id matches the authenticated user's UID.
+- Those are the main two checks involved in admin access.

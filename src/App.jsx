@@ -77,7 +77,7 @@ function buildCategorySummary(products, categoryDefinitions) {
     id: categoryId,
     label: categoryId === 'all' ? 'Todos' : getCategoryName(categoryId, categoryDefinitions),
     marker: categoryId === 'all' ? '00' : String(index).padStart(2, '0'),
-    note: categoryId === 'all' ? 'Colección completa' : 'Categoría activa',
+    note: categoryId === 'all' ? 'Full collection' : 'Active category',
     count: categoryId === 'all'
       ? products.length
       : products.filter((product) => product.category === categoryId).length,
@@ -172,7 +172,7 @@ function RouteBar({ compact = false }) {
       </div>
       <nav className="main-nav">
         <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/">
-          Catálogo
+          Catalog
         </NavLink>
         <NavLink className={({ isActive }) => classNames('nav-link', isActive && 'nav-link-active')} to="/admin">
           Admin
@@ -185,27 +185,7 @@ function RouteBar({ compact = false }) {
 function AuthPendingPanel() {
   return (
     <section className="admin-shell narrow-shell">
-      <div className="notice notice-info">Verificando sesión y permisos de administrador...</div>
-    </section>
-  );
-}
-
-function MissingProfilePanel({ email, onSignOut, userId }) {
-  const sql = `insert into public.profiles (id, display_name, role)\nvalues ('${userId}', 'Distribuidora Leon', 'admin')\non conflict (id) do update set role = 'admin', display_name = excluded.display_name;`;
-
-  return (
-    <section className="admin-shell narrow-shell">
-      <div className="notice notice-warning">
-        Falta el perfil para {email || 'este usuario'}. Ejecuta este SQL en Supabase para crear el
-        acceso admin con el mismo UID.
-      </div>
-      <div className="admin-sql-card">
-        <p><strong>UID</strong>: {userId}</p>
-        <pre className="admin-sql-block">{sql}</pre>
-      </div>
-      <button className="ghost-button" onClick={onSignOut} type="button">
-        Cerrar sesión
-      </button>
+      <div className="notice notice-info">Checking session and admin permissions...</div>
     </section>
   );
 }
@@ -232,7 +212,7 @@ function ProductModal({ categoryDefinitions, product, onClose }) {
     <div className="overlay" onClick={onClose}>
       <section className="modal-shell" onClick={(event) => event.stopPropagation()}>
         <button className="ghost-button modal-close" onClick={onClose} type="button">
-          Cerrar
+          Close
         </button>
         <div className="modal-layout">
           <div className="modal-visual">
@@ -241,31 +221,31 @@ function ProductModal({ categoryDefinitions, product, onClose }) {
           <div className="modal-copy">
             <span className="eyebrow">{getCategoryName(product.category, categoryDefinitions)}</span>
             <h2>{product.name}</h2>
-            <p className="modal-brand">{product.brand || 'Sin marca'}</p>
+            <p className="modal-brand">{product.brand || 'No brand'}</p>
             <div className="detail-grid">
               <div>
-                <span className="detail-label">Subcategoría</span>
-                <strong>{product.subcategory || 'No definida'}</strong>
+                <span className="detail-label">Subcategory</span>
+                <strong>{product.subcategory || 'Not set'}</strong>
               </div>
               <div>
                 <span className="detail-label">SKU</span>
-                <strong>{product.sku || 'No definido'}</strong>
+                <strong>{product.sku || 'Not set'}</strong>
               </div>
               <div>
-                <span className="detail-label">Unidad</span>
-                <strong>{product.unit_size || 'No definida'}</strong>
+                <span className="detail-label">Unit size</span>
+                <strong>{product.unit_size || 'Not set'}</strong>
               </div>
               <div>
-                <span className="detail-label">Estado</span>
-                <strong>{product.visible ? 'Visible' : 'Oculto'}</strong>
+                <span className="detail-label">Status</span>
+                <strong>{product.visible ? 'Visible' : 'Hidden'}</strong>
               </div>
               <div>
-                <span className="detail-label">Destacado</span>
-                <strong>{product.featured ? 'Sí' : 'No'}</strong>
+                <span className="detail-label">Featured</span>
+                <strong>{product.featured ? 'Yes' : 'No'}</strong>
               </div>
             </div>
             <p className="modal-description">
-              {product.description || 'Producto auténtico centroamericano.'}
+              {product.description || 'Authentic Central American product.'}
             </p>
           </div>
         </div>
@@ -321,11 +301,11 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
       <section className="catalog-top-section">
         <div className="catalog-tools-row">
           <label className="search-shell" htmlFor="catalog-search">
-            <span>Buscar</span>
+            <span>Search</span>
             <input
               id="catalog-search"
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Marca, producto o descripción"
+              placeholder="Brand, product, or description"
               type="search"
               value={search}
             />
@@ -335,7 +315,7 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
             onClick={() => setFeaturedOnly((value) => !value)}
             type="button"
           >
-            {featuredOnly ? 'Solo destacados' : 'Destacados'}
+            {featuredOnly ? 'Featured only' : 'Featured'}
           </button>
         </div>
         <div className="chip-row chip-row-integrated">
@@ -362,7 +342,7 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
               onClick={() => setSubcategory('all')}
               type="button"
             >
-              Todas
+              All
             </button>
             {subcategories.map((value) => (
               <button
@@ -380,14 +360,14 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
 
       <section className="catalog-section">
         <div className="catalog-summary-row">
-          <span className="eyebrow">Catálogo</span>
-          <strong>{filteredProducts.length} productos</strong>
+          <span className="eyebrow">Catalog</span>
+          <strong>{filteredProducts.length} products</strong>
         </div>
 
         {filteredProducts.length === 0 ? (
           <div className="empty-panel">
-            <h3>No hay coincidencias</h3>
-            <p>Ajusta los filtros o corrige los productos desde el panel de administración.</p>
+            <h3>No matches found</h3>
+            <p>Adjust the filters or correct the products from the admin panel.</p>
           </div>
         ) : (
           <div className="catalog-grid">
@@ -396,7 +376,7 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
                 <button className="catalog-card-button" onClick={() => setSelectedProduct(product)} type="button">
                   <div className="catalog-image-shell">
                     <img alt={product.name} src={formatImagePath(product.image)} />
-                    {product.featured ? <span className="floating-badge">Destacado</span> : null}
+                    {product.featured ? <span className="floating-badge">Featured</span> : null}
                   </div>
                   <div className="catalog-copy">
                     <span className="catalog-meta">{getCategoryName(product.category, categoryDefinitions)}</span>
@@ -436,7 +416,7 @@ function LoginPanel({ onSignedIn }) {
       await signInWithPassword(email, password);
       onSignedIn?.();
     } catch (submissionError) {
-      setError(submissionError.message ?? 'No se pudo iniciar sesión.');
+      setError(submissionError.message ?? 'Could not sign in.');
     } finally {
       setIsSubmitting(false);
     }
@@ -447,15 +427,15 @@ function LoginPanel({ onSignedIn }) {
       <div className="section-heading">
         <div>
           <span className="eyebrow">Admin</span>
-          <h2>Inicia sesión para editar el catálogo</h2>
+          <h2>Sign in to edit the catalog</h2>
         </div>
         <p>
-          Supabase Auth controla quién puede entrar. El panel requiere un perfil con rol admin o editor.
+          Supabase Auth controls who can enter. The panel expects a profile with the admin or editor role.
         </p>
       </div>
       <form className="admin-form auth-form" onSubmit={handleSubmit}>
         <label>
-          Correo
+          Email
           <input
             autoComplete="email"
             onChange={(event) => setEmail(event.target.value)}
@@ -465,7 +445,7 @@ function LoginPanel({ onSignedIn }) {
           />
         </label>
         <label>
-          Contraseña
+          Password
           <input
             autoComplete="current-password"
             onChange={(event) => setPassword(event.target.value)}
@@ -477,7 +457,7 @@ function LoginPanel({ onSignedIn }) {
         {notice ? <p className="notice notice-info">{notice}</p> : null}
         {error ? <p className="notice notice-error">{error}</p> : null}
         <button className="primary-button" disabled={isSubmitting} type="submit">
-          {isSubmitting ? 'Entrando...' : 'Entrar'}
+          {isSubmitting ? 'Signing in...' : 'Sign in'}
         </button>
       </form>
     </section>
@@ -494,6 +474,9 @@ function AdminDashboard({
   onSubcategoryDefinitionsChange,
   products,
   profile,
+  profileFound,
+  profileId,
+  sessionUserId,
   sourceLabel,
   subcategoryDefinitions,
 }) {
@@ -516,6 +499,8 @@ function AdminDashboard({
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const canWrite = hasDashboardWriteAccess(profile);
+  const hasProfile = Boolean(profileFound);
+  const uidMatches = Boolean(sessionUserId && profileId && sessionUserId === profileId);
 
   useEffect(() => {
     if (!products.length) {
@@ -729,7 +714,7 @@ function AdminDashboard({
     setNotice('');
 
     if (!draft?.id) {
-      setNotice('Guarda o define un ID de producto antes de subir una imagen.');
+      setNotice('Save or set a product ID before uploading an image.');
       event.target.value = '';
       return;
     }
@@ -739,9 +724,9 @@ function AdminDashboard({
     try {
       const upload = await uploadProductImage(file, draft.id);
       setDraft((current) => ({ ...current, image: upload.publicUrl }));
-      setNotice(`Imagen subida a Storage en ${PRODUCT_IMAGE_BUCKET}. Guarda el producto para persistir la URL.`);
+      setNotice(`Image uploaded to Storage in ${PRODUCT_IMAGE_BUCKET}. Save the product to persist the URL.`);
     } catch (error) {
-      setNotice(error.message ?? 'No se pudo subir la imagen.');
+      setNotice(error.message ?? 'Could not upload the image.');
     } finally {
       setIsUploadingImage(false);
       event.target.value = '';
@@ -770,12 +755,12 @@ function AdminDashboard({
       const warnings = await syncDefinitionFromProduct(result.product);
       setNotice(
         result.persisted
-          ? ['Producto guardado en Supabase.', ...warnings].join(' ')
-          : ['Supabase no está configurado. El cambio solo vive en esta sesión.', ...warnings].join(' '),
+          ? ['Product saved in Supabase.', ...warnings].join(' ')
+          : ['Supabase is not configured. This change only exists in this session.', ...warnings].join(' '),
       );
       await onCatalogRefresh();
     } catch (error) {
-      setNotice(error.message ?? 'No se pudo guardar el producto.');
+      setNotice(error.message ?? 'Could not save the product.');
     } finally {
       setIsSaving(false);
     }
@@ -786,7 +771,7 @@ function AdminDashboard({
       return;
     }
 
-    if (!window.confirm(`Eliminar ${draft.name || 'este producto'}?`)) {
+    if (!window.confirm(`Delete ${draft.name || 'this product'}?`)) {
       return;
     }
 
@@ -798,12 +783,12 @@ function AdminDashboard({
       onProductsChange(nextProducts);
       setNotice(
         result.persisted
-          ? 'Producto eliminado de Supabase.'
-          : 'Supabase no está configurado. El producto solo desapareció del preview actual.',
+          ? 'Product deleted from Supabase.'
+          : 'Supabase is not configured. The product was only removed from the current preview.',
       );
       await onCatalogRefresh();
     } catch (error) {
-      setNotice(error.message ?? 'No se pudo eliminar el producto.');
+      setNotice(error.message ?? 'Could not delete the product.');
     }
   };
 
@@ -814,12 +799,12 @@ function AdminDashboard({
       const result = await seedSupabaseCatalog();
       setNotice(
         result.source === 'supabase'
-          ? `Se enviaron ${result.inserted} productos a Supabase. ${(result.warnings ?? []).join(' ')}`
-          : 'Supabase no está configurado. El seed quedó disponible solo como fallback local.',
+          ? `Sent ${result.inserted} products to Supabase. ${(result.warnings ?? []).join(' ')}`
+          : 'Supabase is not configured. The seed is only available as a local fallback.',
       );
       await onCatalogRefresh();
     } catch (error) {
-      setNotice(error.message ?? 'No se pudo poblar Supabase con el catálogo actual.');
+      setNotice(error.message ?? 'Could not seed Supabase with the current catalog.');
     }
   };
 
@@ -836,7 +821,7 @@ function AdminDashboard({
       JSON.stringify(snapshot, null, 2),
       'application/json;charset=utf-8',
     );
-    setNotice('Respaldo JSON descargado.');
+    setNotice('JSON backup downloaded.');
   };
 
   const handleExportCsv = () => {
@@ -845,7 +830,7 @@ function AdminDashboard({
       buildProductsCsv(products),
       'text/csv;charset=utf-8',
     );
-    setNotice('CSV descargado. Sirve para Excel y Google Sheets.');
+    setNotice('CSV downloaded. Ready for Excel or Google Sheets.');
   };
 
   const handleImportDataset = async (event) => {
@@ -873,12 +858,12 @@ function AdminDashboard({
       setSelectedView('products');
       setNotice(
         result.persisted
-          ? `Importación completada. ${(result.warnings ?? []).join(' ')}`
-          : 'Importación completada solo en esta sesión local.',
+          ? `Import complete. ${(result.warnings ?? []).join(' ')}`
+          : 'Import complete only in this local session.',
       );
       await onCatalogRefresh();
     } catch (error) {
-      setNotice(error.message ?? 'No se pudo importar el archivo.');
+      setNotice(error.message ?? 'Could not import the file.');
     } finally {
       setIsImporting(false);
       event.target.value = '';
@@ -894,9 +879,9 @@ function AdminDashboard({
       const result = await saveBrandDefinition(brandDraft);
       onBrandDefinitionsChange((current) => upsertDefinition(current, result.definition));
       setSelectedBrandId(result.definition.id);
-      setNotice(result.persisted ? 'Marca guardada.' : result.warning ?? 'Marca guardada solo en esta sesión.');
+      setNotice(result.persisted ? 'Brand saved.' : result.warning ?? 'Brand saved only in this session.');
     } catch (error) {
-      setNotice(error.message ?? 'No se pudo guardar la marca.');
+      setNotice(error.message ?? 'Could not save the brand.');
     } finally {
       setIsSavingBrand(false);
     }
@@ -907,13 +892,13 @@ function AdminDashboard({
       return;
     }
 
-    if (!window.confirm(`Eliminar la marca ${brandDraft.name || 'sin nombre'}?`)) {
+    if (!window.confirm(`Delete brand ${brandDraft.name || 'without a name'}?`)) {
       return;
     }
 
     const result = await deleteBrandDefinition(brandDraft.id);
     onBrandDefinitionsChange((current) => current.filter((definition) => definition.id !== brandDraft.id));
-    setNotice(result.persisted ? 'Marca eliminada.' : result.warning ?? 'Marca eliminada solo en esta sesión.');
+    setNotice(result.persisted ? 'Brand deleted.' : result.warning ?? 'Brand deleted only in this session.');
   };
 
   const handleSaveCategory = async (event) => {
@@ -930,9 +915,9 @@ function AdminDashboard({
       onCategoryDefinitionsChange((current) => upsertDefinition(current, result.definition));
       setSelectedCategoryId(result.definition.id);
       setCategoryDraft(result.definition);
-      setNotice(result.persisted ? 'Categoría guardada.' : result.warning ?? 'Categoría guardada solo en esta sesión.');
+      setNotice(result.persisted ? 'Category saved.' : result.warning ?? 'Category saved only in this session.');
     } catch (error) {
-      setNotice(error.message ?? 'No se pudo guardar la categoría.');
+      setNotice(error.message ?? 'Could not save the category.');
     } finally {
       setIsSavingCategory(false);
     }
@@ -943,38 +928,53 @@ function AdminDashboard({
       return;
     }
 
-    if (!window.confirm(`Eliminar la categoría ${categoryDraft.name || categoryDraft.id}?`)) {
+    if (!window.confirm(`Delete category ${categoryDraft.name || categoryDraft.id}?`)) {
       return;
     }
 
     const result = await deleteCategoryDefinition(categoryDraft.id);
     onCategoryDefinitionsChange((current) => current.filter((definition) => definition.id !== categoryDraft.id));
-    setNotice(result.persisted ? 'Categoría eliminada.' : result.warning ?? 'Categoría eliminada solo en esta sesión.');
+    setNotice(result.persisted ? 'Category deleted.' : result.warning ?? 'Category deleted only in this session.');
   };
 
   return (
     <section className="admin-shell">
       <div className="section-heading">
         <div>
-          <span className="eyebrow">Panel administrativo</span>
-          <h2>Productos, marcas, categorías e imágenes</h2>
+          <span className="eyebrow">Admin panel</span>
+          <h2>Products, brands, categories, and images</h2>
         </div>
         <p>
-          Sesión: {profile?.display_name || profile?.email || 'Usuario autenticado'} · Rol:{' '}
-          {normalizeRole(profile?.role) || 'sin rol'} · Fuente: {sourceLabel}
+          Session: {profile?.display_name || profile?.email || 'Authenticated user'} · Role:{' '}
+          {normalizeRole(profile?.role) || 'no role'} · Source: {sourceLabel}
+        </p>
+        <p>
+          Session UID: {sessionUserId || 'no session'} · Profile UID: {profileId || 'no profile'} · Match:{' '}
+          {uidMatches ? 'yes' : 'no'}
         </p>
       </div>
 
       {!canWrite && isSupabaseConfigured ? (
         <div className="notice notice-info">
-          El frontend ya no bloquea esta vista por rol. Si guardar o eliminar falla, el rechazo ya viene de los permisos reales en Supabase.
+          The frontend no longer blocks this view by role. If save or delete fails, the rejection is coming from real Supabase permissions.
+        </div>
+      ) : null}
+
+      {!hasProfile && isSupabaseConfigured ? (
+        <div className="notice notice-warning">
+          The app could not read a profile for this session. The panel is no longer blocked because of that. If saving changes fails, the issue is in the `public.profiles` row or the real Supabase policies.
+        </div>
+      ) : null}
+
+      {hasProfile && !uidMatches && isSupabaseConfigured ? (
+        <div className="notice notice-warning">
+          The loaded profile does not match the session UID. That points to a real mismatch between the authenticated user and the expected row in `public.profiles`.
         </div>
       ) : null}
 
       {!isSupabaseConfigured ? (
         <div className="notice notice-warning">
-          Supabase no está configurado todavía. El panel funciona como preview local para terminar la
-          migración sin bloquearte.
+          Supabase is not configured yet. The panel is running as a local preview so you can finish the migration without being blocked.
         </div>
       ) : null}
 
@@ -982,10 +982,10 @@ function AdminDashboard({
 
       <div className="admin-segmented-control">
         {[
-          ['products', 'Productos'],
-          ['brands', 'Marcas'],
-          ['categories', 'Categorías'],
-          ['images', 'Imágenes'],
+          ['products', 'Products'],
+          ['brands', 'Brands'],
+          ['categories', 'Categories'],
+          ['images', 'Images'],
         ].map(([value, label]) => (
           <button
             className={classNames('segment-button', selectedView === value && 'segment-button-active')}
@@ -1005,8 +1005,8 @@ function AdminDashboard({
               onChange={(event) => setQuery(event.target.value)}
               placeholder={
                 selectedView === 'images'
-                  ? 'Buscar por nombre o ruta de imagen'
-                  : `Buscar ${selectedView === 'products' ? 'productos' : selectedView === 'brands' ? 'marcas' : 'categorías'}`
+                  ? 'Search by product name or image path'
+                  : `Search ${selectedView === 'products' ? 'products' : selectedView === 'brands' ? 'brands' : 'categories'}`
               }
               type="search"
               value={query}
@@ -1024,10 +1024,10 @@ function AdminDashboard({
                     }}
                     type="button"
                   >
-                    Nuevo producto
+                    New product
                   </button>
                   <button className="ghost-button" onClick={handleSeed} type="button">
-                    Seed actual a Supabase
+                    Push current seed to Supabase
                   </button>
                 </>
               ) : null}
@@ -1038,7 +1038,7 @@ function AdminDashboard({
                   onClick={() => setBrandDraft(createEmptyBrand(availableCategories, getNextSortOrder(brandDefinitions)))}
                   type="button"
                 >
-                  Nueva marca
+                  New brand
                 </button>
               ) : null}
 
@@ -1048,20 +1048,20 @@ function AdminDashboard({
                   onClick={() => setCategoryDraft(createEmptyCategory(getNextSortOrder(categoryDefinitions)))}
                   type="button"
                 >
-                  Nueva categoría
+                  New category
                 </button>
               ) : null}
             </div>
 
             <div className="admin-export-panel">
               <button className="ghost-button" onClick={handleExportJson} type="button">
-                Exportar JSON
+                Export JSON
               </button>
               <button className="ghost-button" onClick={handleExportCsv} type="button">
-                Exportar CSV
+                Export CSV
               </button>
               <label className="ghost-button upload-trigger">
-                {isImporting ? 'Importando...' : 'Importar CSV o JSON'}
+                {isImporting ? 'Importing...' : 'Import CSV or JSON'}
                 <input accept=".csv,.json" disabled={isImporting} onChange={handleImportDataset} type="file" />
               </label>
             </div>
@@ -1081,13 +1081,13 @@ function AdminDashboard({
                   >
                     <div>
                       <strong>{product.name}</strong>
-                      <span>{[product.brand || 'Sin marca', product.sku || null, product.unit_size || null].filter(Boolean).join(' · ')}</span>
+                      <span>{[product.brand || 'No brand', product.sku || null, product.unit_size || null].filter(Boolean).join(' · ')}</span>
                     </div>
                     <div className="status-cluster">
                       <span className={classNames('status-pill', product.visible ? 'status-pill-green' : 'status-pill-gray')}>
-                        {product.visible ? 'Visible' : 'Oculto'}
+                        {product.visible ? 'Visible' : 'Hidden'}
                       </span>
-                      {product.featured ? <span className="status-pill status-pill-gold">Destacado</span> : null}
+                      {product.featured ? <span className="status-pill status-pill-gold">Featured</span> : null}
                     </div>
                   </button>
                 ))
@@ -1106,7 +1106,7 @@ function AdminDashboard({
                   >
                     <div>
                       <strong>{definition.name}</strong>
-                      <span>{definition.category ? getCategoryName(definition.category, availableCategories) : 'Sin categoría fija'}</span>
+                      <span>{definition.category ? getCategoryName(definition.category, availableCategories) : 'No fixed category'}</span>
                     </div>
                   </button>
                 ))
@@ -1129,7 +1129,7 @@ function AdminDashboard({
                     </div>
                     <div className="status-cluster">
                       <span className="status-pill status-pill-gray">
-                        {products.filter((product) => product.category === definition.id).length} productos
+                        {products.filter((product) => product.category === definition.id).length} products
                       </span>
                     </div>
                   </button>
@@ -1140,11 +1140,11 @@ function AdminDashboard({
               <div className="image-list-summary">
                 <div className="summary-card">
                   <strong>{filteredAssignedImages.length}</strong>
-                  <span>Imágenes asignadas</span>
+                  <span>Assigned images</span>
                 </div>
                 <div className="summary-card summary-card-warning">
                   <strong>{filteredUnassignedImages.length}</strong>
-                  <span>Imágenes locales sin producto</span>
+                  <span>Local images without a product</span>
                 </div>
               </div>
             ) : null}
@@ -1154,12 +1154,12 @@ function AdminDashboard({
         {selectedView === 'products' ? (
           <form className="admin-form" onSubmit={handleSave}>
             <div className="data-ops-card">
-              <h3>Carga inteligente para Excel y Sheets</h3>
+              <h3>Excel and Sheets import helper</h3>
               <p>
-                El CSV exporta las columnas correctas para SKU, unidad, marca y categoría. La importación
-                reconoce encabezados como marca, brand, categoría, category, unidad y unit size.
+                The CSV export uses the correct columns for SKU, unit size, brand, and category. The import
+                recognizes headers such as marca, brand, categoría, category, unidad, and unit size.
               </p>
-              <small>Las marcas se guardan exactamente como las escribas. No se traducen automáticamente.</small>
+              <small>Brands are stored exactly as you type them. They are not translated automatically.</small>
             </div>
 
             <div className="form-grid">
@@ -1182,7 +1182,7 @@ function AdminDashboard({
                 />
               </label>
               <label className="full-span">
-                Nombre
+                Name
                 <input
                   onChange={(event) => handleFieldChange('name', event.target.value)}
                   required
@@ -1191,11 +1191,11 @@ function AdminDashboard({
                 />
               </label>
               <label>
-                Marca
+                Brand
                 <input
                   list="brand-options"
                   onChange={(event) => handleFieldChange('brand', event.target.value)}
-                  placeholder="Escoge una marca o escribe una nueva"
+                  placeholder="Choose a brand or type a new one"
                   type="text"
                   value={draft.brand}
                 />
@@ -1206,7 +1206,7 @@ function AdminDashboard({
                 </datalist>
               </label>
               <label>
-                SKU opcional
+                Optional SKU
                 <input
                   onChange={(event) => handleFieldChange('sku', event.target.value)}
                   placeholder="DILE-0001"
@@ -1215,7 +1215,7 @@ function AdminDashboard({
                 />
               </label>
               <label>
-                Unidad opcional
+                Optional unit size
                 <input
                   onChange={(event) => handleFieldChange('unit_size', event.target.value)}
                   placeholder="16 oz / 12 pack / 500 g"
@@ -1224,7 +1224,7 @@ function AdminDashboard({
                 />
               </label>
               <label>
-                Categoría
+                Category
                 <select
                   onChange={(event) => handleFieldChange('category', event.target.value)}
                   value={draft.category}
@@ -1237,7 +1237,7 @@ function AdminDashboard({
                 </select>
               </label>
               <label>
-                Subcategoría
+                Subcategory
                 <input
                   list="subcategory-options"
                   onChange={(event) => handleFieldChange('subcategory', event.target.value)}
@@ -1251,7 +1251,7 @@ function AdminDashboard({
                 </datalist>
               </label>
               <label className="full-span">
-                Imagen actual
+                Current image
                 <input
                   onChange={(event) => handleFieldChange('image', event.target.value)}
                   placeholder="https://... o URL pública de Supabase Storage"
@@ -1260,7 +1260,7 @@ function AdminDashboard({
                 />
               </label>
               <label className="full-span upload-field">
-                Subir imagen a Supabase Storage
+                Upload image to Supabase Storage
                 <input
                   accept="image/png,image/jpeg,image/webp,image/avif"
                   disabled={!isSupabaseConfigured || isUploadingImage}
@@ -1271,12 +1271,12 @@ function AdminDashboard({
                   {isSupabaseConfigured
                     ? isUploadingImage
                       ? 'Subiendo imagen...'
-                      : 'La imagen se sube al bucket product-images y luego se guarda la URL pública en el producto.'
-                    : 'Configura Supabase y el bucket product-images para habilitar uploads.'}
+                      : 'The image is uploaded to the product-images bucket and then its public URL is saved on the product.'
+                    : 'Configure Supabase and the product-images bucket to enable uploads.'}
                 </small>
               </label>
               <label className="full-span">
-                Descripción opcional
+                Optional description
                 <textarea
                   onChange={(event) => handleFieldChange('description', event.target.value)}
                   rows="5"
@@ -1292,7 +1292,7 @@ function AdminDashboard({
                   onChange={(event) => handleFieldChange('visible', event.target.checked)}
                   type="checkbox"
                 />
-                <span>Visible en catálogo</span>
+                <span>Visible in catalog</span>
               </label>
               <label className="toggle-card">
                 <input
@@ -1300,22 +1300,22 @@ function AdminDashboard({
                   onChange={(event) => handleFieldChange('featured', event.target.checked)}
                   type="checkbox"
                 />
-                <span>Marcar como destacado</span>
+                <span>Mark as featured</span>
               </label>
             </div>
 
             {draft.image ? (
               <div className="preview-panel">
-                <img alt={draft.name || 'Preview de producto'} src={formatImagePath(draft.image)} />
+                <img alt={draft.name || 'Product preview'} src={formatImagePath(draft.image)} />
               </div>
             ) : null}
 
             <div className="button-row">
               <button className="primary-button" disabled={isSaving} type="submit">
-                {isSaving ? 'Guardando...' : 'Guardar cambios'}
+                {isSaving ? 'Saving...' : 'Save changes'}
               </button>
               <button className="ghost-button" onClick={handleDelete} type="button">
-                Eliminar
+                Delete
               </button>
               <button
                 className="ghost-button"
@@ -1323,12 +1323,12 @@ function AdminDashboard({
                   setDraft((current) => ({
                     ...current,
                     id: Date.now(),
-                    name: `${current.name || 'Producto'} copia`,
+                    name: `${current.name || 'Product'} copy`,
                   }))
                 }
                 type="button"
               >
-                Duplicar
+                Duplicate
               </button>
             </div>
           </form>
@@ -1354,7 +1354,7 @@ function AdminDashboard({
                 />
               </label>
               <label className="full-span">
-                Marca
+                Brand
                 <input
                   onChange={(event) => setBrandDraft((current) => ({ ...current, name: event.target.value }))}
                   required
@@ -1363,12 +1363,12 @@ function AdminDashboard({
                 />
               </label>
               <label>
-                Categoría sugerida
+                Suggested category
                 <select
                   onChange={(event) => setBrandDraft((current) => ({ ...current, category: event.target.value }))}
                   value={brandDraft.category}
                 >
-                  <option value="">Sin categoría fija</option>
+                  <option value="">No fixed category</option>
                   {availableCategories.map((definition) => (
                     <option key={definition.id} value={definition.id}>
                       {definition.name}
@@ -1377,7 +1377,7 @@ function AdminDashboard({
                 </select>
               </label>
               <label className="full-span">
-                Nota interna
+                Internal note
                 <textarea
                   onChange={(event) => setBrandDraft((current) => ({ ...current, notes: event.target.value }))}
                   rows="4"
@@ -1387,10 +1387,10 @@ function AdminDashboard({
             </div>
             <div className="button-row">
               <button className="primary-button" disabled={isSavingBrand} type="submit">
-                {isSavingBrand ? 'Guardando...' : 'Guardar marca'}
+                {isSavingBrand ? 'Saving...' : 'Save brand'}
               </button>
               <button className="ghost-button" onClick={handleDeleteBrand} type="button">
-                Eliminar
+                Delete
               </button>
             </div>
           </form>
@@ -1400,7 +1400,7 @@ function AdminDashboard({
           <form className="admin-form" onSubmit={handleSaveCategory}>
             <div className="form-grid">
               <label>
-                ID técnico
+                Technical ID
                 <input
                   onChange={(event) => setCategoryDraft((current) => ({ ...current, id: event.target.value }))}
                   placeholder="frozen, grocery, dairy, snacks"
@@ -1418,7 +1418,7 @@ function AdminDashboard({
                 />
               </label>
               <label className="full-span">
-                Nombre visible
+                Display name
                 <input
                   onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value }))}
                   required
@@ -1429,10 +1429,10 @@ function AdminDashboard({
             </div>
             <div className="button-row">
               <button className="primary-button" disabled={isSavingCategory} type="submit">
-                {isSavingCategory ? 'Guardando...' : 'Guardar categoría'}
+                {isSavingCategory ? 'Saving...' : 'Save category'}
               </button>
               <button className="ghost-button" onClick={handleDeleteCategory} type="button">
-                Eliminar
+                Delete
               </button>
             </div>
           </form>
@@ -1442,14 +1442,14 @@ function AdminDashboard({
           <div className="admin-form">
             <div className="section-heading image-heading">
               <div>
-                <span className="eyebrow">Revisión visual</span>
-                <h2>Todas las imágenes del catálogo</h2>
+                <span className="eyebrow">Visual review</span>
+                <h2>All catalog images</h2>
               </div>
-              <p>Revisa productos sin SKU, sin marca o imágenes locales que todavía no están asignadas.</p>
+              <p>Review products without a SKU, without a brand, or with local images that are still unassigned.</p>
             </div>
 
             <div className="image-gallery-section">
-              <h3>Imágenes asignadas a productos</h3>
+              <h3>Images assigned to products</h3>
               <div className="image-audit-grid">
                 {filteredAssignedImages.map(({ imageKey, issues, previewUrl, product, source }) => (
                   <article className="image-audit-card" key={`${product.id}-${imageKey}`}>
@@ -1458,7 +1458,7 @@ function AdminDashboard({
                     </div>
                     <div className="image-audit-copy">
                       <strong>{product.name}</strong>
-                      <span>{product.brand || 'Sin marca'} · {product.sku || 'Sin SKU'}</span>
+                      <span>{product.brand || 'No brand'} · {product.sku || 'No SKU'}</span>
                       <small>{imageKey}</small>
                       <div className="status-cluster status-cluster-inline">
                         <span className="status-pill status-pill-gray">{source}</span>
@@ -1473,7 +1473,7 @@ function AdminDashboard({
             </div>
 
             <div className="image-gallery-section">
-              <h3>Imágenes locales sin producto</h3>
+              <h3>Local images without a product</h3>
               <div className="image-audit-grid">
                 {filteredUnassignedImages.map((asset) => (
                   <article className="image-audit-card" key={asset.path}>
@@ -1481,7 +1481,7 @@ function AdminDashboard({
                       <img alt={asset.path} src={asset.previewUrl} />
                     </div>
                     <div className="image-audit-copy">
-                      <strong>No asignada</strong>
+                      <strong>Unassigned</strong>
                       <small>{asset.path}</small>
                     </div>
                   </article>
@@ -1523,6 +1523,9 @@ function AdminPage({
         onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
         products={products}
         profile={{ display_name: 'Preview local', role: 'admin' }}
+        profileFound={true}
+        profileId="preview-local"
+        sessionUserId="preview-local"
         sourceLabel="fallback local"
         subcategoryDefinitions={subcategoryDefinitions}
       />
@@ -1537,10 +1540,6 @@ function AdminPage({
     return <LoginPanel onSignedIn={onCatalogRefresh} />;
   }
 
-  if (!profile) {
-    return <MissingProfilePanel email={session.user.email} onSignOut={signOut} userId={session.user.id} />;
-  }
-
   return (
     <AdminDashboard
       brandDefinitions={brandDefinitions}
@@ -1551,7 +1550,10 @@ function AdminPage({
       onProductsChange={onProductsChange}
       onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
       products={products}
-      profile={{ ...profile, email: session.user.email }}
+      profile={{ ...(profile ?? {}), email: session.user.email }}
+      profileFound={Boolean(profile)}
+      profileId={profile?.id ?? ''}
+      sessionUserId={session.user.id}
       sourceLabel={sourceLabel}
       subcategoryDefinitions={subcategoryDefinitions}
     />
@@ -1570,7 +1572,7 @@ export default function App() {
   const [profileLoading, setProfileLoading] = useState(isSupabaseConfigured);
   const [authResolved, setAuthResolved] = useState(!isSupabaseConfigured);
 
-  const canManage = Boolean(session?.user?.id && profile) || !isSupabaseConfigured;
+  const canManage = Boolean(session?.user?.id) || !isSupabaseConfigured;
 
   const refreshCatalog = async () => {
     const [catalogResult, categoriesResult, brandsResult, subcategoriesResult] = await Promise.all([
@@ -1586,10 +1588,10 @@ export default function App() {
     setSubcategoryDefinitions(sortDefinitions(subcategoriesResult.definitions));
     setSourceLabel(
       catalogResult.source === 'supabase'
-        ? 'Supabase en vivo'
+        ? 'Live Supabase'
         : catalogResult.source === 'seed'
-          ? 'fallback local hasta poblar Supabase'
-          : 'catálogo local desde catalog-seed.json',
+          ? 'local fallback until Supabase is populated'
+          : 'local catalog from catalog-seed.json',
     );
     setLoading(false);
   };
@@ -1651,7 +1653,7 @@ export default function App() {
         {loading ? (
           <div className="loading-shell">
             <div className="spinner" />
-            <p>Preparando catálogo y panel administrativo...</p>
+            <p>Preparing catalog and admin panel...</p>
           </div>
         ) : (
           <Routes>

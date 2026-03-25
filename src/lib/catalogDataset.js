@@ -382,23 +382,23 @@ export function getProductAuditIssues(product) {
   const issues = [];
 
   if (!product.image) {
-    issues.push('Sin imagen');
+    issues.push('Missing image');
   }
 
   if (!product.brand) {
-    issues.push('Sin marca');
+    issues.push('Missing brand');
   }
 
   if (!product.sku) {
-    issues.push('Sin SKU');
+    issues.push('Missing SKU');
   }
 
   if (!product.category) {
-    issues.push('Sin categoría');
+    issues.push('Missing category');
   }
 
   if (!product.subcategory) {
-    issues.push('Sin subcategoría');
+    issues.push('Missing subcategory');
   }
 
   return issues;

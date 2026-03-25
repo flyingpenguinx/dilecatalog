@@ -41,7 +41,7 @@ function normalizeOptionalTableError(error, label) {
     throw error;
   }
 
-  return `${label} todavía no existe en Supabase. Aplica el schema actualizado para guardar este dato fuera de la sesión actual.`;
+  return `${label} does not exist in Supabase yet. Apply the updated schema to persist this data outside the current session.`;
 }
 
 export function normalizeCategoryId(categoryId) {
@@ -304,7 +304,7 @@ export async function saveCategoryDefinition(definition) {
   const normalized = normalizeCategoryDefinition(definition, definition.sort_order);
 
   if (!normalized.name) {
-    throw new Error('La categoría necesita un nombre.');
+    throw new Error('Category name is required.');
   }
 
   if (!isSupabaseConfigured || !supabase) {
@@ -336,7 +336,7 @@ export async function saveCategoryDefinition(definition) {
       definition: normalized,
       persisted: false,
       source: 'fallback',
-      warning: normalizeOptionalTableError(error, 'La tabla de categorías'),
+      warning: normalizeOptionalTableError(error, 'Category table'),
     };
   }
 }
@@ -358,7 +358,7 @@ export async function deleteCategoryDefinition(definitionId) {
     return {
       persisted: false,
       source: 'fallback',
-      warning: normalizeOptionalTableError(error, 'La tabla de categorías'),
+      warning: normalizeOptionalTableError(error, 'Category table'),
     };
   }
 }
@@ -402,7 +402,7 @@ export async function saveBrandDefinition(definition) {
   const normalized = normalizeBrandDefinition(definition, definition.sort_order);
 
   if (!normalized.name) {
-    throw new Error('La marca necesita un nombre.');
+    throw new Error('Brand name is required.');
   }
 
   if (!isSupabaseConfigured || !supabase) {
@@ -434,7 +434,7 @@ export async function saveBrandDefinition(definition) {
       definition: normalized,
       persisted: false,
       source: 'fallback',
-      warning: normalizeOptionalTableError(error, 'La tabla de marcas'),
+      warning: normalizeOptionalTableError(error, 'Brand table'),
     };
   }
 }
@@ -456,7 +456,7 @@ export async function deleteBrandDefinition(definitionId) {
     return {
       persisted: false,
       source: 'fallback',
-      warning: normalizeOptionalTableError(error, 'La tabla de marcas'),
+      warning: normalizeOptionalTableError(error, 'Brand table'),
     };
   }
 }
@@ -501,7 +501,7 @@ export async function saveSubcategoryDefinition(definition) {
   const normalized = normalizeSubcategoryDefinition(definition, definition.sort_order);
 
   if (!normalized.name) {
-    throw new Error('La subcategoría necesita un nombre.');
+    throw new Error('Subcategory name is required.');
   }
 
   if (!isSupabaseConfigured || !supabase) {
@@ -533,7 +533,7 @@ export async function saveSubcategoryDefinition(definition) {
       definition: normalized,
       persisted: false,
       source: 'fallback',
-      warning: normalizeOptionalTableError(error, 'La tabla de subcategorías'),
+      warning: normalizeOptionalTableError(error, 'Subcategory table'),
     };
   }
 }
@@ -555,7 +555,7 @@ export async function deleteSubcategoryDefinition(definitionId) {
     return {
       persisted: false,
       source: 'fallback',
-      warning: normalizeOptionalTableError(error, 'La tabla de subcategorías'),
+      warning: normalizeOptionalTableError(error, 'Subcategory table'),
     };
   }
 }
@@ -692,7 +692,7 @@ export async function importCatalogDataset(snapshot) {
     : [];
 
   if (!normalizedProducts.length) {
-    throw new Error('El archivo no contiene productos válidos.');
+    throw new Error('The file does not contain valid products.');
   }
 
   const normalizedCategories = deriveCategoryDefinitions(normalizedProducts, snapshot?.categories);
@@ -725,16 +725,16 @@ export async function importCatalogDataset(snapshot) {
     }
 
     if (isMissingRelationError(error)) {
-      warnings.push(`${label} no se guardaron porque falta la tabla ${table}.`);
+      warnings.push(`${label} were not saved because table ${table} is missing.`);
       return;
     }
 
     throw error;
   };
 
-  await persistOptionalRows('catalog_categories', normalizedCategories, 'Las categorías');
-  await persistOptionalRows('catalog_brands', normalizedBrands, 'Las marcas');
-  await persistOptionalRows('catalog_subcategories', normalizedSubcategories, 'Las subcategorías');
+  await persistOptionalRows('catalog_categories', normalizedCategories, 'Categories');
+  await persistOptionalRows('catalog_brands', normalizedBrands, 'Brands');
+  await persistOptionalRows('catalog_subcategories', normalizedSubcategories, 'Subcategories');
 
   const { error: productError } = await supabase
     .from('products')
@@ -798,7 +798,7 @@ export function subscribeToAuthChanges(callback) {
 
 export async function signInWithPassword(email, password) {
   if (!isSupabaseConfigured || !supabase) {
-    throw new Error('La conexión con Supabase no está activa. Reinicia la app después de configurar las variables.');
+    throw new Error('The Supabase connection is not active. Restart the app after configuring the environment variables.');
   }
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
