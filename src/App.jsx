@@ -32,6 +32,8 @@ import {
 } from './lib/catalogDataset.js';
 import { isSupabaseConfigured } from './lib/supabase.js';
 
+const ALLOW_LOCAL_ADMIN_PREVIEW = import.meta.env.DEV && !isSupabaseConfigured;
+
 function classNames(...values) {
   return values.filter(Boolean).join(' ');
 }
@@ -75,7 +77,7 @@ function buildCategorySummary(products, categoryDefinitions) {
 
   return ['all', ...categoryIds].map((categoryId, index) => ({
     id: categoryId,
-    label: categoryId === 'all' ? 'Todos' : getCategoryName(categoryId, categoryDefinitions),
+    label: categoryId === 'all' ? 'All' : getCategoryName(categoryId, categoryDefinitions),
     marker: categoryId === 'all' ? '00' : String(index).padStart(2, '0'),
     note: categoryId === 'all' ? 'Full collection' : 'Active category',
     count: categoryId === 'all'
@@ -167,7 +169,7 @@ function RouteBar({ compact = false }) {
         <img alt="DILE logo" src="/logos/dile logo cow.jpg" />
         <div>
           <span className="eyebrow">DILE</span>
-          <strong>Distribuidora Leon</strong>
+          <strong translate="no">Distribuidora Leon</strong>
         </div>
       </div>
       <nav className="main-nav">
@@ -186,6 +188,29 @@ function AuthPendingPanel() {
   return (
     <section className="admin-shell narrow-shell">
       <div className="notice notice-info">Checking session and admin permissions...</div>
+    </section>
+  );
+}
+
+function AccessRestrictedPanel({ onSignOut }) {
+  return (
+    <section className="admin-shell narrow-shell">
+      <div className="notice notice-warning">
+        This account is signed in, but it does not currently have admin access to this dashboard.
+      </div>
+      <button className="ghost-button" onClick={onSignOut} type="button">
+        Sign out
+      </button>
+    </section>
+  );
+}
+
+function AdminUnavailablePanel() {
+  return (
+    <section className="admin-shell narrow-shell">
+      <div className="notice notice-warning">
+        Admin is unavailable in this deployment.
+      </div>
     </section>
   );
 }
@@ -220,8 +245,8 @@ function ProductModal({ categoryDefinitions, product, onClose }) {
           </div>
           <div className="modal-copy">
             <span className="eyebrow">{getCategoryName(product.category, categoryDefinitions)}</span>
-            <h2>{product.name}</h2>
-            <p className="modal-brand">{product.brand || 'No brand'}</p>
+            <h2 translate="no">{product.name}</h2>
+            <p className="modal-brand" translate="no">{product.brand || 'No brand'}</p>
             <div className="detail-grid">
               <div>
                 <span className="detail-label">Subcategory</span>
@@ -380,8 +405,8 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
                   </div>
                   <div className="catalog-copy">
                     <span className="catalog-meta">{getCategoryName(product.category, categoryDefinitions)}</span>
-                    <h3>{product.name}</h3>
-                    <p>{[product.brand, product.unit_size].filter(Boolean).join(' · ')}</p>
+                    <h3 translate="no">{product.name}</h3>
+                    <p translate="no">{[product.brand, product.unit_size].filter(Boolean).join(' · ')}</p>
                   </div>
                 </button>
               </article>
@@ -429,9 +454,7 @@ function LoginPanel({ onSignedIn }) {
           <span className="eyebrow">Admin</span>
           <h2>Sign in to edit the catalog</h2>
         </div>
-        <p>
-          Supabase Auth controls who can enter. The panel expects a profile with the admin or editor role.
-        </p>
+        <p>Sign in with an approved admin account to edit catalog data.</p>
       </div>
       <form className="admin-form auth-form" onSubmit={handleSubmit}>
         <label>
@@ -474,9 +497,6 @@ function AdminDashboard({
   onSubcategoryDefinitionsChange,
   products,
   profile,
-  profileFound,
-  profileId,
-  sessionUserId,
   sourceLabel,
   subcategoryDefinitions,
 }) {
@@ -498,9 +518,6 @@ function AdminDashboard({
   const [isSavingCategory, setIsSavingCategory] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
-  const canWrite = hasDashboardWriteAccess(profile);
-  const hasProfile = Boolean(profileFound);
-  const uidMatches = Boolean(sessionUserId && profileId && sessionUserId === profileId);
 
   useEffect(() => {
     if (!products.length) {
@@ -755,8 +772,8 @@ function AdminDashboard({
       const warnings = await syncDefinitionFromProduct(result.product);
       setNotice(
         result.persisted
-          ? ['Product saved in Supabase.', ...warnings].join(' ')
-          : ['Supabase is not configured. This change only exists in this session.', ...warnings].join(' '),
+          ? ['Product saved.', ...warnings].join(' ')
+          : ['This change only exists in this session.', ...warnings].join(' '),
       );
       await onCatalogRefresh();
     } catch (error) {
@@ -783,8 +800,8 @@ function AdminDashboard({
       onProductsChange(nextProducts);
       setNotice(
         result.persisted
-          ? 'Product deleted from Supabase.'
-          : 'Supabase is not configured. The product was only removed from the current preview.',
+          ? 'Product deleted.'
+          : 'The product was only removed from the current preview.',
       );
       await onCatalogRefresh();
     } catch (error) {
@@ -799,8 +816,8 @@ function AdminDashboard({
       const result = await seedSupabaseCatalog();
       setNotice(
         result.source === 'supabase'
-          ? `Sent ${result.inserted} products to Supabase. ${(result.warnings ?? []).join(' ')}`
-          : 'Supabase is not configured. The seed is only available as a local fallback.',
+          ? `Seed synced. ${result.inserted} products processed. ${(result.warnings ?? []).join(' ')}`
+          : 'The seed is only available as a local fallback.',
       );
       await onCatalogRefresh();
     } catch (error) {
@@ -945,38 +962,10 @@ function AdminDashboard({
           <h2>Products, brands, categories, and images</h2>
         </div>
         <p>
-          Session: {profile?.display_name || profile?.email || 'Authenticated user'} · Role:{' '}
-          {normalizeRole(profile?.role) || 'no role'} · Source: {sourceLabel}
-        </p>
-        <p>
-          Session UID: {sessionUserId || 'no session'} · Profile UID: {profileId || 'no profile'} · Match:{' '}
-          {uidMatches ? 'yes' : 'no'}
+          Signed in as <span translate="no">{profile?.display_name || profile?.email || 'Authenticated user'}</span>
+          {' '}· Role: {normalizeRole(profile?.role) || 'no role'}
         </p>
       </div>
-
-      {!canWrite && isSupabaseConfigured ? (
-        <div className="notice notice-info">
-          The frontend no longer blocks this view by role. If save or delete fails, the rejection is coming from real Supabase permissions.
-        </div>
-      ) : null}
-
-      {!hasProfile && isSupabaseConfigured ? (
-        <div className="notice notice-warning">
-          The app could not read a profile for this session. The panel is no longer blocked because of that. If saving changes fails, the issue is in the `public.profiles` row or the real Supabase policies.
-        </div>
-      ) : null}
-
-      {hasProfile && !uidMatches && isSupabaseConfigured ? (
-        <div className="notice notice-warning">
-          The loaded profile does not match the session UID. That points to a real mismatch between the authenticated user and the expected row in `public.profiles`.
-        </div>
-      ) : null}
-
-      {!isSupabaseConfigured ? (
-        <div className="notice notice-warning">
-          Supabase is not configured yet. The panel is running as a local preview so you can finish the migration without being blocked.
-        </div>
-      ) : null}
 
       {notice ? <div className="notice notice-info">{notice}</div> : null}
 
@@ -1024,10 +1013,10 @@ function AdminDashboard({
                     }}
                     type="button"
                   >
-                    New product
+                    New
                   </button>
                   <button className="ghost-button" onClick={handleSeed} type="button">
-                    Push current seed to Supabase
+                    Sync seed
                   </button>
                 </>
               ) : null}
@@ -1055,13 +1044,13 @@ function AdminDashboard({
 
             <div className="admin-export-panel">
               <button className="ghost-button" onClick={handleExportJson} type="button">
-                Export JSON
+                JSON
               </button>
               <button className="ghost-button" onClick={handleExportCsv} type="button">
-                Export CSV
+                CSV
               </button>
               <label className="ghost-button upload-trigger">
-                {isImporting ? 'Importing...' : 'Import CSV or JSON'}
+                {isImporting ? 'Importing...' : 'Import'}
                 <input accept=".csv,.json" disabled={isImporting} onChange={handleImportDataset} type="file" />
               </label>
             </div>
@@ -1080,8 +1069,8 @@ function AdminDashboard({
                     type="button"
                   >
                     <div>
-                      <strong>{product.name}</strong>
-                      <span>{[product.brand || 'No brand', product.sku || null, product.unit_size || null].filter(Boolean).join(' · ')}</span>
+                      <strong translate="no">{product.name}</strong>
+                      <span translate="no">{[product.brand || 'No brand', product.sku || null, product.unit_size || null].filter(Boolean).join(' · ')}</span>
                     </div>
                     <div className="status-cluster">
                       <span className={classNames('status-pill', product.visible ? 'status-pill-green' : 'status-pill-gray')}>
@@ -1105,7 +1094,7 @@ function AdminDashboard({
                     type="button"
                   >
                     <div>
-                      <strong>{definition.name}</strong>
+                      <strong translate="no">{definition.name}</strong>
                       <span>{definition.category ? getCategoryName(definition.category, availableCategories) : 'No fixed category'}</span>
                     </div>
                   </button>
@@ -1124,8 +1113,8 @@ function AdminDashboard({
                     type="button"
                   >
                     <div>
-                      <strong>{definition.name}</strong>
-                      <span>{definition.id}</span>
+                      <strong translate="no">{definition.name}</strong>
+                      <span translate="no">{definition.id}</span>
                     </div>
                     <div className="status-cluster">
                       <span className="status-pill status-pill-gray">
@@ -1162,6 +1151,34 @@ function AdminDashboard({
               <small>Brands are stored exactly as you type them. They are not translated automatically.</small>
             </div>
 
+            <div className="editor-reference-panel">
+              <div className="editor-reference-header">
+                <strong>Product list</strong>
+                <span>{filteredProducts.length} items</span>
+              </div>
+              <div className="editor-reference-list two-column-list">
+                {filteredProducts.map((product) => (
+                  <button
+                    className={classNames('editor-reference-item', draft?.id === product.id && 'editor-reference-item-active')}
+                    key={`editor-product-${product.id}`}
+                    onClick={() => {
+                      setSelectedId(product.id);
+                      setDraft(product);
+                    }}
+                    type="button"
+                  >
+                    <div className="editor-reference-copy">
+                      <strong translate="no">{product.name}</strong>
+                      <span translate="no">{product.brand || 'No brand'}</span>
+                    </div>
+                    <span className={classNames('status-pill', product.visible ? 'status-pill-green' : 'status-pill-gray')}>
+                      {product.visible ? 'Visible' : 'Hidden'}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="form-grid">
               <label>
                 ID
@@ -1174,7 +1191,7 @@ function AdminDashboard({
                 />
               </label>
               <label>
-                Orden
+                Order
                 <input
                   onChange={(event) => handleFieldChange('sort_order', event.target.value)}
                   type="number"
@@ -1186,6 +1203,7 @@ function AdminDashboard({
                 <input
                   onChange={(event) => handleFieldChange('name', event.target.value)}
                   required
+                  translate="no"
                   type="text"
                   value={draft.name}
                 />
@@ -1196,6 +1214,7 @@ function AdminDashboard({
                   list="brand-options"
                   onChange={(event) => handleFieldChange('brand', event.target.value)}
                   placeholder="Choose a brand or type a new one"
+                  translate="no"
                   type="text"
                   value={draft.brand}
                 />
@@ -1210,6 +1229,7 @@ function AdminDashboard({
                 <input
                   onChange={(event) => handleFieldChange('sku', event.target.value)}
                   placeholder="DILE-0001"
+                  translate="no"
                   type="text"
                   value={draft.sku}
                 />
@@ -1219,6 +1239,7 @@ function AdminDashboard({
                 <input
                   onChange={(event) => handleFieldChange('unit_size', event.target.value)}
                   placeholder="16 oz / 12 pack / 500 g"
+                  translate="no"
                   type="text"
                   value={draft.unit_size}
                 />
@@ -1227,6 +1248,7 @@ function AdminDashboard({
                 Category
                 <select
                   onChange={(event) => handleFieldChange('category', event.target.value)}
+                  translate="no"
                   value={draft.category}
                 >
                   {availableCategories.map((definition) => (
@@ -1241,6 +1263,7 @@ function AdminDashboard({
                 <input
                   list="subcategory-options"
                   onChange={(event) => handleFieldChange('subcategory', event.target.value)}
+                  translate="no"
                   type="text"
                   value={draft.subcategory}
                 />
@@ -1254,7 +1277,8 @@ function AdminDashboard({
                 Current image
                 <input
                   onChange={(event) => handleFieldChange('image', event.target.value)}
-                  placeholder="https://... o URL pública de Supabase Storage"
+                  placeholder="https://... or a public Supabase Storage URL"
+                  translate="no"
                   type="text"
                   value={draft.image}
                 />
@@ -1270,7 +1294,7 @@ function AdminDashboard({
                 <small>
                   {isSupabaseConfigured
                     ? isUploadingImage
-                      ? 'Subiendo imagen...'
+                      ? 'Uploading image...'
                       : 'The image is uploaded to the product-images bucket and then its public URL is saved on the product.'
                     : 'Configure Supabase and the product-images bucket to enable uploads.'}
                 </small>
@@ -1336,17 +1360,43 @@ function AdminDashboard({
 
         {selectedView === 'brands' ? (
           <form className="admin-form" onSubmit={handleSaveBrand}>
+            <div className="editor-reference-panel">
+              <div className="editor-reference-header">
+                <strong>Brand list</strong>
+                <span>{filteredBrands.length} items</span>
+              </div>
+              <div className="editor-reference-list two-column-list">
+                {filteredBrands.map((definition) => (
+                  <button
+                    className={classNames('editor-reference-item', brandDraft?.id === definition.id && 'editor-reference-item-active')}
+                    key={`editor-brand-${definition.id}`}
+                    onClick={() => {
+                      setSelectedBrandId(definition.id);
+                      setBrandDraft(definition);
+                    }}
+                    type="button"
+                  >
+                    <div className="editor-reference-copy">
+                      <strong translate="no">{definition.name}</strong>
+                      <span>{definition.category ? getCategoryName(definition.category, availableCategories) : 'No fixed category'}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="form-grid">
               <label>
                 ID
                 <input
                   onChange={(event) => setBrandDraft((current) => ({ ...current, id: event.target.value.trim().toLowerCase() }))}
+                  translate="no"
                   type="text"
                   value={brandDraft.id}
                 />
               </label>
               <label>
-                Orden
+                Order
                 <input
                   onChange={(event) => setBrandDraft((current) => ({ ...current, sort_order: event.target.value }))}
                   type="number"
@@ -1358,6 +1408,7 @@ function AdminDashboard({
                 <input
                   onChange={(event) => setBrandDraft((current) => ({ ...current, name: event.target.value }))}
                   required
+                  translate="no"
                   type="text"
                   value={brandDraft.name}
                 />
@@ -1398,6 +1449,34 @@ function AdminDashboard({
 
         {selectedView === 'categories' ? (
           <form className="admin-form" onSubmit={handleSaveCategory}>
+            <div className="editor-reference-panel">
+              <div className="editor-reference-header">
+                <strong>Category list</strong>
+                <span>{filteredCategories.length} items</span>
+              </div>
+              <div className="editor-reference-list two-column-list">
+                {filteredCategories.map((definition) => (
+                  <button
+                    className={classNames('editor-reference-item', categoryDraft?.id === definition.id && 'editor-reference-item-active')}
+                    key={`editor-category-${definition.id}`}
+                    onClick={() => {
+                      setSelectedCategoryId(definition.id);
+                      setCategoryDraft(definition);
+                    }}
+                    type="button"
+                  >
+                    <div className="editor-reference-copy">
+                      <strong translate="no">{definition.name}</strong>
+                      <span translate="no">{definition.id}</span>
+                    </div>
+                    <span className="status-pill status-pill-gray">
+                      {products.filter((product) => product.category === definition.id).length}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="form-grid">
               <label>
                 Technical ID
@@ -1405,12 +1484,13 @@ function AdminDashboard({
                   onChange={(event) => setCategoryDraft((current) => ({ ...current, id: event.target.value }))}
                   placeholder="frozen, grocery, dairy, snacks"
                   required
+                  translate="no"
                   type="text"
                   value={categoryDraft.id}
                 />
               </label>
               <label>
-                Orden
+                Order
                 <input
                   onChange={(event) => setCategoryDraft((current) => ({ ...current, sort_order: event.target.value }))}
                   type="number"
@@ -1422,6 +1502,7 @@ function AdminDashboard({
                 <input
                   onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value }))}
                   required
+                  translate="no"
                   type="text"
                   value={categoryDraft.name}
                 />
@@ -1457,8 +1538,8 @@ function AdminDashboard({
                       <img alt={product.name} src={formatImagePath(previewUrl)} />
                     </div>
                     <div className="image-audit-copy">
-                      <strong>{product.name}</strong>
-                      <span>{product.brand || 'No brand'} · {product.sku || 'No SKU'}</span>
+                      <strong translate="no">{product.name}</strong>
+                      <span translate="no">{product.brand || 'No brand'} · {product.sku || 'No SKU'}</span>
                       <small>{imageKey}</small>
                       <div className="status-cluster status-cluster-inline">
                         <span className="status-pill status-pill-gray">{source}</span>
@@ -1511,7 +1592,9 @@ function AdminPage({
   sourceLabel,
   subcategoryDefinitions,
 }) {
-  if (!isSupabaseConfigured) {
+  const canManage = hasDashboardWriteAccess(profile);
+
+  if (ALLOW_LOCAL_ADMIN_PREVIEW) {
     return (
       <AdminDashboard
         brandDefinitions={brandDefinitions}
@@ -1523,13 +1606,14 @@ function AdminPage({
         onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
         products={products}
         profile={{ display_name: 'Preview local', role: 'admin' }}
-        profileFound={true}
-        profileId="preview-local"
-        sessionUserId="preview-local"
         sourceLabel="fallback local"
         subcategoryDefinitions={subcategoryDefinitions}
       />
     );
+  }
+
+  if (!isSupabaseConfigured) {
+    return <AdminUnavailablePanel />;
   }
 
   if (!authResolved || profileLoading) {
@@ -1538,6 +1622,10 @@ function AdminPage({
 
   if (!session) {
     return <LoginPanel onSignedIn={onCatalogRefresh} />;
+  }
+
+  if (!canManage) {
+    return <AccessRestrictedPanel onSignOut={signOut} />;
   }
 
   return (
@@ -1551,9 +1639,6 @@ function AdminPage({
       onSubcategoryDefinitionsChange={onSubcategoryDefinitionsChange}
       products={products}
       profile={{ ...(profile ?? {}), email: session.user.email }}
-      profileFound={Boolean(profile)}
-      profileId={profile?.id ?? ''}
-      sessionUserId={session.user.id}
       sourceLabel={sourceLabel}
       subcategoryDefinitions={subcategoryDefinitions}
     />
@@ -1565,14 +1650,14 @@ export default function App() {
   const [categoryDefinitions, setCategoryDefinitions] = useState([]);
   const [brandDefinitions, setBrandDefinitions] = useState([]);
   const [subcategoryDefinitions, setSubcategoryDefinitions] = useState([]);
-  const [sourceLabel, setSourceLabel] = useState('cargando');
+  const [sourceLabel, setSourceLabel] = useState('loading');
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(undefined);
   const [profileLoading, setProfileLoading] = useState(isSupabaseConfigured);
   const [authResolved, setAuthResolved] = useState(!isSupabaseConfigured);
 
-  const canManage = Boolean(session?.user?.id) || !isSupabaseConfigured;
+  const canManage = hasDashboardWriteAccess(profile) || ALLOW_LOCAL_ADMIN_PREVIEW;
 
   const refreshCatalog = async () => {
     const [catalogResult, categoriesResult, brandsResult, subcategoriesResult] = await Promise.all([
@@ -1694,7 +1779,7 @@ export default function App() {
       </main>
 
       <footer className="site-footer">
-        <p>Distribuidora Leon</p>
+        <p translate="no">Distribuidora Leon</p>
       </footer>
     </div>
   );
