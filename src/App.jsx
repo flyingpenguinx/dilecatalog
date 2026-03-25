@@ -36,6 +36,15 @@ function classNames(...values) {
   return values.filter(Boolean).join(' ');
 }
 
+function normalizeRole(role) {
+  return String(role ?? '').trim().toLowerCase();
+}
+
+function hasDashboardWriteAccess(profile) {
+  const role = normalizeRole(profile?.role);
+  return role === 'admin' || role === 'editor';
+}
+
 function formatImagePath(image) {
   if (!image) return '';
   if (image.startsWith('http://') || image.startsWith('https://') || image.startsWith('/')) {
@@ -475,27 +484,6 @@ function LoginPanel({ onSignedIn }) {
   );
 }
 
-function AccessDenied({ email, onSignOut, role, userId }) {
-  const sql = `update public.profiles\nset role = 'admin',\n    display_name = coalesce(display_name, 'Distribuidora Leon')\nwhere id = '${userId}';`;
-
-  return (
-    <section className="admin-shell narrow-shell">
-      <div className="notice notice-error">
-        Tu usuario sí inició sesión, pero su rol actual es {role || 'sin rol'}. Cambia la fila en
-        profiles para usar role = admin o editor.
-      </div>
-      <div className="admin-sql-card">
-        <p><strong>Usuario</strong>: {email || 'sin correo'} </p>
-        <p><strong>UID</strong>: {userId}</p>
-        <pre className="admin-sql-block">{sql}</pre>
-      </div>
-      <button className="ghost-button" onClick={onSignOut} type="button">
-        Cerrar sesión
-      </button>
-    </section>
-  );
-}
-
 function AdminDashboard({
   brandDefinitions,
   categoryDefinitions,
@@ -527,6 +515,7 @@ function AdminDashboard({
   const [isSavingCategory, setIsSavingCategory] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const canWrite = hasDashboardWriteAccess(profile);
 
   useEffect(() => {
     if (!products.length) {
@@ -972,9 +961,15 @@ function AdminDashboard({
         </div>
         <p>
           Sesión: {profile?.display_name || profile?.email || 'Usuario autenticado'} · Rol:{' '}
-          {profile?.role || 'sin rol'} · Fuente: {sourceLabel}
+          {normalizeRole(profile?.role) || 'sin rol'} · Fuente: {sourceLabel}
         </p>
       </div>
+
+      {!canWrite && isSupabaseConfigured ? (
+        <div className="notice notice-info">
+          El frontend ya no bloquea esta vista por rol. Si guardar o eliminar falla, el rechazo ya viene de los permisos reales en Supabase.
+        </div>
+      ) : null}
 
       {!isSupabaseConfigured ? (
         <div className="notice notice-warning">
@@ -1516,8 +1511,6 @@ function AdminPage({
   sourceLabel,
   subcategoryDefinitions,
 }) {
-  const canManage = profile?.role === 'admin' || profile?.role === 'editor';
-
   if (!isSupabaseConfigured) {
     return (
       <AdminDashboard
@@ -1546,10 +1539,6 @@ function AdminPage({
 
   if (!profile) {
     return <MissingProfilePanel email={session.user.email} onSignOut={signOut} userId={session.user.id} />;
-  }
-
-  if (!canManage) {
-    return <AccessDenied email={session.user.email} onSignOut={signOut} role={profile?.role} userId={session.user.id} />;
   }
 
   return (
@@ -1581,7 +1570,7 @@ export default function App() {
   const [profileLoading, setProfileLoading] = useState(isSupabaseConfigured);
   const [authResolved, setAuthResolved] = useState(!isSupabaseConfigured);
 
-  const canManage = profile?.role === 'admin' || profile?.role === 'editor' || !isSupabaseConfigured;
+  const canManage = Boolean(session?.user?.id && profile) || !isSupabaseConfigured;
 
   const refreshCatalog = async () => {
     const [catalogResult, categoriesResult, brandsResult, subcategoriesResult] = await Promise.all([
