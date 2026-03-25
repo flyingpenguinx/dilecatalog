@@ -808,32 +808,6 @@ export async function signInWithPassword(email, password) {
   }
 }
 
-export async function signUpWithPassword(email, password, displayName = '') {
-  if (!isSupabaseConfigured || !supabase) {
-    throw new Error('La conexión con Supabase no está activa. Reinicia la app después de configurar las variables.');
-  }
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        display_name: displayName,
-      },
-    },
-  });
-
-  if (error) {
-    throw error;
-  }
-
-  return {
-    user: data.user,
-    session: data.session,
-    needsEmailConfirmation: !data.session,
-  };
-}
-
 export async function signOut() {
   if (!isSupabaseConfigured || !supabase) {
     return;

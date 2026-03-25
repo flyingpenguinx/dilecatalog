@@ -69,12 +69,11 @@ GitHub Pages still works for a purely client-rendered setup.
 
 1. Install dependencies.
 2. Create a local `.env` file with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` if you want to run against Supabase locally.
-3. Create a public Storage bucket named `product-images`.
-4. Make sure authenticated admins can upload and public users can read images.
-5. Run the SQL in `supabase/schema.sql` inside the Supabase SQL editor.
-6. Create your first auth user in Supabase Auth.
-7. Insert that user's uid into `profiles` with `role = 'admin'`.
-8. Start the app.
+3. Run the SQL in `supabase/schema.sql` inside the Supabase SQL editor. The script creates the `product-images` bucket, table policies, storage policies, triggers, and seed rows.
+4. In Supabase Auth, make sure Email auth is enabled. Email confirmation is optional for local testing, but if it is enabled the user must confirm before the app can open the admin session.
+5. Create your first auth user in Supabase Auth.
+6. Promote that user's uid in `profiles` to `role = 'admin'`.
+7. Start the app.
 
 ```bash
 npm install

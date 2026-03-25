@@ -19,7 +19,6 @@ import {
   saveProduct,
   seedSupabaseCatalog,
   signInWithPassword,
-  signUpWithPassword,
   signOut,
   subscribeToAuthChanges,
   uploadProductImage,
@@ -32,8 +31,6 @@ import {
   parseDatasetFile,
 } from './lib/catalogDataset.js';
 import { isSupabaseConfigured } from './lib/supabase.js';
-
-const ADMIN_SIGNUP_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_ADMIN_SIGNUP === 'true';
 
 function classNames(...values) {
   return values.filter(Boolean).join(' ');
@@ -414,8 +411,6 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
 }
 
 function LoginPanel({ onSignedIn }) {
-  const [mode, setMode] = useState('signin');
-  const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -429,22 +424,6 @@ function LoginPanel({ onSignedIn }) {
     setIsSubmitting(true);
 
     try {
-      if (mode === 'signup') {
-        const result = await signUpWithPassword(email, password, displayName);
-
-        setNotice(
-          result.needsEmailConfirmation
-            ? 'Cuenta creada. Revisa tu correo para confirmar el acceso antes de iniciar sesión.'
-            : 'Cuenta creada. Si el perfil quedó como viewer, promuévelo a admin o editor en Supabase.',
-        );
-
-        if (!result.needsEmailConfirmation) {
-          onSignedIn?.();
-        }
-
-        return;
-      }
-
       await signInWithPassword(email, password);
       onSignedIn?.();
     } catch (submissionError) {
@@ -459,52 +438,13 @@ function LoginPanel({ onSignedIn }) {
       <div className="section-heading">
         <div>
           <span className="eyebrow">Admin</span>
-          <h2>{mode === 'signup' ? 'Crear cuenta de acceso' : 'Inicia sesión para editar el catálogo'}</h2>
+          <h2>Inicia sesión para editar el catálogo</h2>
         </div>
         <p>
-          {mode === 'signup'
-            ? 'Esta opción queda pensada para desarrollo local. Las cuentas nuevas no son admin automáticamente.'
-            : 'Supabase Auth controla quién puede entrar. El panel requiere un perfil con rol admin o editor.'}
+          Supabase Auth controla quién puede entrar. El panel requiere un perfil con rol admin o editor.
         </p>
       </div>
-      {ADMIN_SIGNUP_ENABLED ? (
-        <div className="button-row auth-mode-row">
-          <button
-            className={classNames(mode === 'signin' ? 'primary-button' : 'ghost-button')}
-            onClick={() => {
-              setMode('signin');
-              setError('');
-              setNotice('');
-            }}
-            type="button"
-          >
-            Entrar
-          </button>
-          <button
-            className={classNames(mode === 'signup' ? 'primary-button' : 'ghost-button')}
-            onClick={() => {
-              setMode('signup');
-              setError('');
-              setNotice('');
-            }}
-            type="button"
-          >
-            Crear cuenta
-          </button>
-        </div>
-      ) : null}
       <form className="admin-form auth-form" onSubmit={handleSubmit}>
-        {mode === 'signup' ? (
-          <label>
-            Nombre visible opcional
-            <input
-              autoComplete="name"
-              onChange={(event) => setDisplayName(event.target.value)}
-              type="text"
-              value={displayName}
-            />
-          </label>
-        ) : null}
         <label>
           Correo
           <input
@@ -528,19 +468,26 @@ function LoginPanel({ onSignedIn }) {
         {notice ? <p className="notice notice-info">{notice}</p> : null}
         {error ? <p className="notice notice-error">{error}</p> : null}
         <button className="primary-button" disabled={isSubmitting} type="submit">
-          {isSubmitting ? (mode === 'signup' ? 'Creando cuenta...' : 'Entrando...') : mode === 'signup' ? 'Crear cuenta' : 'Entrar'}
+          {isSubmitting ? 'Entrando...' : 'Entrar'}
         </button>
       </form>
     </section>
   );
 }
 
-function AccessDenied({ onSignOut, role }) {
+function AccessDenied({ email, onSignOut, role, userId }) {
+  const sql = `update public.profiles\nset role = 'admin',\n    display_name = coalesce(display_name, 'Distribuidora Leon')\nwhere id = '${userId}';`;
+
   return (
     <section className="admin-shell narrow-shell">
       <div className="notice notice-error">
         Tu usuario sí inició sesión, pero su rol actual es {role || 'sin rol'}. Cambia la fila en
         profiles para usar role = admin o editor.
+      </div>
+      <div className="admin-sql-card">
+        <p><strong>Usuario</strong>: {email || 'sin correo'} </p>
+        <p><strong>UID</strong>: {userId}</p>
+        <pre className="admin-sql-block">{sql}</pre>
       </div>
       <button className="ghost-button" onClick={onSignOut} type="button">
         Cerrar sesión
@@ -1602,7 +1549,7 @@ function AdminPage({
   }
 
   if (!canManage) {
-    return <AccessDenied onSignOut={signOut} role={profile?.role} />;
+    return <AccessDenied email={session.user.email} onSignOut={signOut} role={profile?.role} userId={session.user.id} />;
   }
 
   return (

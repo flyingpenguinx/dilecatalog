@@ -1,3 +1,5 @@
+grant usage on schema public to anon, authenticated, service_role;
+
 create table if not exists public.products (
   id bigint primary key,
   name text not null,
@@ -133,6 +135,36 @@ alter table public.profiles enable row level security;
 alter table public.catalog_categories enable row level security;
 alter table public.catalog_brands enable row level security;
 alter table public.catalog_subcategories enable row level security;
+
+grant select on public.products to anon, authenticated;
+grant select on public.catalog_categories to anon, authenticated;
+grant select on public.catalog_brands to anon, authenticated;
+grant select on public.catalog_subcategories to anon, authenticated;
+grant select on public.profiles to authenticated;
+grant insert, update, delete on public.products to authenticated;
+grant insert, update, delete on public.catalog_categories to authenticated;
+grant insert, update, delete on public.catalog_brands to authenticated;
+grant insert, update, delete on public.catalog_subcategories to authenticated;
+grant insert, update, delete on public.profiles to authenticated;
+grant all on all tables in schema public to service_role;
+
+create index if not exists products_visible_sort_order_idx
+on public.products (visible, sort_order, name);
+
+create index if not exists products_category_subcategory_sort_order_idx
+on public.products (category, subcategory, sort_order);
+
+create index if not exists products_brand_idx
+on public.products (brand);
+
+create index if not exists catalog_categories_sort_order_idx
+on public.catalog_categories (sort_order, name);
+
+create index if not exists catalog_brands_category_sort_order_idx
+on public.catalog_brands (category, sort_order, name);
+
+create index if not exists catalog_subcategories_category_sort_order_idx
+on public.catalog_subcategories (category, sort_order, name);
 
 drop policy if exists "public can read visible products" on public.products;
 create policy "public can read visible products"
@@ -283,6 +315,71 @@ using (
 )
 with check (
   exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
+  )
+);
+
+insert into storage.buckets (id, name, public)
+values ('product-images', 'product-images', true)
+on conflict (id) do update set
+  public = excluded.public;
+
+drop policy if exists "public can read product images" on storage.objects;
+create policy "public can read product images"
+on storage.objects
+for select
+using (bucket_id = 'product-images');
+
+drop policy if exists "admins can upload product images" on storage.objects;
+create policy "admins can upload product images"
+on storage.objects
+for insert
+to authenticated
+with check (
+  bucket_id = 'product-images'
+  and exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
+  )
+);
+
+drop policy if exists "admins can update product images" on storage.objects;
+create policy "admins can update product images"
+on storage.objects
+for update
+to authenticated
+using (
+  bucket_id = 'product-images'
+  and exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
+  )
+)
+with check (
+  bucket_id = 'product-images'
+  and exists (
+    select 1
+    from public.profiles
+    where profiles.id = auth.uid()
+      and profiles.role in ('admin', 'editor')
+  )
+);
+
+drop policy if exists "admins can delete product images" on storage.objects;
+create policy "admins can delete product images"
+on storage.objects
+for delete
+to authenticated
+using (
+  bucket_id = 'product-images'
+  and exists (
     select 1
     from public.profiles
     where profiles.id = auth.uid()
