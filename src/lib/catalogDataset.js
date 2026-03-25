@@ -1,9 +1,5 @@
 const LOCAL_IMAGE_MODULES = import.meta.glob(
   '../../images/**/*.{png,jpg,jpeg,webp,avif,PNG,JPG,JPEG,WEBP,AVIF}',
-  {
-    eager: true,
-    import: 'default',
-  },
 );
 
 const PRODUCT_CSV_HEADERS = [
@@ -61,10 +57,14 @@ const HEADER_ALIASES = new Map([
 ]);
 
 export const LOCAL_IMAGE_ASSETS = Object.entries(LOCAL_IMAGE_MODULES)
-  .map(([filePath, url]) => ({
-    path: filePath.replace('../../', '').replace(/\\/g, '/'),
-    url,
-  }))
+  .map(([filePath]) => {
+    const normalizedPath = filePath.replace('../../', '').replace(/\\/g, '/');
+
+    return {
+      path: normalizedPath,
+      url: `/${normalizedPath}`,
+    };
+  })
   .sort((left, right) => left.path.localeCompare(right.path));
 
 function normalizeText(value) {

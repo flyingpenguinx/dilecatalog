@@ -3,7 +3,7 @@
 ## What changed
 
 - The catalog now runs from React instead of inline DOM scripting.
-- The existing product dataset from `products.js` is still the fallback seed.
+- The generated dataset in `src/data/catalog-seed.json` is the fallback seed used by the app.
 - A protected admin route can edit:
   - product names
   - brand
@@ -40,6 +40,12 @@ Vercel is the better long-term host for this version because:
 - future server features are available if you add edge functions or API routes
 
 GitHub Pages still works for a purely client-rendered setup.
+
+## Cleanup
+
+- Old one-off Supabase prompt files under `supabase/` were removed.
+- The duplicate workspace file under `supabase/` was removed.
+- `products.js` remains only as a legacy source for the seed-generation script.
 
 ## Vercel deployment
 

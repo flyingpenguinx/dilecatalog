@@ -64,6 +64,10 @@ function normalizeImagePath(image) {
 function createFallbackProduct(product, index) {
   return {
     ...product,
+    name: String(product.name ?? '').trim(),
+    brand: String(product.brand ?? '').trim(),
+    subcategory: String(product.subcategory ?? '').trim(),
+    description: String(product.description ?? '').trim(),
     category: normalizeCategoryId(product.category),
     image: normalizeImagePath(product.image),
     sku: product.sku ?? '',
@@ -802,6 +806,32 @@ export async function signInWithPassword(email, password) {
   if (error) {
     throw error;
   }
+}
+
+export async function signUpWithPassword(email, password, displayName = '') {
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('La conexión con Supabase no está activa. Reinicia la app después de configurar las variables.');
+  }
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        display_name: displayName,
+      },
+    },
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return {
+    user: data.user,
+    session: data.session,
+    needsEmailConfirmation: !data.session,
+  };
 }
 
 export async function signOut() {
