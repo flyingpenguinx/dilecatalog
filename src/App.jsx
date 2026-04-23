@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import {
   buildFallbackCategoryDefinitions,
@@ -17,6 +17,8 @@ import {
   saveBrandDefinition,
   saveCategoryDefinition,
   saveProduct,
+  saveSubcategoryDefinition,
+  deleteSubcategoryDefinition,
   seedSupabaseCatalog,
   signInWithPassword,
   signOut,
@@ -32,7 +34,7 @@ import {
 } from './lib/catalogDataset.js';
 import { isSupabaseConfigured } from './lib/supabase.js';
 
-const ALLOW_LOCAL_ADMIN_PREVIEW = import.meta.env.DEV && !isSupabaseConfigured;
+const ALLOW_LOCAL_ADMIN_PREVIEW = false;
 
 function classNames(...values) {
   return values.filter(Boolean).join(' ');
@@ -241,7 +243,7 @@ function ProductModal({ categoryDefinitions, product, onClose }) {
         </button>
         <div className="modal-layout">
           <div className="modal-visual">
-            <img src={formatImagePath(product.image)} alt={product.name} />
+            <img alt={product.name} decoding="async" loading="eager" src={formatImagePath(product.image)} />
           </div>
           <div className="modal-copy">
             <span className="eyebrow">{getCategoryName(product.category, categoryDefinitions)}</span>
@@ -400,7 +402,13 @@ function CatalogPage({ categoryDefinitions, products, subcategoryDefinitions }) 
               <article className="catalog-card" key={product.id}>
                 <button className="catalog-card-button" onClick={() => setSelectedProduct(product)} type="button">
                   <div className="catalog-image-shell">
-                    <img alt={product.name} src={formatImagePath(product.image)} />
+                    <img
+                      alt={product.name}
+                      decoding="async"
+                      loading="lazy"
+                      onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }}
+                      src={formatImagePath(product.image)}
+                    />
                     {product.featured ? <span className="floating-badge">Featured</span> : null}
                   </div>
                   <div className="catalog-copy">
@@ -487,6 +495,502 @@ function LoginPanel({ onSignedIn }) {
   );
 }
 
+function ImageDropZone({ disabled, imageSrc, isUploading, name, onClear, onUpload }) {
+  const inputRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const pickFile = () => {
+    if (disabled) return;
+    inputRef.current?.click();
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      pickFile();
+    }
+  };
+
+  const handleFiles = (fileList) => {
+    const file = fileList?.[0];
+    if (!file) return;
+    onUpload(file);
+  };
+
+  const handleDragOver = (event) => {
+    if (disabled) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => setIsDragging(false);
+
+  const handleDrop = (event) => {
+    if (disabled) return;
+    event.preventDefault();
+    setIsDragging(false);
+    handleFiles(event.dataTransfer.files);
+  };
+
+  return (
+    <div className="admin-dropzone-wrapper">
+      <div
+        aria-disabled={disabled || undefined}
+        aria-label={imageSrc ? 'Replace product image' : 'Upload product image'}
+        className={classNames(
+          'admin-dropzone',
+          isDragging && 'admin-dropzone-dragging',
+          disabled && 'admin-dropzone-disabled',
+          imageSrc && 'admin-dropzone-filled',
+        )}
+        onClick={pickFile}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+      >
+        {imageSrc ? (
+          <img
+            alt={name || 'Product preview'}
+            decoding="async"
+            loading="lazy"
+            onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }}
+            src={imageSrc}
+          />
+        ) : null}
+
+        <div className={classNames('admin-dropzone-overlay', imageSrc && 'admin-dropzone-overlay-muted')}>
+          {isUploading ? (
+            <>
+              <span className="admin-dropzone-spinner" aria-hidden="true" />
+              <span className="admin-dropzone-title">Uploading…</span>
+            </>
+          ) : (
+            <>
+              <svg aria-hidden="true" height="36" viewBox="0 0 24 24" width="36">
+                <path d="M12 16V6m0 0l-4 4m4-4l4 4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+              </svg>
+              <span className="admin-dropzone-title">{imageSrc ? 'Replace image' : 'Upload image'}</span>
+              <span className="admin-dropzone-hint">Click to browse or drag &amp; drop</span>
+            </>
+          )}
+        </div>
+
+        <input
+          accept="image/png,image/jpeg,image/webp,image/avif"
+          disabled={disabled}
+          onChange={(event) => {
+            handleFiles(event.target.files);
+            event.target.value = '';
+          }}
+          ref={inputRef}
+          style={{ display: 'none' }}
+          type="file"
+        />
+      </div>
+      {imageSrc ? (
+        <button
+          className="admin-dropzone-remove"
+          onClick={onClear}
+          type="button"
+        >
+          Remove image
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function ProductEditorPanel({
+  availableBrandNames,
+  availableCategories,
+  availableSubcategories,
+  draft,
+  isSaving,
+  isUploadingImage,
+  onCancel,
+  onDelete,
+  onDuplicate,
+  onFieldChange,
+  onImageUpload,
+  onSubmit,
+}) {
+  return (
+    <form className="admin-editor-panel" onSubmit={onSubmit}>
+      <div className="admin-editor-panel-header">
+        <div>
+          <span className="eyebrow">{draft?.id ? 'Edit product' : 'New product'}</span>
+          <h2 translate="no">{draft?.name || 'Untitled product'}</h2>
+        </div>
+        <div className="admin-editor-panel-status">
+          <span className={classNames('status-pill', draft?.visible ? 'status-pill-green' : 'status-pill-gray')}>
+            {draft?.visible ? 'Visible' : 'Hidden'}
+          </span>
+          {draft?.featured ? <span className="status-pill status-pill-gold">Featured</span> : null}
+        </div>
+      </div>
+
+      <div className="admin-editor-body">
+        <div className="admin-editor-fields">
+          <label className="admin-editor-field">
+            <span>Name</span>
+            <input
+              onChange={(event) => onFieldChange('name', event.target.value)}
+              required
+              translate="no"
+              type="text"
+              value={draft.name}
+            />
+          </label>
+
+          <div className="admin-editor-row">
+            <label className="admin-editor-field">
+              <span>Category</span>
+              <select
+                onChange={(event) => onFieldChange('category', event.target.value)}
+                translate="no"
+                value={draft.category}
+              >
+                {availableCategories.map((definition) => (
+                  <option key={definition.id} value={definition.id}>
+                    {definition.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="admin-editor-field">
+              <span>Sub category</span>
+              <input
+                list="subcategory-options"
+                onChange={(event) => onFieldChange('subcategory', event.target.value)}
+                translate="no"
+                type="text"
+                value={draft.subcategory}
+              />
+              <datalist id="subcategory-options">
+                {availableSubcategories.map((value) => (
+                  <option key={value} value={value} />
+                ))}
+              </datalist>
+            </label>
+          </div>
+
+          <div className="admin-editor-row">
+            <label className="admin-editor-field">
+              <span>Brand</span>
+              <input
+                list="brand-options"
+                onChange={(event) => onFieldChange('brand', event.target.value)}
+                placeholder="Choose a brand or type a new one"
+                translate="no"
+                type="text"
+                value={draft.brand}
+              />
+              <datalist id="brand-options">
+                {availableBrandNames.map((name) => (
+                  <option key={name} value={name} />
+                ))}
+              </datalist>
+            </label>
+            <label className="admin-editor-field">
+              <span>SKU</span>
+              <input
+                onChange={(event) => onFieldChange('sku', event.target.value)}
+                placeholder="DILE-0001"
+                translate="no"
+                type="text"
+                value={draft.sku}
+              />
+            </label>
+          </div>
+
+          <div className="admin-editor-row">
+            <label className="admin-editor-field">
+              <span>Unit size</span>
+              <input
+                onChange={(event) => onFieldChange('unit_size', event.target.value)}
+                placeholder="16 oz / 12 pack / 500 g"
+                translate="no"
+                type="text"
+                value={draft.unit_size}
+              />
+            </label>
+            <label className="admin-editor-field">
+              <span>Sort order</span>
+              <input
+                onChange={(event) => onFieldChange('sort_order', event.target.value)}
+                type="number"
+                value={draft.sort_order}
+              />
+            </label>
+          </div>
+
+          <label className="admin-editor-field">
+            <span>Description</span>
+            <textarea
+              onChange={(event) => onFieldChange('description', event.target.value)}
+              rows="5"
+              value={draft.description}
+            />
+          </label>
+
+          <div className="admin-editor-toggles">
+            <label className="toggle-card">
+              <input
+                checked={Boolean(draft.visible)}
+                onChange={(event) => onFieldChange('visible', event.target.checked)}
+                type="checkbox"
+              />
+              <span>Visible in catalog</span>
+            </label>
+            <label className="toggle-card">
+              <input
+                checked={Boolean(draft.featured)}
+                onChange={(event) => onFieldChange('featured', event.target.checked)}
+                type="checkbox"
+              />
+              <span>Featured</span>
+            </label>
+          </div>
+
+          <details className="admin-editor-advanced">
+            <summary>Advanced: image URL</summary>
+            <input
+              aria-label="Image URL"
+              className="admin-editor-image-url"
+              onChange={(event) => onFieldChange('image', event.target.value)}
+              placeholder="https:// or local path"
+              translate="no"
+              type="text"
+              value={draft.image}
+            />
+          </details>
+        </div>
+
+        <aside className="admin-editor-image-panel">
+          <ImageDropZone
+            disabled={!isSupabaseConfigured || isUploadingImage}
+            imageSrc={draft.image ? formatImagePath(draft.image) : ''}
+            isUploading={isUploadingImage}
+            name={draft.name}
+            onClear={() => onFieldChange('image', '')}
+            onUpload={onImageUpload}
+          />
+          <div className="admin-editor-image-meta">
+            {draft.image ? (
+              <a
+                className="admin-editor-image-download"
+                download
+                href={formatImagePath(draft.image)}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Download current image
+              </a>
+            ) : null}
+            <small className="admin-editor-image-hint">
+              {isSupabaseConfigured
+                ? 'Click the box or drag an image from your computer. Files go to the product-images bucket.'
+                : 'Configure Supabase to enable image uploads.'}
+            </small>
+          </div>
+        </aside>
+      </div>
+
+      <div className="admin-editor-footer">
+        <button className="success-button" disabled={isSaving} type="submit">
+          {isSaving ? 'Saving…' : 'Save'}
+        </button>
+        <div className="admin-editor-footer-right">
+          <button className="ghost-button" onClick={onDuplicate} type="button">
+            Duplicate
+          </button>
+          <button className="danger-button" onClick={onDelete} type="button">
+            Delete
+          </button>
+          <button className="outline-button-danger" onClick={onCancel} type="button">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+}
+
+function DefinitionEditorModal({
+  availableCategories,
+  brandDraft,
+  categoryDraft,
+  editor,
+  isSavingBrand,
+  isSavingCategory,
+  isSavingSubcategory,
+  onBrandDraftChange,
+  onCancel,
+  onCategoryDraftChange,
+  onDeleteBrand,
+  onDeleteCategory,
+  onSaveBrand,
+  onSaveCategory,
+  onSaveSubcategory,
+  onSubcategoryDraftChange,
+  subcategoryDraft,
+}) {
+  const title = editor.type === 'brand'
+    ? (editor.mode === 'edit' ? 'Edit brand' : 'New brand')
+    : editor.type === 'category'
+      ? (editor.mode === 'edit' ? 'Edit category' : 'New category')
+      : (editor.mode === 'edit' ? 'Edit sub category' : 'New sub category');
+
+  return (
+    <div className="admin-picker-overlay" onClick={onCancel}>
+      <div
+        className="admin-definition-card"
+        onClick={(event) => event.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+      >
+        <div className="admin-picker-header">
+          <h3>{title}</h3>
+          <button aria-label="Close" className="admin-picker-close" onClick={onCancel} type="button">×</button>
+        </div>
+
+        {editor.type === 'brand' ? (
+          <form className="admin-definition-form" onSubmit={onSaveBrand}>
+            <label className="admin-editor-field">
+              <span>Brand name</span>
+              <input
+                autoFocus
+                onChange={(event) => onBrandDraftChange((current) => ({ ...current, name: event.target.value }))}
+                placeholder="e.g. Cuzcatlecos"
+                required
+                translate="no"
+                type="text"
+                value={brandDraft.name}
+              />
+            </label>
+            <label className="admin-editor-field">
+              <span>Suggested category (optional)</span>
+              <select
+                onChange={(event) => onBrandDraftChange((current) => ({ ...current, category: event.target.value }))}
+                value={brandDraft.category}
+              >
+                <option value="">No fixed category</option>
+                {availableCategories.map((definition) => (
+                  <option key={definition.id} value={definition.id}>{definition.name}</option>
+                ))}
+              </select>
+            </label>
+            <label className="admin-editor-field">
+              <span>Internal note (optional)</span>
+              <textarea
+                onChange={(event) => onBrandDraftChange((current) => ({ ...current, notes: event.target.value }))}
+                rows="3"
+                value={brandDraft.notes || ''}
+              />
+            </label>
+            <div className="admin-definition-footer">
+              {editor.mode === 'edit' ? (
+                <button className="danger-button" onClick={onDeleteBrand} type="button">Delete</button>
+              ) : <span />}
+              <div className="admin-definition-footer-right">
+                <button className="outline-button-danger" onClick={onCancel} type="button">Cancel</button>
+                <button className="primary-button" disabled={isSavingBrand} type="submit">
+                  {isSavingBrand ? 'Saving…' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </form>
+        ) : null}
+
+        {editor.type === 'category' ? (
+          <form className="admin-definition-form" onSubmit={onSaveCategory}>
+            <label className="admin-editor-field">
+              <span>Display name</span>
+              <input
+                autoFocus
+                onChange={(event) => onCategoryDraftChange((current) => ({ ...current, name: event.target.value }))}
+                placeholder="e.g. Frozen"
+                required
+                translate="no"
+                type="text"
+                value={categoryDraft.name}
+              />
+            </label>
+            <label className="admin-editor-field">
+              <span>Technical ID</span>
+              <input
+                onChange={(event) => onCategoryDraftChange((current) => ({ ...current, id: event.target.value }))}
+                placeholder="frozen, grocery, dairy"
+                required
+                translate="no"
+                type="text"
+                value={categoryDraft.id}
+              />
+              <small>Lowercase, no spaces. Used internally.</small>
+            </label>
+            <div className="admin-definition-footer">
+              {editor.mode === 'edit' ? (
+                <button className="danger-button" onClick={onDeleteCategory} type="button">Delete</button>
+              ) : <span />}
+              <div className="admin-definition-footer-right">
+                <button className="outline-button-danger" onClick={onCancel} type="button">Cancel</button>
+                <button className="primary-button" disabled={isSavingCategory} type="submit">
+                  {isSavingCategory ? 'Saving…' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </form>
+        ) : null}
+
+        {editor.type === 'subcategory' ? (
+          <form className="admin-definition-form" onSubmit={onSaveSubcategory}>
+            <label className="admin-editor-field">
+              <span>Sub category name</span>
+              <input
+                autoFocus
+                onChange={(event) => onSubcategoryDraftChange((current) => ({ ...current, name: event.target.value }))}
+                placeholder="e.g. Pupusa"
+                required
+                translate="no"
+                type="text"
+                value={subcategoryDraft.name}
+              />
+            </label>
+            <label className="admin-editor-field">
+              <span>Belongs to category</span>
+              <select
+                onChange={(event) => onSubcategoryDraftChange((current) => ({ ...current, category: event.target.value }))}
+                required
+                value={subcategoryDraft.category}
+              >
+                <option value="">Select a category</option>
+                {availableCategories.map((definition) => (
+                  <option key={definition.id} value={definition.id}>{definition.name}</option>
+                ))}
+              </select>
+            </label>
+            <div className="admin-definition-footer">
+              <span />
+              <div className="admin-definition-footer-right">
+                <button className="outline-button-danger" onClick={onCancel} type="button">Cancel</button>
+                <button className="primary-button" disabled={isSavingSubcategory} type="submit">
+                  {isSavingSubcategory ? 'Saving…' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </form>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function AdminDashboard({
   brandDefinitions,
   categoryDefinitions,
@@ -518,6 +1022,23 @@ function AdminDashboard({
   const [isSavingCategory, setIsSavingCategory] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [brandFilter, setBrandFilter] = useState('all');
+  const [subcategoryFilter, setSubcategoryFilter] = useState('all');
+  const [visibilityFilter, setVisibilityFilter] = useState('all');
+  const [showImagesInList, setShowImagesInList] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [togglingId, setTogglingId] = useState(null);
+  const [sortKey, setSortKey] = useState('default');
+  const [picker, setPicker] = useState(null);
+  const [addChooserOpen, setAddChooserOpen] = useState(false);
+  const [definitionEditor, setDefinitionEditor] = useState(null);
+  const [subcategoryDraft, setSubcategoryDraft] = useState({ id: '', category: '', name: '', sort_order: 0 });
+  const [isSavingSubcategory, setIsSavingSubcategory] = useState(false);
+
+  useEffect(() => {
+    setSubcategoryFilter('all');
+  }, [categoryFilter]);
 
   useEffect(() => {
     if (!products.length) {
@@ -560,21 +1081,73 @@ function AdminDashboard({
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    if (!normalizedQuery) {
-      return products;
-    }
-
-    return products.filter((product) => {
+    const results = products.filter((product) => {
+      if (categoryFilter !== 'all' && product.category !== categoryFilter) {
+        return false;
+      }
+      if (brandFilter !== 'all' && (product.brand || '') !== brandFilter) {
+        return false;
+      }
+      if (subcategoryFilter !== 'all' && (product.subcategory || '') !== subcategoryFilter) {
+        return false;
+      }
+      if (visibilityFilter === 'visible' && !product.visible) {
+        return false;
+      }
+      if (visibilityFilter === 'hidden' && product.visible) {
+        return false;
+      }
+      if (!normalizedQuery) {
+        return true;
+      }
       return (
-        product.name.toLowerCase().includes(normalizedQuery) ||
-        product.brand.toLowerCase().includes(normalizedQuery) ||
-        product.sku.toLowerCase().includes(normalizedQuery) ||
-        product.unit_size.toLowerCase().includes(normalizedQuery) ||
-        product.category.toLowerCase().includes(normalizedQuery) ||
-        product.subcategory.toLowerCase().includes(normalizedQuery)
+        (product.name || '').toLowerCase().includes(normalizedQuery) ||
+        (product.brand || '').toLowerCase().includes(normalizedQuery) ||
+        (product.sku || '').toLowerCase().includes(normalizedQuery) ||
+        (product.unit_size || '').toLowerCase().includes(normalizedQuery) ||
+        (product.category || '').toLowerCase().includes(normalizedQuery) ||
+        (product.subcategory || '').toLowerCase().includes(normalizedQuery)
       );
     });
-  }, [products, query]);
+
+    if (sortKey === 'az') {
+      results.sort((left, right) => (left.name || '').localeCompare(right.name || ''));
+    } else if (sortKey === 'za') {
+      results.sort((left, right) => (right.name || '').localeCompare(left.name || ''));
+    }
+
+    return results;
+  }, [products, query, categoryFilter, brandFilter, subcategoryFilter, visibilityFilter, sortKey]);
+
+  const brandFilterOptions = useMemo(
+    () => [...new Set(products.map((product) => product.brand).filter(Boolean))].sort((left, right) => left.localeCompare(right)),
+    [products],
+  );
+
+  const subcategoryFilterOptions = useMemo(() => {
+    const scoped = categoryFilter === 'all'
+      ? products
+      : products.filter((product) => product.category === categoryFilter);
+    return [...new Set(scoped.map((product) => product.subcategory).filter(Boolean))].sort((left, right) => left.localeCompare(right));
+  }, [products, categoryFilter]);
+
+  const visibleProductCount = useMemo(() => products.filter((product) => product.visible).length, [products]);
+  const hiddenProductCount = products.length - visibleProductCount;
+  const filtersActive = Boolean(
+    query.trim()
+      || categoryFilter !== 'all'
+      || brandFilter !== 'all'
+      || subcategoryFilter !== 'all'
+      || visibilityFilter !== 'all',
+  );
+
+  const resetFilters = () => {
+    setQuery('');
+    setCategoryFilter('all');
+    setBrandFilter('all');
+    setSubcategoryFilter('all');
+    setVisibilityFilter('all');
+  };
 
   const filteredBrands = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -722,8 +1295,7 @@ function AdminDashboard({
     setDraft((current) => ({ ...current, [field]: value }));
   };
 
-  const handleImageUpload = async (event) => {
-    const file = event.target.files?.[0];
+  const handleImageUpload = async (file) => {
     if (!file) {
       return;
     }
@@ -732,7 +1304,6 @@ function AdminDashboard({
 
     if (!draft?.id) {
       setNotice('Save or set a product ID before uploading an image.');
-      event.target.value = '';
       return;
     }
 
@@ -746,7 +1317,6 @@ function AdminDashboard({
       setNotice(error.message ?? 'Could not upload the image.');
     } finally {
       setIsUploadingImage(false);
-      event.target.value = '';
     }
   };
 
@@ -806,6 +1376,40 @@ function AdminDashboard({
       await onCatalogRefresh();
     } catch (error) {
       setNotice(error.message ?? 'Could not delete the product.');
+    }
+  };
+
+  const handleToggleVisibility = async (product, event) => {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (!product?.id || togglingId === product.id) {
+      return;
+    }
+    const next = { ...product, visible: !product.visible };
+    const snapshot = products;
+    const optimistic = products.map((entry) => (entry.id === product.id ? next : entry));
+    onProductsChange(optimistic);
+    setTogglingId(product.id);
+    if (draft?.id === product.id) {
+      setDraft(next);
+    }
+    try {
+      const result = await saveProduct(next);
+      const finalProducts = optimistic.map((entry) => (entry.id === result.product.id ? result.product : entry));
+      onProductsChange(finalProducts);
+      if (draft?.id === result.product.id) {
+        setDraft(result.product);
+      }
+      if (!result.persisted) {
+        setNotice('Visibility updated only in this local session.');
+      }
+    } catch (error) {
+      onProductsChange(snapshot);
+      setNotice(error.message ?? 'Could not update visibility.');
+    } finally {
+      setTogglingId(null);
     }
   };
 
@@ -954,622 +1558,651 @@ function AdminDashboard({
     setNotice(result.persisted ? 'Category deleted.' : result.warning ?? 'Category deleted only in this session.');
   };
 
+  const handleSaveSubcategory = async (event) => {
+    event.preventDefault();
+    setNotice('');
+    setIsSavingSubcategory(true);
+
+    try {
+      const payload = { ...subcategoryDraft };
+      if (!payload.category) {
+        payload.category = availableCategories[0]?.id ?? '';
+      }
+      if (!payload.id) {
+        payload.id = `${payload.category}:${payload.name.trim().toLowerCase().replace(/\s+/g, '-')}`;
+      }
+      if (!payload.sort_order) {
+        payload.sort_order = getNextSortOrder(subcategoryDefinitions);
+      }
+      const result = await saveSubcategoryDefinition(payload);
+      onSubcategoryDefinitionsChange((current) => upsertDefinition(current, result.definition));
+      setSubcategoryDraft({ id: '', category: '', name: '', sort_order: 0 });
+      setNotice(result.persisted ? 'Subcategory saved.' : result.warning ?? 'Subcategory saved only in this session.');
+    } catch (error) {
+      setNotice(error.message ?? 'Could not save the subcategory.');
+    } finally {
+      setIsSavingSubcategory(false);
+    }
+  };
+
+  const handleDeleteSubcategory = async (definition) => {
+    if (!definition?.id) {
+      return;
+    }
+    if (!window.confirm(`Delete subcategory ${definition.name}?`)) {
+      return;
+    }
+    try {
+      const result = await deleteSubcategoryDefinition(definition.id);
+      onSubcategoryDefinitionsChange((current) => current.filter((entry) => entry.id !== definition.id));
+      setNotice(result.persisted ? 'Subcategory deleted.' : result.warning ?? 'Subcategory deleted only in this session.');
+    } catch (error) {
+      setNotice(error.message ?? 'Could not delete the subcategory.');
+    }
+  };
+
+  const categoryCountMap = useMemo(() => {
+    const map = new Map();
+    products.forEach((product) => {
+      const key = product.category || '';
+      map.set(key, (map.get(key) ?? 0) + 1);
+    });
+    return map;
+  }, [products]);
+
+  const brandCountMap = useMemo(() => {
+    const map = new Map();
+    products.forEach((product) => {
+      const key = product.brand || '';
+      map.set(key, (map.get(key) ?? 0) + 1);
+    });
+    return map;
+  }, [products]);
+
+  const brandsForPicker = useMemo(() => {
+    const known = brandDefinitions.map((definition) => ({
+      id: definition.id,
+      name: definition.name,
+      count: brandCountMap.get(definition.name) ?? 0,
+    }));
+    const known_names = new Set(brandDefinitions.map((definition) => definition.name));
+    const extras = [...new Set(products.map((p) => p.brand).filter(Boolean))]
+      .filter((name) => !known_names.has(name))
+      .map((name) => ({ id: `ad-hoc:${name}`, name, count: brandCountMap.get(name) ?? 0, adhoc: true }));
+    return [...known, ...extras].sort((left, right) => left.name.localeCompare(right.name));
+  }, [brandDefinitions, brandCountMap, products]);
+
+  const categoriesForPicker = useMemo(() => {
+    return availableCategories.map((definition) => ({
+      id: definition.id,
+      name: definition.name,
+      count: categoryCountMap.get(definition.id) ?? 0,
+    }));
+  }, [availableCategories, categoryCountMap]);
+
+  const subcategoriesForCategory = useMemo(() => {
+    const targetCategory = categoryFilter !== 'all' ? categoryFilter : null;
+    if (!targetCategory) {
+      return [];
+    }
+    const managed = subcategoryDefinitions
+      .filter((definition) => definition.category === targetCategory);
+    const managedNames = new Set(managed.map((definition) => definition.name));
+    const productNames = [...new Set(
+      products
+        .filter((product) => product.category === targetCategory && product.subcategory)
+        .map((product) => product.subcategory),
+    )];
+    const extras = productNames
+      .filter((name) => !managedNames.has(name))
+      .map((name) => ({ id: `ad-hoc:${targetCategory}:${name}`, category: targetCategory, name, adhoc: true }));
+    return [...managed, ...extras].sort((left, right) => left.name.localeCompare(right.name));
+  }, [categoryFilter, subcategoryDefinitions, products]);
+
+  const openProductEditor = (product) => {
+    const base = product ?? createEmptyProduct();
+    if (!product) {
+      base.category = availableCategories[0]?.id ?? base.category;
+    }
+    setSelectedId(product?.id ?? null);
+    setDraft(base);
+    setEditorOpen(true);
+  };
+
+  const openDefinitionEditor = (type, definition = null) => {
+    if (type === 'brand') {
+      setBrandDraft(definition ?? createEmptyBrand(availableCategories, getNextSortOrder(brandDefinitions)));
+    } else if (type === 'category') {
+      setCategoryDraft(definition ?? createEmptyCategory(getNextSortOrder(categoryDefinitions)));
+    } else if (type === 'subcategory') {
+      const base = definition ?? {
+        id: '',
+        category: categoryFilter !== 'all' ? categoryFilter : (availableCategories[0]?.id ?? ''),
+        name: '',
+        sort_order: getNextSortOrder(subcategoryDefinitions),
+      };
+      setSubcategoryDraft(base);
+    }
+    setDefinitionEditor({ type, mode: definition ? 'edit' : 'create' });
+  };
+
+  const handleAddChooserSelect = (choice) => {
+    setAddChooserOpen(false);
+    if (choice === 'product') {
+      openProductEditor(null);
+    } else {
+      openDefinitionEditor(choice);
+    }
+  };
+
+  const handleSortButton = (value) => {
+    if (value === 'az') {
+      setSortKey((current) => (current === 'az' ? 'za' : current === 'za' ? 'default' : 'az'));
+      return;
+    }
+    if (value === 'brand') {
+      if (brandFilter !== 'all') {
+        setBrandFilter('all');
+        return;
+      }
+      setPicker(picker === 'brand' ? null : 'brand');
+      return;
+    }
+    if (value === 'category') {
+      if (categoryFilter !== 'all') {
+        setCategoryFilter('all');
+        setSubcategoryFilter('all');
+        return;
+      }
+      setPicker(picker === 'category' ? null : 'category');
+    }
+  };
+
+  const sortKeyLabel = sortKey === 'az' ? 'A-Z' : sortKey === 'za' ? 'Z-A' : 'A-Z';
+
+  const activeCategoryLabel = categoryFilter !== 'all'
+    ? getCategoryName(categoryFilter, availableCategories)
+    : null;
+  const activeBrandLabel = brandFilter !== 'all' ? brandFilter : null;
+
+  const closePicker = () => setPicker(null);
+
   return (
-    <section className="admin-shell">
-      <div className="section-heading">
-        <div>
-          <span className="eyebrow">Admin panel</span>
-          <h2>Products, brands, categories, and images</h2>
-        </div>
-        <p>
-          Signed in as <span translate="no">{profile?.display_name || profile?.email || 'Authenticated user'}</span>
-          {' '}· Role: {normalizeRole(profile?.role) || 'no role'}
-        </p>
-      </div>
+    <section className="admin-workspace">
+      <aside className="admin-sidebar">
+        <h2 className="admin-sidebar-title">Products</h2>
 
-      {notice ? <div className="notice notice-info">{notice}</div> : null}
+        <label className="admin-sidebar-search" htmlFor="admin-product-search">
+          <span className="visually-hidden">Search</span>
+          <svg aria-hidden="true" className="admin-search-icon" height="16" viewBox="0 0 16 16" width="16">
+            <circle cx="7" cy="7" fill="none" r="5" stroke="currentColor" strokeWidth="1.6" />
+            <path d="M11 11l3.2 3.2" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" />
+          </svg>
+          <input
+            autoComplete="off"
+            id="admin-product-search"
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search"
+            type="search"
+            value={query}
+          />
+        </label>
 
-      <div className="admin-segmented-control">
-        {[
-          ['products', 'Products'],
-          ['brands', 'Brands'],
-          ['categories', 'Categories'],
-          ['images', 'Images'],
-        ].map(([value, label]) => (
+        <button
+          className="admin-sidebar-add"
+          onClick={() => setAddChooserOpen(true)}
+          type="button"
+        >
+          Add new <span aria-hidden="true">+</span>
+        </button>
+
+        <div className="admin-sidebar-section">
+          <span className="admin-sidebar-label">Sort by:</span>
           <button
-            className={classNames('segment-button', selectedView === value && 'segment-button-active')}
-            key={value}
-            onClick={() => setSelectedView(value)}
+            aria-pressed={sortKey === 'az' || sortKey === 'za'}
+            className={classNames('admin-sidebar-button', (sortKey === 'az' || sortKey === 'za') && 'admin-sidebar-button-active')}
+            onClick={() => handleSortButton('az')}
             type="button"
           >
-            {label}
+            {sortKey === 'za' ? 'Z-A' : 'A-Z'}
           </button>
-        ))}
-      </div>
+          <button
+            aria-pressed={brandFilter !== 'all' || picker === 'brand'}
+            className={classNames(
+              'admin-sidebar-button',
+              (brandFilter !== 'all' || picker === 'brand') && 'admin-sidebar-button-active',
+            )}
+            onClick={() => handleSortButton('brand')}
+            type="button"
+          >
+            {activeBrandLabel ? (
+              <>
+                <span className="admin-sidebar-button-label" translate="no">{activeBrandLabel}</span>
+                <span aria-hidden="true" className="admin-sidebar-button-clear">×</span>
+              </>
+            ) : 'Brand'}
+          </button>
+          <button
+            aria-pressed={categoryFilter !== 'all' || picker === 'category'}
+            className={classNames(
+              'admin-sidebar-button',
+              (categoryFilter !== 'all' || picker === 'category') && 'admin-sidebar-button-active',
+            )}
+            onClick={() => handleSortButton('category')}
+            type="button"
+          >
+            {activeCategoryLabel ? (
+              <>
+                <span className="admin-sidebar-button-label">{activeCategoryLabel}</span>
+                <span aria-hidden="true" className="admin-sidebar-button-clear">×</span>
+              </>
+            ) : 'Category'}
+          </button>
 
-      <div className="admin-layout">
-        <aside className="admin-list-panel">
-          <div className="admin-toolbar">
-            <input
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={
-                selectedView === 'images'
-                  ? 'Search by product name or image path'
-                  : `Search ${selectedView === 'products' ? 'products' : selectedView === 'brands' ? 'brands' : 'categories'}`
-              }
-              type="search"
-              value={query}
-            />
-            <div className="button-row compact-row">
-              {selectedView === 'products' ? (
-                <>
-                  <button
-                    className="ghost-button"
-                    onClick={() => {
-                      const nextDraft = createEmptyProduct();
-                      nextDraft.category = availableCategories[0]?.id ?? nextDraft.category;
-                      setDraft(nextDraft);
-                      setSelectedId(null);
-                    }}
-                    type="button"
-                  >
-                    New
-                  </button>
-                  <button className="ghost-button" onClick={handleSeed} type="button">
-                    Sync seed
-                  </button>
-                </>
-              ) : null}
-
-              {selectedView === 'brands' ? (
+          {categoryFilter !== 'all' && subcategoriesForCategory.length > 0 ? (
+            <div className="admin-sidebar-subpanel">
+              <span className="admin-sidebar-sublabel">Subcategory</span>
+              <div className="admin-sidebar-chip-stack">
                 <button
-                  className="ghost-button"
-                  onClick={() => setBrandDraft(createEmptyBrand(availableCategories, getNextSortOrder(brandDefinitions)))}
+                  className={classNames('admin-sidebar-chip', subcategoryFilter === 'all' && 'admin-sidebar-chip-active')}
+                  onClick={() => setSubcategoryFilter('all')}
                   type="button"
                 >
-                  New brand
+                  All
                 </button>
-              ) : null}
-
-              {selectedView === 'categories' ? (
-                <button
-                  className="ghost-button"
-                  onClick={() => setCategoryDraft(createEmptyCategory(getNextSortOrder(categoryDefinitions)))}
-                  type="button"
-                >
-                  New category
-                </button>
-              ) : null}
-            </div>
-
-            <div className="admin-export-panel">
-              <button className="ghost-button" onClick={handleExportJson} type="button">
-                JSON
-              </button>
-              <button className="ghost-button" onClick={handleExportCsv} type="button">
-                CSV
-              </button>
-              <label className="ghost-button upload-trigger">
-                {isImporting ? 'Importing...' : 'Import'}
-                <input accept=".csv,.json" disabled={isImporting} onChange={handleImportDataset} type="file" />
-              </label>
-            </div>
-          </div>
-
-          <div className="admin-list">
-            {selectedView === 'products'
-              ? filteredProducts.map((product) => (
+                {subcategoriesForCategory.map((definition) => (
                   <button
-                    className={classNames('admin-list-item', draft?.id === product.id && 'admin-list-item-active')}
-                    key={product.id}
-                    onClick={() => {
-                      setSelectedId(product.id);
-                      setDraft(product);
-                    }}
-                    type="button"
-                  >
-                    <div>
-                      <strong translate="no">{product.name}</strong>
-                      <span translate="no">{[product.brand || 'No brand', product.sku || null, product.unit_size || null].filter(Boolean).join(' · ')}</span>
-                    </div>
-                    <div className="status-cluster">
-                      <span className={classNames('status-pill', product.visible ? 'status-pill-green' : 'status-pill-gray')}>
-                        {product.visible ? 'Visible' : 'Hidden'}
-                      </span>
-                      {product.featured ? <span className="status-pill status-pill-gold">Featured</span> : null}
-                    </div>
-                  </button>
-                ))
-              : null}
-
-            {selectedView === 'brands'
-              ? filteredBrands.map((definition) => (
-                  <button
-                    className={classNames('admin-list-item', brandDraft?.id === definition.id && 'admin-list-item-active')}
+                    className={classNames('admin-sidebar-chip', subcategoryFilter === definition.name && 'admin-sidebar-chip-active')}
                     key={definition.id}
-                    onClick={() => {
-                      setSelectedBrandId(definition.id);
-                      setBrandDraft(definition);
-                    }}
+                    onClick={() => setSubcategoryFilter(definition.name)}
                     type="button"
                   >
-                    <div>
-                      <strong translate="no">{definition.name}</strong>
-                      <span>{definition.category ? getCategoryName(definition.category, availableCategories) : 'No fixed category'}</span>
-                    </div>
-                  </button>
-                ))
-              : null}
-
-            {selectedView === 'categories'
-              ? filteredCategories.map((definition) => (
-                  <button
-                    className={classNames('admin-list-item', categoryDraft?.id === definition.id && 'admin-list-item-active')}
-                    key={definition.id}
-                    onClick={() => {
-                      setSelectedCategoryId(definition.id);
-                      setCategoryDraft(definition);
-                    }}
-                    type="button"
-                  >
-                    <div>
-                      <strong translate="no">{definition.name}</strong>
-                      <span translate="no">{definition.id}</span>
-                    </div>
-                    <div className="status-cluster">
-                      <span className="status-pill status-pill-gray">
-                        {products.filter((product) => product.category === definition.id).length} products
-                      </span>
-                    </div>
-                  </button>
-                ))
-              : null}
-
-            {selectedView === 'images' ? (
-              <div className="image-list-summary">
-                <div className="summary-card">
-                  <strong>{filteredAssignedImages.length}</strong>
-                  <span>Assigned images</span>
-                </div>
-                <div className="summary-card summary-card-warning">
-                  <strong>{filteredUnassignedImages.length}</strong>
-                  <span>Local images without a product</span>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        </aside>
-
-        {selectedView === 'products' ? (
-          <form className="admin-form" onSubmit={handleSave}>
-            <div className="data-ops-card">
-              <h3>Excel and Sheets import helper</h3>
-              <p>
-                The CSV export uses the correct columns for SKU, unit size, brand, and category. The import
-                recognizes headers such as marca, brand, categoría, category, unidad, and unit size.
-              </p>
-              <small>Brands are stored exactly as you type them. They are not translated automatically.</small>
-            </div>
-
-            <div className="editor-reference-panel">
-              <div className="editor-reference-header">
-                <strong>Product list</strong>
-                <span>{filteredProducts.length} items</span>
-              </div>
-              <div className="editor-reference-list two-column-list">
-                {filteredProducts.map((product) => (
-                  <button
-                    className={classNames('editor-reference-item', draft?.id === product.id && 'editor-reference-item-active')}
-                    key={`editor-product-${product.id}`}
-                    onClick={() => {
-                      setSelectedId(product.id);
-                      setDraft(product);
-                    }}
-                    type="button"
-                  >
-                    <div className="editor-reference-copy">
-                      <strong translate="no">{product.name}</strong>
-                      <span translate="no">{product.brand || 'No brand'}</span>
-                    </div>
-                    <span className={classNames('status-pill', product.visible ? 'status-pill-green' : 'status-pill-gray')}>
-                      {product.visible ? 'Visible' : 'Hidden'}
-                    </span>
+                    {definition.name}
                   </button>
                 ))}
               </div>
             </div>
+          ) : null}
+        </div>
 
-            <div className="form-grid">
-              <label>
-                ID
-                <input
-                  min="1"
-                  onChange={(event) => handleFieldChange('id', event.target.value)}
-                  required
-                  type="number"
-                  value={draft.id}
-                />
-              </label>
-              <label>
-                Order
-                <input
-                  onChange={(event) => handleFieldChange('sort_order', event.target.value)}
-                  type="number"
-                  value={draft.sort_order}
-                />
-              </label>
-              <label className="full-span">
-                Name
-                <input
-                  onChange={(event) => handleFieldChange('name', event.target.value)}
-                  required
-                  translate="no"
-                  type="text"
-                  value={draft.name}
-                />
-              </label>
-              <label>
-                Brand
-                <input
-                  list="brand-options"
-                  onChange={(event) => handleFieldChange('brand', event.target.value)}
-                  placeholder="Choose a brand or type a new one"
-                  translate="no"
-                  type="text"
-                  value={draft.brand}
-                />
-                <datalist id="brand-options">
-                  {availableBrandNames.map((name) => (
-                    <option key={name} value={name} />
-                  ))}
-                </datalist>
-              </label>
-              <label>
-                Optional SKU
-                <input
-                  onChange={(event) => handleFieldChange('sku', event.target.value)}
-                  placeholder="DILE-0001"
-                  translate="no"
-                  type="text"
-                  value={draft.sku}
-                />
-              </label>
-              <label>
-                Optional unit size
-                <input
-                  onChange={(event) => handleFieldChange('unit_size', event.target.value)}
-                  placeholder="16 oz / 12 pack / 500 g"
-                  translate="no"
-                  type="text"
-                  value={draft.unit_size}
-                />
-              </label>
-              <label>
-                Category
-                <select
-                  onChange={(event) => handleFieldChange('category', event.target.value)}
-                  translate="no"
-                  value={draft.category}
-                >
-                  {availableCategories.map((definition) => (
-                    <option key={definition.id} value={definition.id}>
-                      {definition.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Subcategory
-                <input
-                  list="subcategory-options"
-                  onChange={(event) => handleFieldChange('subcategory', event.target.value)}
-                  translate="no"
-                  type="text"
-                  value={draft.subcategory}
-                />
-                <datalist id="subcategory-options">
-                  {availableSubcategories.map((value) => (
-                    <option key={value} value={value} />
-                  ))}
-                </datalist>
-              </label>
-              <label className="full-span">
-                Current image
-                <input
-                  onChange={(event) => handleFieldChange('image', event.target.value)}
-                  placeholder="https://... or a public Supabase Storage URL"
-                  translate="no"
-                  type="text"
-                  value={draft.image}
-                />
-              </label>
-              <label className="full-span upload-field">
-                Upload image to Supabase Storage
-                <input
-                  accept="image/png,image/jpeg,image/webp,image/avif"
-                  disabled={!isSupabaseConfigured || isUploadingImage}
-                  onChange={handleImageUpload}
-                  type="file"
-                />
-                <small>
-                  {isSupabaseConfigured
-                    ? isUploadingImage
-                      ? 'Uploading image...'
-                      : 'The image is uploaded to the product-images bucket and then its public URL is saved on the product.'
-                    : 'Configure Supabase and the product-images bucket to enable uploads.'}
-                </small>
-              </label>
-              <label className="full-span">
-                Optional description
-                <textarea
-                  onChange={(event) => handleFieldChange('description', event.target.value)}
-                  rows="5"
-                  value={draft.description}
-                />
-              </label>
-            </div>
-
-            <div className="toggle-row">
-              <label className="toggle-card">
-                <input
-                  checked={Boolean(draft.visible)}
-                  onChange={(event) => handleFieldChange('visible', event.target.checked)}
-                  type="checkbox"
-                />
-                <span>Visible in catalog</span>
-              </label>
-              <label className="toggle-card">
-                <input
-                  checked={Boolean(draft.featured)}
-                  onChange={(event) => handleFieldChange('featured', event.target.checked)}
-                  type="checkbox"
-                />
-                <span>Mark as featured</span>
-              </label>
-            </div>
-
-            {draft.image ? (
-              <div className="preview-panel">
-                <img alt={draft.name || 'Product preview'} src={formatImagePath(draft.image)} />
-              </div>
-            ) : null}
-
-            <div className="button-row">
-              <button className="primary-button" disabled={isSaving} type="submit">
-                {isSaving ? 'Saving...' : 'Save changes'}
-              </button>
-              <button className="ghost-button" onClick={handleDelete} type="button">
-                Delete
-              </button>
+        <div className="admin-sidebar-section">
+          <span className="admin-sidebar-label">Status</span>
+          <div className="admin-sidebar-status-row">
+            {[
+              ['all', 'All'],
+              ['visible', 'Visible'],
+              ['hidden', 'Hidden'],
+            ].map(([value, label]) => (
               <button
-                className="ghost-button"
-                onClick={() =>
-                  setDraft((current) => ({
-                    ...current,
-                    id: Date.now(),
-                    name: `${current.name || 'Product'} copy`,
-                  }))
-                }
+                className={classNames('admin-sidebar-status', visibilityFilter === value && 'admin-sidebar-status-active')}
+                key={value}
+                onClick={() => setVisibilityFilter(value)}
                 type="button"
               >
-                Duplicate
+                {label}
               </button>
-            </div>
-          </form>
-        ) : null}
+            ))}
+          </div>
+        </div>
 
-        {selectedView === 'brands' ? (
-          <form className="admin-form" onSubmit={handleSaveBrand}>
-            <div className="editor-reference-panel">
-              <div className="editor-reference-header">
-                <strong>Brand list</strong>
-                <span>{filteredBrands.length} items</span>
+        <div className="admin-sidebar-spacer" />
+
+        <div className="admin-sidebar-footer">
+          <div className="admin-sidebar-count">
+            <span className="admin-sidebar-label">Product Count:</span>
+            <strong>{filteredProducts.length}</strong>
+            <span className="admin-sidebar-count-total">of {products.length}</span>
+          </div>
+          <details className="admin-sidebar-tools">
+            <summary>Data tools</summary>
+            <div className="admin-sidebar-tools-body">
+              <button className="ghost-button ghost-button-small" onClick={handleExportJson} type="button">Export JSON</button>
+              <button className="ghost-button ghost-button-small" onClick={handleExportCsv} type="button">Export CSV</button>
+              <label className="ghost-button ghost-button-small upload-trigger">
+                {isImporting ? 'Importing...' : 'Import CSV / JSON'}
+                <input accept=".csv,.json" disabled={isImporting} onChange={handleImportDataset} type="file" />
+              </label>
+              <button className="ghost-button ghost-button-small" onClick={handleSeed} type="button">Sync seed</button>
+              <label className="admin-sidebar-images-toggle">
+                <input
+                  checked={showImagesInList}
+                  onChange={(event) => setShowImagesInList(event.target.checked)}
+                  type="checkbox"
+                />
+                <span>Show thumbnails</span>
+              </label>
+            </div>
+          </details>
+          <div className="admin-sidebar-meta">
+            <small translate="no">{profile?.display_name || profile?.email || 'Authenticated user'}</small>
+            <small className="admin-sidebar-source">{sourceLabel}</small>
+          </div>
+        </div>
+      </aside>
+
+      <div className="admin-main">
+        {notice ? <div className="notice notice-info admin-main-notice">{notice}</div> : null}
+
+        {editorOpen ? (
+          <ProductEditorPanel
+            availableBrandNames={availableBrandNames}
+            availableCategories={availableCategories}
+            availableSubcategories={availableSubcategories}
+            draft={draft}
+            isSaving={isSaving}
+            isUploadingImage={isUploadingImage}
+            onCancel={() => setEditorOpen(false)}
+            onDelete={async () => {
+              await handleDelete();
+              setEditorOpen(false);
+            }}
+            onDuplicate={() =>
+              setDraft((current) => ({
+                ...current,
+                id: Date.now(),
+                name: `${current.name || 'Product'} copy`,
+              }))
+            }
+            onFieldChange={handleFieldChange}
+            onImageUpload={handleImageUpload}
+            onSubmit={async (event) => {
+              await handleSave(event);
+              setEditorOpen(false);
+            }}
+          />
+        ) : (
+          <>
+            <div className="admin-table" role="table">
+              <div className={classNames('admin-table-head', showImagesInList && 'admin-table-head-with-images')} role="row">
+                <span className="admin-table-check-col" role="columnheader" title="Click the checkbox to show or hide a product from the public catalog">On</span>
+                {showImagesInList ? <span className="admin-table-image-col" role="columnheader">Image</span> : null}
+                <span role="columnheader">Name</span>
+                <span role="columnheader">Category</span>
+                <span role="columnheader">Brand</span>
+                <span role="columnheader">Sub cat</span>
+                <span role="columnheader">SKU</span>
+                <span className="admin-table-actions-col" role="columnheader" aria-label="Actions" />
               </div>
-              <div className="editor-reference-list two-column-list">
-                {filteredBrands.map((definition) => (
-                  <button
-                    className={classNames('editor-reference-item', brandDraft?.id === definition.id && 'editor-reference-item-active')}
-                    key={`editor-brand-${definition.id}`}
-                    onClick={() => {
-                      setSelectedBrandId(definition.id);
-                      setBrandDraft(definition);
+              {filteredProducts.length === 0 ? (
+                <div className="admin-table-empty">
+                  <p>No products match these filters.</p>
+                  {(query || categoryFilter !== 'all' || brandFilter !== 'all' || subcategoryFilter !== 'all' || visibilityFilter !== 'all') ? (
+                    <button
+                      className="ghost-button ghost-button-small"
+                      onClick={() => {
+                        setQuery('');
+                        setCategoryFilter('all');
+                        setBrandFilter('all');
+                        setSubcategoryFilter('all');
+                        setVisibilityFilter('all');
+                      }}
+                      type="button"
+                    >
+                      Clear filters
+                    </button>
+                  ) : null}
+                </div>
+              ) : (
+                filteredProducts.map((product) => (
+                  <div
+                    className={classNames(
+                      'admin-table-row',
+                      showImagesInList && 'admin-table-row-with-images',
+                      !product.visible && 'admin-table-row-hidden',
+                    )}
+                    key={product.id}
+                    onClick={() => openProductEditor(product)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        openProductEditor(product);
+                      }
                     }}
-                    type="button"
+                    role="row"
+                    tabIndex={0}
                   >
-                    <div className="editor-reference-copy">
-                      <strong translate="no">{definition.name}</strong>
-                      <span>{definition.category ? getCategoryName(definition.category, availableCategories) : 'No fixed category'}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="form-grid">
-              <label>
-                ID
-                <input
-                  onChange={(event) => setBrandDraft((current) => ({ ...current, id: event.target.value.trim().toLowerCase() }))}
-                  translate="no"
-                  type="text"
-                  value={brandDraft.id}
-                />
-              </label>
-              <label>
-                Order
-                <input
-                  onChange={(event) => setBrandDraft((current) => ({ ...current, sort_order: event.target.value }))}
-                  type="number"
-                  value={brandDraft.sort_order}
-                />
-              </label>
-              <label className="full-span">
-                Brand
-                <input
-                  onChange={(event) => setBrandDraft((current) => ({ ...current, name: event.target.value }))}
-                  required
-                  translate="no"
-                  type="text"
-                  value={brandDraft.name}
-                />
-              </label>
-              <label>
-                Suggested category
-                <select
-                  onChange={(event) => setBrandDraft((current) => ({ ...current, category: event.target.value }))}
-                  value={brandDraft.category}
-                >
-                  <option value="">No fixed category</option>
-                  {availableCategories.map((definition) => (
-                    <option key={definition.id} value={definition.id}>
-                      {definition.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="full-span">
-                Internal note
-                <textarea
-                  onChange={(event) => setBrandDraft((current) => ({ ...current, notes: event.target.value }))}
-                  rows="4"
-                  value={brandDraft.notes}
-                />
-              </label>
-            </div>
-            <div className="button-row">
-              <button className="primary-button" disabled={isSavingBrand} type="submit">
-                {isSavingBrand ? 'Saving...' : 'Save brand'}
-              </button>
-              <button className="ghost-button" onClick={handleDeleteBrand} type="button">
-                Delete
-              </button>
-            </div>
-          </form>
-        ) : null}
-
-        {selectedView === 'categories' ? (
-          <form className="admin-form" onSubmit={handleSaveCategory}>
-            <div className="editor-reference-panel">
-              <div className="editor-reference-header">
-                <strong>Category list</strong>
-                <span>{filteredCategories.length} items</span>
-              </div>
-              <div className="editor-reference-list two-column-list">
-                {filteredCategories.map((definition) => (
-                  <button
-                    className={classNames('editor-reference-item', categoryDraft?.id === definition.id && 'editor-reference-item-active')}
-                    key={`editor-category-${definition.id}`}
-                    onClick={() => {
-                      setSelectedCategoryId(definition.id);
-                      setCategoryDraft(definition);
-                    }}
-                    type="button"
-                  >
-                    <div className="editor-reference-copy">
-                      <strong translate="no">{definition.name}</strong>
-                      <span translate="no">{definition.id}</span>
-                    </div>
-                    <span className="status-pill status-pill-gray">
-                      {products.filter((product) => product.category === definition.id).length}
+                    <span className="admin-table-check-col" role="cell">
+                      <button
+                        aria-label={product.visible ? 'Hide from catalog' : 'Show in catalog'}
+                        aria-pressed={Boolean(product.visible)}
+                        className={classNames('visibility-check', product.visible && 'visibility-check-on')}
+                        disabled={togglingId === product.id}
+                        onClick={(event) => handleToggleVisibility(product, event)}
+                        title={product.visible ? 'Visible · click to hide' : 'Hidden · click to show'}
+                        type="button"
+                      >
+                        {product.visible ? (
+                          <svg aria-hidden="true" height="14" viewBox="0 0 16 16" width="14">
+                            <path
+                              d="M3 8.5l3 3 7-7"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2.4"
+                            />
+                          </svg>
+                        ) : null}
+                      </button>
                     </span>
-                  </button>
-                ))}
-              </div>
+                    {showImagesInList ? (
+                      <span className="admin-table-image-col" role="cell">
+                        {product.image ? (
+                          <img
+                            alt=""
+                            decoding="async"
+                            loading="lazy"
+                            onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }}
+                            src={formatImagePath(product.image)}
+                          />
+                        ) : <span className="admin-table-image-empty" aria-hidden="true">—</span>}
+                      </span>
+                    ) : null}
+                    <span className="admin-table-name-cell" role="cell" translate="no">
+                      <span className="admin-table-name-text">{product.name || <em>Untitled</em>}</span>
+                      {product.featured ? <span className="mini-badge mini-badge-gold">Featured</span> : null}
+                    </span>
+                    <span role="cell">{getCategoryName(product.category, availableCategories) || '—'}</span>
+                    <span role="cell" translate="no">{product.brand || '—'}</span>
+                    <span role="cell" translate="no">{product.subcategory || '—'}</span>
+                    <span role="cell" translate="no">{product.sku || '—'}</span>
+                    <span className="admin-table-actions-col" role="cell">
+                      <button
+                        className="table-action-button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          openProductEditor(product);
+                        }}
+                        type="button"
+                      >
+                        Edit
+                      </button>
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
 
-            <div className="form-grid">
-              <label>
-                Technical ID
-                <input
-                  onChange={(event) => setCategoryDraft((current) => ({ ...current, id: event.target.value }))}
-                  placeholder="frozen, grocery, dairy, snacks"
-                  required
-                  translate="no"
-                  type="text"
-                  value={categoryDraft.id}
-                />
-              </label>
-              <label>
-                Order
-                <input
-                  onChange={(event) => setCategoryDraft((current) => ({ ...current, sort_order: event.target.value }))}
-                  type="number"
-                  value={categoryDraft.sort_order}
-                />
-              </label>
-              <label className="full-span">
-                Display name
-                <input
-                  onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value }))}
-                  required
-                  translate="no"
-                  type="text"
-                  value={categoryDraft.name}
-                />
-              </label>
-            </div>
-            <div className="button-row">
-              <button className="primary-button" disabled={isSavingCategory} type="submit">
-                {isSavingCategory ? 'Saving...' : 'Save category'}
-              </button>
-              <button className="ghost-button" onClick={handleDeleteCategory} type="button">
-                Delete
-              </button>
-            </div>
-          </form>
-        ) : null}
-
-        {selectedView === 'images' ? (
-          <div className="admin-form">
-            <div className="section-heading image-heading">
-              <div>
-                <span className="eyebrow">Visual review</span>
-                <h2>All catalog images</h2>
-              </div>
-              <p>Review products without a SKU, without a brand, or with local images that are still unassigned.</p>
-            </div>
-
-            <div className="image-gallery-section">
-              <h3>Images assigned to products</h3>
-              <div className="image-audit-grid">
-                {filteredAssignedImages.map(({ imageKey, issues, previewUrl, product, source }) => (
-                  <article className="image-audit-card" key={`${product.id}-${imageKey}`}>
-                    <div className="catalog-image-shell image-audit-visual">
-                      <img alt={product.name} src={formatImagePath(previewUrl)} />
-                    </div>
-                    <div className="image-audit-copy">
-                      <strong translate="no">{product.name}</strong>
-                      <span translate="no">{product.brand || 'No brand'} · {product.sku || 'No SKU'}</span>
-                      <small>{imageKey}</small>
-                      <div className="status-cluster status-cluster-inline">
-                        <span className="status-pill status-pill-gray">{source}</span>
-                        {issues.map((issue) => (
-                          <span className="status-pill status-pill-warning" key={issue}>{issue}</span>
-                        ))}
+            {picker === 'brand' ? (
+              <div className="admin-picker-overlay" onClick={closePicker}>
+                <div
+                  className="admin-picker-card"
+                  onClick={(event) => event.stopPropagation()}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Filter by brand"
+                >
+                  <div className="admin-picker-header">
+                    <h3>By Brand</h3>
+                    <button aria-label="Close" className="admin-picker-close" onClick={closePicker} type="button">×</button>
+                  </div>
+                  <div className="admin-picker-grid">
+                    {brandsForPicker.length === 0 ? (
+                      <p className="admin-picker-empty">No brands yet. Use Add new → Brand to create one.</p>
+                    ) : brandsForPicker.map((item) => (
+                      <div className="admin-picker-cell" key={item.id}>
+                        <button
+                          className="admin-picker-button"
+                          onClick={() => {
+                            setBrandFilter(item.name);
+                            closePicker();
+                          }}
+                          type="button"
+                        >
+                          <span className="admin-picker-button-label" translate="no">{item.name}</span>
+                          <span className="admin-picker-button-count">{item.count}</span>
+                        </button>
+                        {!item.adhoc ? (
+                          <button
+                            aria-label={`Edit brand ${item.name}`}
+                            className="admin-picker-edit"
+                            onClick={() => {
+                              const definition = brandDefinitions.find((d) => d.id === item.id);
+                              if (definition) {
+                                openDefinitionEditor('brand', definition);
+                                closePicker();
+                              }
+                            }}
+                            type="button"
+                          >
+                            <svg aria-hidden="true" height="14" viewBox="0 0 16 16" width="14">
+                              <path d="M11.5 2.5l2 2-8 8H3.5v-2z" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5" />
+                            </svg>
+                          </button>
+                        ) : null}
                       </div>
-                    </div>
-                  </article>
-                ))}
+                    ))}
+                  </div>
+                  <p className="admin-picker-hint">Click a brand to filter the product list.</p>
+                </div>
               </div>
-            </div>
+            ) : null}
 
-            <div className="image-gallery-section">
-              <h3>Local images without a product</h3>
-              <div className="image-audit-grid">
-                {filteredUnassignedImages.map((asset) => (
-                  <article className="image-audit-card" key={asset.path}>
-                    <div className="catalog-image-shell image-audit-visual">
-                      <img alt={asset.path} src={asset.previewUrl} />
-                    </div>
-                    <div className="image-audit-copy">
-                      <strong>Unassigned</strong>
-                      <small>{asset.path}</small>
-                    </div>
-                  </article>
+            {picker === 'category' ? (
+              <div className="admin-picker-overlay" onClick={closePicker}>
+                <div
+                  className="admin-picker-card"
+                  onClick={(event) => event.stopPropagation()}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Filter by category"
+                >
+                  <div className="admin-picker-header">
+                    <h3>By Category</h3>
+                    <button aria-label="Close" className="admin-picker-close" onClick={closePicker} type="button">×</button>
+                  </div>
+                  <div className="admin-picker-grid">
+                    {categoriesForPicker.length === 0 ? (
+                      <p className="admin-picker-empty">No categories yet. Use Add new → Category to create one.</p>
+                    ) : categoriesForPicker.map((item) => (
+                      <div className="admin-picker-cell" key={item.id}>
+                        <button
+                          className="admin-picker-button"
+                          onClick={() => {
+                            setCategoryFilter(item.id);
+                            setSubcategoryFilter('all');
+                            closePicker();
+                          }}
+                          type="button"
+                        >
+                          <span className="admin-picker-button-label">{item.name}</span>
+                          <span className="admin-picker-button-count">{item.count}</span>
+                        </button>
+                        <button
+                          aria-label={`Edit category ${item.name}`}
+                          className="admin-picker-edit"
+                          onClick={() => {
+                            const definition = categoryDefinitions.find((d) => d.id === item.id);
+                            if (definition) {
+                              openDefinitionEditor('category', definition);
+                              closePicker();
+                            }
+                          }}
+                          type="button"
+                        >
+                          <svg aria-hidden="true" height="14" viewBox="0 0 16 16" width="14">
+                            <path d="M11.5 2.5l2 2-8 8H3.5v-2z" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="admin-picker-hint">Click a category to filter the product list.</p>
+                </div>
+              </div>
+            ) : null}
+          </>
+        )}
+
+        {addChooserOpen ? (
+          <div className="admin-picker-overlay" onClick={() => setAddChooserOpen(false)}>
+            <div
+              className="admin-chooser-card"
+              onClick={(event) => event.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Add new"
+            >
+              <div className="admin-picker-header">
+                <h3>Add new</h3>
+                <button aria-label="Close" className="admin-picker-close" onClick={() => setAddChooserOpen(false)} type="button">×</button>
+              </div>
+              <div className="admin-chooser-grid">
+                {[
+                  ['product', 'Product'],
+                  ['brand', 'Brand'],
+                  ['category', 'Category'],
+                  ['subcategory', 'Sub category'],
+                ].map(([value, label]) => (
+                  <button
+                    className="admin-chooser-button"
+                    key={value}
+                    onClick={() => handleAddChooserSelect(value)}
+                    type="button"
+                  >
+                    {label}
+                  </button>
                 ))}
               </div>
             </div>
           </div>
+        ) : null}
+
+        {definitionEditor ? (
+          <DefinitionEditorModal
+            availableCategories={availableCategories}
+            brandDraft={brandDraft}
+            categoryDraft={categoryDraft}
+            editor={definitionEditor}
+            isSavingBrand={isSavingBrand}
+            isSavingCategory={isSavingCategory}
+            isSavingSubcategory={isSavingSubcategory}
+            onBrandDraftChange={setBrandDraft}
+            onCancel={() => setDefinitionEditor(null)}
+            onCategoryDraftChange={setCategoryDraft}
+            onDeleteBrand={async () => {
+              await handleDeleteBrand();
+              setDefinitionEditor(null);
+            }}
+            onDeleteCategory={async () => {
+              await handleDeleteCategory();
+              setDefinitionEditor(null);
+            }}
+            onSaveBrand={async (event) => {
+              await handleSaveBrand(event);
+              setDefinitionEditor(null);
+            }}
+            onSaveCategory={async (event) => {
+              await handleSaveCategory(event);
+              setDefinitionEditor(null);
+            }}
+            onSaveSubcategory={async (event) => {
+              await handleSaveSubcategory(event);
+              setDefinitionEditor(null);
+            }}
+            onSubcategoryDraftChange={setSubcategoryDraft}
+            subcategoryDraft={subcategoryDraft}
+          />
         ) : null}
       </div>
     </section>
